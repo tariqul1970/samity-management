@@ -146,4 +146,19 @@
   </div>
 
 </body>
+  <!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+  const SUPABASE_URL = "https://tcdilhooslygsvdcqkte.supabase.co";
+
+  const SUPABASE_PUBLISHABLE_KEY = "এখানে_তোমার_কপি_করা_Publishable_Key_পেস্ট_করো";
+
+  const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+  );
+
+  console.log("Supabase connected:", !!supabaseClient);
+</script>
 </html>

@@ -1600,522 +1600,41 @@ document.getElementById("memberModal").style.display="none";
 
 async function saveMember(){
 
-const msg=
-document.getElementById("memberMessage");
-
-const memberId=
-document.getElementById("newMemberId").value;
-
-const fullName=
-document.getElementById("memberName").value.trim();
-
-const father=
-document.getElementById("fatherName").value.trim();
-
-const mobile=
-document.getElementById("memberMobile").value.trim();
-
-const nid=
-document.getElementById("memberNid").value.trim();
-
-const address=
-document.getElementById("memberAddress").value.trim();
-
-const joinDate=
-document.getElementById("memberJoinDate").value;
-
-const status=
-document.getElementById("memberStatus").value;
-
-if(!fullName){
-
-msg.textContent="সদস্যের নাম লিখুন।";
-
-return;
-}
-
-msg.textContent="সদস্য সংরক্ষণ হচ্ছে...";
-
-const result=
-await supabaseClient
-.from("members")
-.insert({
-member_id:memberId,
-full_name:fullName,
-father_husband_name:father,
-mobile:mobile,
-nid:nid,
-address:address,
-join_date:joinDate||null,
-status:status
-})
-.select()
-.single();
-
-if(result.error){
-
-msg.textContent=
-"সদস্য সংরক্ষণ হয়নি: "+result.error.message;
-
-return;
-}
-
-msg.textContent=
-"সদস্য সফলভাবে যোগ হয়েছে। Member ID: "+memberId;
-
-await loadMembers();
-
-setTimeout(closeMemberModal,900);
-
-}
-
-
-async function loadMembers(){
-
-const tbody=
-document.getElementById("memberList");
-
-const search=
-document.getElementById("memberSearch").value.trim();
-
-let query=
-supabaseClient
-.from("members")
-.select("*")
-.order("created_at",{ascending:false});
-
-if(search){
-
-query=query.or(
-"member_id.ilike.%"+search+"%,"+
-"full_name.ilike.%"+search+"%,"+
-"mobile.ilike.%"+search+"%"
-);
-
-}
-
-const result=await query;
-
-if(result.error){
-
-tbody.innerHTML=
-`
-<tr>
-<td colspan="6">
-সদস্য লোড হয়নি: ${escapeHtml(result.error.message)}
-</td>
-</tr>
-`;
-
-return;
-}
-
-if(!result.data||result.data.length===0){
-
-tbody.innerHTML=
-`
-<tr>
-<td colspan="6">
-কোনো সদস্য পাওয়া যায়নি।
-</td>
-</tr>
-`;
-
-return;
-}
-
-tbody.innerHTML=
-result.data.map(member=>{
-
-const badge=
-member.status==="active"
-?
-'<span class="badge active-badge">Active</span>'
-:
-'<span class="badge inactive-badge">Inactive</span>';
-
-return `
-
-<tr>
-
-<td>
-<strong>${escapeHtml(member.member_id)}</strong>
-</td>
-
-<td>
-${escapeHtml(member.full_name)}
-</td>
-
-<td>
-${escapeHtml(member.mobile||"—")}
-</td>
-
-<td>
-${escapeHtml(member.join_date||"—")}
-</td>
-
-<td>
-${badge}
-</td>
-
-<td>
-
-<button
-class="action-btn"
-onclick="viewMember('${member.id}')"
->
-👁️ View
-</button>
-
-</td>
-
-</tr>
-
-`;
-
-}).join("");
-
-}
-
-
-async function viewMember(id){
-
-const result=
-await supabaseClient
-.from("members")
-.select("*")
-.eq("id",id)
-.single();
-
-if(result.error){
-
-alert("সদস্যের তথ্য পাওয়া যায়নি।");
-
-return;
-}
-
-const m=result.data;
-
-document.getElementById("memberDetails").innerHTML=`
-
-<p><strong>Member ID:</strong> ${escapeHtml(m.member_id)}</p>
-
-<p><strong>নাম:</strong> ${escapeHtml(m.full_name)}</p>
-
-<p><strong>পিতা/স্বামীর নাম:</strong> ${escapeHtml(m.father_husband_name||"—")}</p>
-
-<p><strong>মোবাইল:</strong> ${escapeHtml(m.mobile||"—")}</p>
-
-<p><strong>NID:</strong> ${escapeHtml(m.nid||"—")}</p>
-
-<p><strong>ঠিকানা:</strong> ${escapeHtml(m.address||"—")}</p>
-
-<p><strong>যোগদানের তারিখ:</strong> ${escapeHtml(m.join_date||"—")}</p>
-
-<p><strong>Status:</strong> ${escapeHtml(m.status||"—")}</p>
-
-<hr>
-
-<p>
-💳 Savings, DPS, FDR এবং Loan Account পরবর্তী ধাপে যুক্ত করা হবে।
-</p>
-
-`;
-
-document.getElementById("memberViewModal").style.display="flex";
-
-}
-
-
-function closeMemberView(){
-
-document.getElementById("memberViewModal").style.display="none";
-
-}
-
-
-function escapeHtml(value){
-
-return String(value??"")
-.replace(/&/g,"&amp;")
-.replace(/</g,"&lt;")
-.replace(/>/g,"&gt;")
-.replace(/"/g,"&quot;")
-.replace(/'/g,"&#039;");
-
-}
-
-
-async function logout(){
-
-await supabaseClient.auth.signOut();
-
-currentUser=null;
-
-document.getElementById("dashboardPage").style.display="none";
-
-document.getElementById("loginPage").style.display="flex";
-
-document.getElementById("password").value="";
-
-}
-
-
-async function checkSession(){
-
-const result=
-await supabaseClient.auth.getSession();
-
-if(
-result.data &&
-result.data.session &&
-result.data.session.user
-){
-
-currentUser=
-result.data.session.user;
-
-await checkManagerRole();
-
-}
-
-}
-
-checkSession();
-
-</script>
-  <!-- MEMBER ADD MODAL -->
-<div id="memberModal"
-     style="
-     display:none;
-     position:fixed;
-     inset:0;
-     background:rgba(0,0,0,.6);
-     z-index:9999;
-     align-items:center;
-     justify-content:center;
-     padding:20px;
-     ">
-
-    <div style="
-        background:white;
-        width:100%;
-        max-width:600px;
-        max-height:90vh;
-        overflow-y:auto;
-        padding:25px;
-        border-radius:12px;
-        ">
-
-        <h2>➕ নতুন সদস্য</h2>
-
-        <label>Member ID</label>
-        <input
-            type="text"
-            id="newMemberId"
-            readonly
-            placeholder="Auto Generate"
-        >
-
-        <label>সদস্যের পূর্ণ নাম</label>
-        <input
-            type="text"
-            id="memberName"
-            placeholder="পূর্ণ নাম"
-        >
-
-        <label>পিতা/স্বামীর নাম</label>
-        <input
-            type="text"
-            id="fatherName"
-            placeholder="পিতা/স্বামীর নাম"
-        >
-
-        <label>মোবাইল</label>
-        <input
-            type="tel"
-            id="memberMobile"
-            placeholder="01XXXXXXXXX"
-        >
-
-        <label>NID</label>
-        <input
-            type="text"
-            id="memberNid"
-            placeholder="NID"
-        >
-
-        <label>যোগদানের তারিখ</label>
-        <input
-            type="date"
-            id="memberJoinDate"
-        >
-
-        <p id="memberMessage"></p>
-
-        <button
-            type="button"
-            class="cancel"
-            onclick="closeMemberModal()"
-        >
-            Cancel
-        </button>
-
-        <button
-            type="button"
-            class="save"
-            onclick="saveMember()"
-        >
-            💾 Save Member
-        </button>
-
-    </div>
-</div>
-
-
-<script>
-
-/* =========================
-   MEMBER MODAL
-========================= */
-
-async function openMemberModal(){
-
-    const modal =
-        document.getElementById("memberModal");
-
-    if(!modal){
-        alert("Member form পাওয়া যাচ্ছে না।");
-        return;
-    }
-
-    modal.style.display = "flex";
-
     const message =
         document.getElementById("memberMessage");
 
-    if(message){
-        message.textContent = "";
-    }
-
-    /*
-      নতুন Member ID তৈরি
-      ৬ ডিজিট
-    */
-
-    let nextId = "000001";
-
-    try{
-
-        const result =
-            await supabaseClient
-            .from("members")
-            .select("member_id")
-            .order("member_id", {
-                ascending:false
-            })
-            .limit(1);
-
-        if(
-            !result.error &&
-            result.data &&
-            result.data.length > 0
-        ){
-
-            const lastId =
-                parseInt(
-                    result.data[0].member_id,
-                    10
-                ) || 0;
-
-            nextId =
-                String(lastId + 1)
-                .padStart(6,"0");
-        }
-
-    }catch(error){
-
-        console.error(
-            "Member ID error:",
-            error
-        );
-
-    }
-
-    document.getElementById(
-        "newMemberId"
-    ).value = nextId;
-
-    document.getElementById(
-        "memberJoinDate"
-    ).value =
-        new Date()
-        .toISOString()
-        .split("T")[0];
-}
-
-
-/* =========================
-   CLOSE MEMBER MODAL
-========================= */
-
-function closeMemberModal(){
-
-    const modal =
-        document.getElementById("memberModal");
-
-    if(modal){
-        modal.style.display = "none";
-    }
-}
-
-
-/* =========================
-   SAVE MEMBER
-========================= */
-
-async function saveMember(){
-
-    const message =
-        document.getElementById(
-            "memberMessage"
-        );
-
     const memberId =
-        document.getElementById(
-            "newMemberId"
-        ).value.trim();
+        document.getElementById("newMemberId").value.trim();
 
     const fullName =
-        document.getElementById(
-            "memberName"
-        ).value.trim();
+        document.getElementById("memberName").value.trim();
 
     const father =
-        document.getElementById(
-            "fatherName"
-        ).value.trim();
+        document.getElementById("fatherName").value.trim();
 
     const mobile =
-        document.getElementById(
-            "memberMobile"
-        ).value.trim();
+        document.getElementById("memberMobile").value.trim();
 
     const nid =
-        document.getElementById(
-            "memberNid"
-        ).value.trim();
+        document.getElementById("memberNid").value.trim();
 
     const joinDate =
-        document.getElementById(
-            "memberJoinDate"
-        ).value;
+        document.getElementById("memberJoinDate").value;
 
 
     if(!fullName){
 
         message.textContent =
             "❌ সদস্যের নাম লিখুন।";
+
+        return;
+    }
+
+
+    if(!memberId){
+
+        message.textContent =
+            "❌ Member ID পাওয়া যায়নি।";
 
         return;
     }
@@ -2133,6 +1652,8 @@ async function saveMember(){
             .insert({
 
                 member_id: memberId,
+
+                member_no: memberId,
 
                 full_name: fullName,
 
@@ -2155,6 +1676,7 @@ async function saveMember(){
         if(result.error){
 
             console.error(
+                "Save member error:",
                 result.error
             );
 
@@ -2169,10 +1691,6 @@ async function saveMember(){
         message.textContent =
             "✅ সদস্য সফলভাবে যোগ হয়েছে।";
 
-
-        /*
-          Member list থাকলে Refresh
-        */
 
         if(
             typeof loadMembers ===
@@ -2201,10 +1719,8 @@ async function saveMember(){
         message.textContent =
             "❌ সমস্যা হয়েছে: " +
             error.message;
-    }
-}
 
-</script>
+    }
 
 </body>
 </html>

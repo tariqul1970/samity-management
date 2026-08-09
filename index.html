@@ -1354,127 +1354,150 @@ LOAD MEMBERS
 
 async function loadMembers(){
 
-const list =
-document
-.getElementById("memberList");
+async function loadMembers(){
+
+    const list = document.getElementById("memberList");
+
+    if (!list) return;
+
+    const searchInput = document.getElementById("memberSearch");
+    const search = searchInput ? searchInput.value.trim() : "";
+
+    list.innerHTML = "<p>⏳ সদস্যের তথ্য লোড হচ্ছে...</p>";
+
+    try {
+
+        let query = supabaseClient
+            .from("members")
+            .select("*");
+
+        /*
+         * created_at না থাকলেও যেন পুরো Panel ভেঙে না যায়।
+         * প্রথমে সাধারণভাবে সদস্য আনা হবে।
+         */
+
+        const result = await query;
+
+        if (result.error) {
+
+            console.error("Supabase members error:", result.error);
+
+            list.innerHTML =
+                "<p>❌ সদস্যের তথ্য লোড হয়নি।</p>" +
+                "<p>Supabase error: " +
+                escapeHtml(result.error.message) +
+                "</p>";
+
+            return;
+        }
+
+        let members = result.data || [];
+
+        /*
+         * Search
+         */
+
+        if (search) {
+
+            const s = search.toLowerCase();
+
+            members = members.filter(function(member){
+
+                return (
+                    String(member.member_id || "")
+                        .toLowerCase()
+                        .includes(s)
+                    ||
+                    String(member.full_name || "")
+                        .toLowerCase()
+                        .includes(s)
+                    ||
+                    String(member.mobile || "")
+                        .toLowerCase()
+                        .includes(s)
+                );
+
+            });
+
+        }
+
+        /*
+         * নতুন সদস্য আগে দেখানো
+         */
+
+        members.sort(function(a,b){
+
+            const ad =
+                a.created_at
+                ? new Date(a.created_at).getTime()
+                : 0;
+
+            const bd =
+                b.created_at
+                ? new Date(b.created_at).getTime()
+                : 0;
+
+            return bd - ad;
+
+        });
 
 
-const search =
-document
-.getElementById("memberSearch")
-.value
-.trim();
+        if (members.length === 0) {
+
+            list.innerHTML =
+                "<p>কোনো সদস্য পাওয়া যায়নি।</p>";
+
+            return;
+        }
 
 
-let query =
-supabaseClient
-.from("members")
-.select("*")
-.order(
-"created_at",
-{ascending:false}
-);
+        list.innerHTML = members.map(function(member){
 
+            return `
 
-if(search){
+            <div class="member-item">
 
-query =
-query.or(
-"member_id.ilike.%"+
-search+
-"%,"+
-"full_name.ilike.%"+
-search+
-"%,"+
-"mobile.ilike.%"+
-search+
-"%"
-);
+                <b>
+                    Member ID:
+                    ${escapeHtml(member.member_id || "")}
+                </b>
+
+                <br><br>
+
+                👤
+                ${escapeHtml(member.full_name || "")}
+
+                <br>
+
+                📱
+                ${escapeHtml(member.mobile || "")}
+
+                <br><br>
+
+                <button
+                    class="primary-btn"
+                    onclick="viewMember('${escapeHtml(member.id)}')"
+                >
+                    👁️ View
+                </button>
+
+            </div>
+
+            `;
+
+        }).join("");
+
+    }
+    catch(error){
+
+        console.error("Load members failed:", error);
+
+        list.innerHTML =
+            "<p>❌ সদস্যের তথ্য লোড করা যাচ্ছে না।</p>";
+
+    }
 
 }
-
-
-const result =
-await query;
-
-
-if(result.error){
-
-list.innerHTML =
-"<p>❌ তথ্য লোড হয়নি: "+
-escapeHtml(
-result.error.message
-)+
-"</p>";
-
-return;
-
-}
-
-
-if(
-!result.data ||
-result.data.length===0
-){
-
-list.innerHTML =
-"<p>কোনো সদস্য পাওয়া যায়নি।</p>";
-
-return;
-
-}
-
-
-list.innerHTML =
-result
-.data
-.map(
-function(member){
-
-return `
-
-<div class="member-item">
-
-<b>
-Member ID:
-${escapeHtml(member.member_id)}
-</b>
-
-<br><br>
-
-👤
-${escapeHtml(member.full_name)}
-
-<br>
-
-📱
-${escapeHtml(member.mobile || "")}
-
-<br><br>
-
-<button
-class="primary-btn"
-onclick="viewMember('${member.id}')"
->
-👁️ View
-</button>
-
-</div>
-
-`;
-
-}
-)
-.join("");
-
-}
-
-
-
-/* =========================
-VIEW MEMBER
-========================= */
-
 async function viewMember(id){
 
 const result =

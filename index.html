@@ -3,17 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>সমবায় সমিতি ম্যানেজমেন্ট</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-*{box-sizing:border-box}
+
+*{
+    box-sizing:border-box;
+}
 
 body{
     margin:0;
     font-family:Arial,"Noto Sans Bengali",sans-serif;
     background:#f4f6f8;
+    color:#222;
 }
 
 .container{
@@ -30,7 +35,13 @@ body{
     box-shadow:0 2px 10px rgba(0,0,0,.08);
 }
 
-input,select,textarea{
+h1,h2,h3{
+    margin-top:0;
+}
+
+input,
+select,
+textarea{
     width:100%;
     padding:12px;
     margin:6px 0 12px;
@@ -39,41 +50,49 @@ input,select,textarea{
     font-size:15px;
 }
 
+textarea{
+    resize:vertical;
+}
+
 button{
     padding:11px 16px;
     border:0;
     border-radius:7px;
     cursor:pointer;
+    font-size:15px;
     margin:3px;
 }
 
-.primary-btn,.save,.login-button{
+.login-button,
+.primary-btn,
+.save{
     background:#1769aa;
-    color:#fff;
+    color:white;
 }
 
 .cancel{
     background:#ddd;
+    color:#222;
 }
 
 .logout{
     background:#d32f2f;
-    color:#fff;
+    color:white;
 }
 
 .add{
     background:#2e7d32;
-    color:#fff;
+    color:white;
 }
 
 .reduce{
     background:#c62828;
-    color:#fff;
+    color:white;
 }
 
 .secondary-btn{
     background:#555;
-    color:#fff;
+    color:white;
 }
 
 .login-page{
@@ -81,12 +100,13 @@ button{
     display:flex;
     justify-content:center;
     align-items:center;
+    padding:20px;
 }
 
 .login-box{
-    background:#fff;
-    width:95%;
-    max-width:400px;
+    background:white;
+    width:100%;
+    max-width:420px;
     padding:30px;
     border-radius:15px;
     box-shadow:0 3px 20px #ccc;
@@ -97,7 +117,7 @@ button{
 }
 
 .topbar{
-    background:#fff;
+    background:white;
     padding:15px 20px;
     display:flex;
     justify-content:space-between;
@@ -136,7 +156,7 @@ button{
     justify-content:center;
     align-items:center;
     padding:15px;
-    z-index:999;
+    z-index:9999;
 }
 
 .modal-content{
@@ -203,12 +223,22 @@ button{
     margin:10px 0;
     font-weight:bold;
 }
+
+hr{
+    border:0;
+    border-top:1px solid #ddd;
+    margin:20px 0;
+}
+
 </style>
 </head>
 
 <body>
 
-<!-- LOGIN -->
+
+<!-- =========================
+LOGIN
+========================= -->
 
 <div id="loginPage" class="login-page">
 
@@ -239,7 +269,7 @@ required
 <button
 class="login-button"
 type="submit"
-style="width:100%"
+style="width:100%;"
 >
 Login
 </button>
@@ -249,14 +279,21 @@ Login
 <div id="loginMessage" class="message"></div>
 
 </div>
+
 </div>
 
 
-<!-- DASHBOARD -->
+
+<!-- =========================
+DASHBOARD
+========================= -->
 
 <div id="dashboardPage" class="dashboard">
 
 <div class="container">
+
+
+<!-- TOPBAR -->
 
 <div class="topbar">
 
@@ -269,7 +306,9 @@ src="https://placehold.co/100x100"
 alt="Manager"
 >
 
-<b id="managerName">Manager</b>
+<b id="managerName">
+Manager
+</b>
 
 </div>
 
@@ -312,7 +351,7 @@ onclick="openProfileModal()"
 
 <div class="card">
 
-<h2>💰 Fund</h2>
+<h2>💰 Fund Management</h2>
 
 <div class="actions">
 
@@ -339,7 +378,7 @@ onclick="openBalanceModal('fund_reduced')"
 
 <div class="card">
 
-<h2>👥 সদস্য</h2>
+<h2>👥 সদস্য ব্যবস্থাপনা</h2>
 
 <button
 class="primary-btn"
@@ -347,6 +386,8 @@ onclick="openMemberModal()"
 >
 ➕ নতুন সদস্য
 </button>
+
+<br>
 
 <input
 type="text"
@@ -366,11 +407,16 @@ onclick="loadMembers()"
 
 </div>
 
+
 </div>
+
 </div>
 
 
-<!-- PROFILE MODAL -->
+
+<!-- =========================
+PROFILE MODAL
+========================= -->
 
 <div id="profileModal" class="modal">
 
@@ -381,7 +427,7 @@ onclick="loadMembers()"
 <img
 id="photoPreview"
 class="profile-photo"
-style="display:block;margin:10px auto 20px"
+style="display:block;margin:10px auto 20px;"
 src="https://placehold.co/200x200"
 >
 
@@ -422,16 +468,22 @@ onclick="saveProfile()"
 </div>
 
 </div>
+
 </div>
 
 
-<!-- FUND MODAL -->
+
+<!-- =========================
+FUND MODAL
+========================= -->
 
 <div id="balanceModal" class="modal">
 
 <div class="modal-content">
 
-<h2 id="balanceTitle">Fund</h2>
+<h2 id="balanceTitle">
+Fund
+</h2>
 
 <input
 type="number"
@@ -466,16 +518,23 @@ onclick="submitBalanceChange()"
 </div>
 
 </div>
+
 </div>
 
 
-<!-- MEMBER MODAL -->
+
+<!-- =========================
+MEMBER MODAL
+========================= -->
 
 <div id="memberModal" class="modal">
 
 <div class="modal-content">
 
 <h2>➕ নতুন সদস্য</h2>
+
+
+<label>Member ID</label>
 
 <input
 type="text"
@@ -484,11 +543,17 @@ readonly
 placeholder="Auto Generate"
 >
 
+
+<label>সদস্যের পূর্ণ নাম</label>
+
 <input
 type="text"
 id="memberName"
 placeholder="পূর্ণ নাম"
 >
+
+
+<label>পিতা/স্বামীর নাম</label>
 
 <input
 type="text"
@@ -496,11 +561,17 @@ id="fatherName"
 placeholder="পিতা/স্বামীর নাম"
 >
 
+
+<label>মোবাইল</label>
+
 <input
 type="tel"
 id="memberMobile"
 placeholder="01XXXXXXXXX"
 >
+
+
+<label>NID</label>
 
 <input
 type="text"
@@ -508,48 +579,106 @@ id="memberNid"
 placeholder="NID"
 >
 
+
+<label>ঠিকানা</label>
+
 <input
 type="text"
 id="memberAddress"
 placeholder="ঠিকানা"
 >
 
+
+<label>যোগদানের তারিখ</label>
+
 <input
 type="date"
 id="memberJoinDate"
 >
 
+
+<label>স্ট্যাটাস</label>
+
 <select id="memberStatus">
-<option value="active">Active</option>
-<option value="inactive">Inactive</option>
+
+<option value="active">
+Active
+</option>
+
+<option value="inactive">
+Inactive
+</option>
+
 </select>
 
 
-<!-- DOCUMENT CHECKLIST -->
+
+<!-- =========================
+DOCUMENT CHECKLIST
+========================= -->
 
 <div class="document-section">
 
-<h3>📁 ডকুমেন্ট চেকলিস্ট</h3>
+<h3>
+📁 ডকুমেন্ট চেকলিস্ট
+</h3>
+
 
 <div class="check-row">
-<input type="checkbox" id="photoTaken">
-<label for="photoTaken">🖼️ ছবি</label>
+
+<input
+type="checkbox"
+id="photoTaken"
+>
+
+<label for="photoTaken">
+🖼️ ছবি
+</label>
+
 </div>
 
-<div class="check-row">
-<input type="checkbox" id="signatureTaken">
-<label for="signatureTaken">✍️ স্বাক্ষর</label>
-</div>
 
 <div class="check-row">
-<input type="checkbox" id="nidTaken">
-<label for="nidTaken">🪪 NID</label>
+
+<input
+type="checkbox"
+id="signatureTaken"
+>
+
+<label for="signatureTaken">
+✍️ স্বাক্ষর
+</label>
+
 </div>
 
+
 <div class="check-row">
-<input type="checkbox" id="chequeTaken">
-<label for="chequeTaken">🧾 চেক</label>
+
+<input
+type="checkbox"
+id="nidTaken"
+>
+
+<label for="nidTaken">
+🪪 NID
+</label>
+
 </div>
+
+
+<div class="check-row">
+
+<input
+type="checkbox"
+id="chequeTaken"
+>
+
+<label for="chequeTaken">
+🧾 চেক
+</label>
+
+</div>
+
 
 <input
 type="number"
@@ -558,25 +687,62 @@ min="0"
 placeholder="চেকের পাতা সংখ্যা"
 >
 
-<div class="check-row">
-<input type="checkbox" id="nomineeFormTaken">
-<label for="nomineeFormTaken">📋 নমিনি ফরম</label>
-</div>
 
 <div class="check-row">
-<input type="checkbox" id="deedTaken">
-<label for="deedTaken">📄 দলিল</label>
+
+<input
+type="checkbox"
+id="nomineeFormTaken"
+>
+
+<label for="nomineeFormTaken">
+📋 নমিনি ফরম
+</label>
+
 </div>
 
-<div class="check-row">
-<input type="checkbox" id="porchaTaken">
-<label for="porchaTaken">📑 পর্চা</label>
-</div>
 
 <div class="check-row">
-<input type="checkbox" id="otherDocumentTaken">
-<label for="otherDocumentTaken">📂 অন্যান্য</label>
+
+<input
+type="checkbox"
+id="deedTaken"
+>
+
+<label for="deedTaken">
+📄 দলিল
+</label>
+
 </div>
+
+
+<div class="check-row">
+
+<input
+type="checkbox"
+id="porchaTaken"
+>
+
+<label for="porchaTaken">
+📑 পর্চা
+</label>
+
+</div>
+
+
+<div class="check-row">
+
+<input
+type="checkbox"
+id="otherDocumentTaken"
+>
+
+<label for="otherDocumentTaken">
+📂 অন্যান্য
+</label>
+
+</div>
+
 
 <input
 type="text"
@@ -584,11 +750,17 @@ id="otherDocumentDetails"
 placeholder="অন্যান্য ডকুমেন্টের বিবরণ"
 >
 
+
+<label>
+কম্পিউটারের ফোল্ডারের অবস্থান
+</label>
+
 <input
 type="text"
 id="documentFolder"
-placeholder="ফোল্ডারের অবস্থান যেমন: D:\Samity Documents\000001"
+placeholder="D:\Samity Documents\000001"
 >
+
 
 <textarea
 id="documentNote"
@@ -596,12 +768,15 @@ rows="3"
 placeholder="ডকুমেন্ট সংক্রান্ত মন্তব্য"
 ></textarea>
 
+
 </div>
+
 
 <div
 id="memberMessage"
 class="message"
 ></div>
+
 
 <div class="form-buttons">
 
@@ -622,16 +797,22 @@ onclick="saveMember()"
 </div>
 
 </div>
+
 </div>
 
 
-<!-- MEMBER VIEW -->
+
+<!-- =========================
+MEMBER VIEW
+========================= -->
 
 <div id="memberViewModal" class="modal">
 
 <div class="modal-content">
 
-<h2>👤 সদস্যের তথ্য</h2>
+<h2>
+👤 সদস্যের তথ্য
+</h2>
 
 <div id="memberDetails"></div>
 
@@ -647,26 +828,23 @@ Close
 </div>
 
 </div>
+
 </div>
+
 
 
 <script>
 
+
 /* =========================
-SUPABASE
+SUPABASE CONNECTION
 ========================= */
 
 const SUPABASE_URL =
 "https://tcdilhooslygsvdcqkte.supabase.co";
 
-/*
-এখানে তোমার আগের Supabase
-Publishable Key বসাবে
-*/
-
 const SUPABASE_KEY =
-"তোমার আগের Publishable Key এখানে বসাও";
-
+"sb_publishable_JelXduaAwElDbU0JABTFgg_yLXzPyNx";
 
 const supabaseClient =
 window.supabase.createClient(
@@ -676,7 +854,9 @@ SUPABASE_KEY
 
 
 let currentUser=null;
+
 let balanceType=null;
+
 
 
 /* =========================
@@ -685,54 +865,73 @@ LOGIN
 
 document
 .getElementById("loginForm")
-.addEventListener("submit",async function(e){
+.addEventListener(
+"submit",
+async function(e){
 
 e.preventDefault();
 
-const email=
-document.getElementById("email")
-.value.trim();
+const email =
+document
+.getElementById("email")
+.value
+.trim();
 
-const password=
-document.getElementById("password")
+const password =
+document
+.getElementById("password")
 .value;
 
-const msg=
-document.getElementById("loginMessage");
+const msg =
+document
+.getElementById("loginMessage");
 
-msg.textContent="Login হচ্ছে...";
+msg.textContent =
+"Login হচ্ছে...";
 
-const result=
-await supabaseClient.auth.signInWithPassword({
+
+const result =
+await supabaseClient
+.auth
+.signInWithPassword({
 
 email:email,
+
 password:password
 
 });
 
+
 if(result.error){
 
-msg.textContent=
-"Login ব্যর্থ: "+
+msg.textContent =
+"❌ Login ব্যর্থ: "+
 result.error.message;
 
 return;
 
 }
 
-currentUser=result.data.user;
+
+currentUser =
+result.data.user;
+
 
 document
 .getElementById("loginPage")
 .style.display="none";
 
+
 document
 .getElementById("dashboardPage")
 .style.display="block";
 
+
 await loadMembers();
 
-});
+}
+);
+
 
 
 /* =========================
@@ -741,8 +940,11 @@ SESSION
 
 async function checkSession(){
 
-const result=
-await supabaseClient.auth.getSession();
+const result =
+await supabaseClient
+.auth
+.getSession();
+
 
 if(
 result.data &&
@@ -750,16 +952,19 @@ result.data.session &&
 result.data.session.user
 ){
 
-currentUser=
+currentUser =
 result.data.session.user;
+
 
 document
 .getElementById("loginPage")
 .style.display="none";
 
+
 document
 .getElementById("dashboardPage")
 .style.display="block";
+
 
 await loadMembers();
 
@@ -768,23 +973,30 @@ await loadMembers();
 }
 
 
+
 /* =========================
 LOGOUT
 ========================= */
 
 async function logout(){
 
-await supabaseClient.auth.signOut();
+await supabaseClient
+.auth
+.signOut();
+
 
 currentUser=null;
+
 
 document
 .getElementById("dashboardPage")
 .style.display="none";
 
+
 document
 .getElementById("loginPage")
 .style.display="flex";
+
 
 document
 .getElementById("password")
@@ -793,18 +1005,23 @@ document
 }
 
 
+
 /* =========================
 MEMBER ID
 ========================= */
 
 async function generateMemberId(){
 
-const result=
+const result =
 await supabaseClient
 .from("members")
 .select("member_id")
-.order("member_id",{ascending:false})
+.order(
+"member_id",
+{ascending:false}
+)
 .limit(1);
+
 
 if(
 result.error ||
@@ -816,16 +1033,19 @@ return "000001";
 
 }
 
-const last=
+
+const last =
 parseInt(
 result.data[0].member_id,
 10
-)||0;
+) || 0;
+
 
 return String(last+1)
 .padStart(6,"0");
 
 }
+
 
 
 /* =========================
@@ -838,19 +1058,22 @@ document
 .getElementById("memberModal")
 .style.display="flex";
 
+
 document
 .getElementById("newMemberId")
-.value=
+.value =
 await generateMemberId();
+
 
 document
 .getElementById("memberJoinDate")
-.value=
+.value =
 new Date()
 .toISOString()
 .split("T")[0];
 
 }
+
 
 
 /* =========================
@@ -866,116 +1089,167 @@ document
 }
 
 
+
 /* =========================
 SAVE MEMBER
 ========================= */
 
 async function saveMember(){
 
-const msg=
-document.getElementById("memberMessage");
+const msg =
+document
+.getElementById("memberMessage");
 
-const memberId=
-document.getElementById("newMemberId")
-.value;
 
-const fullName=
-document.getElementById("memberName")
-.value.trim();
-
-const father=
-document.getElementById("fatherName")
-.value.trim();
-
-const mobile=
-document.getElementById("memberMobile")
-.value.trim();
-
-const nid=
-document.getElementById("memberNid")
-.value.trim();
-
-const address=
-document.getElementById("memberAddress")
-.value.trim();
-
-const joinDate=
-document.getElementById("memberJoinDate")
-.value;
-
-const status=
-document.getElementById("memberStatus")
+const memberId =
+document
+.getElementById("newMemberId")
 .value;
 
 
-/* DOCUMENTS */
+const fullName =
+document
+.getElementById("memberName")
+.value
+.trim();
 
-const photoTaken=
-document.getElementById("photoTaken")
+
+const father =
+document
+.getElementById("fatherName")
+.value
+.trim();
+
+
+const mobile =
+document
+.getElementById("memberMobile")
+.value
+.trim();
+
+
+const nid =
+document
+.getElementById("memberNid")
+.value
+.trim();
+
+
+const address =
+document
+.getElementById("memberAddress")
+.value
+.trim();
+
+
+const joinDate =
+document
+.getElementById("memberJoinDate")
+.value;
+
+
+const status =
+document
+.getElementById("memberStatus")
+.value;
+
+
+/* DOCUMENT CHECKLIST */
+
+const photoTaken =
+document
+.getElementById("photoTaken")
 .checked;
 
-const signatureTaken=
-document.getElementById("signatureTaken")
+
+const signatureTaken =
+document
+.getElementById("signatureTaken")
 .checked;
 
-const nidTaken=
-document.getElementById("nidTaken")
+
+const nidTaken =
+document
+.getElementById("nidTaken")
 .checked;
 
-const chequeTaken=
-document.getElementById("chequeTaken")
+
+const chequeTaken =
+document
+.getElementById("chequeTaken")
 .checked;
 
-const chequePages=
+
+const chequePages =
 parseInt(
-document.getElementById("chequePages")
-.value||"0",
+document
+.getElementById("chequePages")
+.value || "0",
 10
-)||0;
+) || 0;
 
-const nomineeFormTaken=
-document.getElementById("nomineeFormTaken")
+
+const nomineeFormTaken =
+document
+.getElementById("nomineeFormTaken")
 .checked;
 
-const deedTaken=
-document.getElementById("deedTaken")
+
+const deedTaken =
+document
+.getElementById("deedTaken")
 .checked;
 
-const porchaTaken=
-document.getElementById("porchaTaken")
+
+const porchaTaken =
+document
+.getElementById("porchaTaken")
 .checked;
 
-const otherDocumentTaken=
-document.getElementById("otherDocumentTaken")
+
+const otherDocumentTaken =
+document
+.getElementById("otherDocumentTaken")
 .checked;
 
-const otherDocumentDetails=
-document.getElementById("otherDocumentDetails")
-.value.trim();
 
-const documentFolder=
-document.getElementById("documentFolder")
-.value.trim();
+const otherDocumentDetails =
+document
+.getElementById("otherDocumentDetails")
+.value
+.trim();
 
-const documentNote=
-document.getElementById("documentNote")
-.value.trim();
+
+const documentFolder =
+document
+.getElementById("documentFolder")
+.value
+.trim();
+
+
+const documentNote =
+document
+.getElementById("documentNote")
+.value
+.trim();
+
 
 
 if(!fullName){
 
-msg.textContent=
-"সদস্যের নাম লিখুন।";
+msg.textContent =
+"❌ সদস্যের নাম লিখুন।";
 
 return;
 
 }
 
-msg.textContent=
+
+msg.textContent =
 "সদস্য সংরক্ষণ হচ্ছে...";
 
 
-const result=
+const result =
 await supabaseClient
 .from("members")
 .insert({
@@ -992,26 +1266,34 @@ nid:nid,
 
 address:address,
 
-join_date:joinDate||null,
+join_date:
+joinDate || null,
 
 status:status,
 
-photo_taken:photoTaken,
+photo_taken:
+photoTaken,
 
-signature_taken:signatureTaken,
+signature_taken:
+signatureTaken,
 
-nid_taken:nidTaken,
+nid_taken:
+nidTaken,
 
-cheque_taken:chequeTaken,
+cheque_taken:
+chequeTaken,
 
-cheque_pages:chequePages,
+cheque_pages:
+chequePages,
 
 nominee_form_taken:
 nomineeFormTaken,
 
-deed_taken:deedTaken,
+deed_taken:
+deedTaken,
 
-porcha_taken:porchaTaken,
+porcha_taken:
+porchaTaken,
 
 other_document_taken:
 otherDocumentTaken,
@@ -1032,29 +1314,38 @@ documentNote
 
 if(result.error){
 
-msg.textContent=
+msg.textContent =
 "❌ সদস্য সংরক্ষণ হয়নি: "+
 result.error.message;
 
-console.error(result.error);
+console.error(
+result.error
+);
 
 return;
 
 }
 
 
-msg.textContent=
+msg.textContent =
 "✅ সদস্য সফলভাবে যোগ হয়েছে। Member ID: "+
 memberId;
 
+
 await loadMembers();
 
+
 setTimeout(
-closeMemberModal,
+function(){
+
+closeMemberModal();
+
+},
 1000
 );
 
 }
+
 
 
 /* =========================
@@ -1063,16 +1354,19 @@ LOAD MEMBERS
 
 async function loadMembers(){
 
-const list=
-document.getElementById("memberList");
+const list =
+document
+.getElementById("memberList");
 
-const search=
+
+const search =
 document
 .getElementById("memberSearch")
-.value.trim();
+.value
+.trim();
 
 
-let query=
+let query =
 supabaseClient
 .from("members")
 .select("*")
@@ -1084,7 +1378,7 @@ supabaseClient
 
 if(search){
 
-query=
+query =
 query.or(
 "member_id.ilike.%"+
 search+
@@ -1100,13 +1394,13 @@ search+
 }
 
 
-const result=
+const result =
 await query;
 
 
 if(result.error){
 
-list.innerHTML=
+list.innerHTML =
 "<p>❌ তথ্য লোড হয়নি: "+
 escapeHtml(
 result.error.message
@@ -1123,7 +1417,7 @@ if(
 result.data.length===0
 ){
 
-list.innerHTML=
+list.innerHTML =
 "<p>কোনো সদস্য পাওয়া যায়নি।</p>";
 
 return;
@@ -1131,9 +1425,13 @@ return;
 }
 
 
-list.innerHTML=
-result.data
-.map(member=>`
+list.innerHTML =
+result
+.data
+.map(
+function(member){
+
+return `
 
 <div class="member-item">
 
@@ -1142,7 +1440,7 @@ Member ID:
 ${escapeHtml(member.member_id)}
 </b>
 
-<br>
+<br><br>
 
 👤
 ${escapeHtml(member.full_name)}
@@ -1150,7 +1448,7 @@ ${escapeHtml(member.full_name)}
 <br>
 
 📱
-${escapeHtml(member.mobile||"")}
+${escapeHtml(member.mobile || "")}
 
 <br><br>
 
@@ -1163,10 +1461,14 @@ onclick="viewMember('${member.id}')"
 
 </div>
 
-`)
+`;
+
+}
+)
 .join("");
 
 }
+
 
 
 /* =========================
@@ -1175,7 +1477,7 @@ VIEW MEMBER
 
 async function viewMember(id){
 
-const result=
+const result =
 await supabaseClient
 .from("members")
 .select("*")
@@ -1194,12 +1496,13 @@ return;
 }
 
 
-const m=result.data;
+const m =
+result.data;
 
 
 document
 .getElementById("memberDetails")
-.innerHTML=`
+.innerHTML = `
 
 <p>
 <b>Member ID:</b>
@@ -1214,23 +1517,29 @@ ${escapeHtml(m.full_name)}
 <p>
 <b>পিতা/স্বামী:</b>
 ${escapeHtml(
-m.father_husband_name||""
+m.father_husband_name || ""
 )}
 </p>
 
 <p>
 <b>মোবাইল:</b>
-${escapeHtml(m.mobile||"")}
+${escapeHtml(
+m.mobile || ""
+)}
 </p>
 
 <p>
 <b>NID:</b>
-${escapeHtml(m.nid||"")}
+${escapeHtml(
+m.nid || ""
+)}
 </p>
 
 <p>
 <b>ঠিকানা:</b>
-${escapeHtml(m.address||"")}
+${escapeHtml(
+m.address || ""
+)}
 </p>
 
 <hr>
@@ -1257,11 +1566,17 @@ ${docStatus(m.nid_taken)}
 <p>
 ${docStatus(m.cheque_taken)}
 🧾 চেক
-${m.cheque_taken?
+
+${
+m.cheque_taken
+?
 "("+(
-m.cheque_pages||0
+m.cheque_pages || 0
 )+" পাতা)"
-:""}
+:
+""
+}
+
 </p>
 
 <p>
@@ -1272,12 +1587,16 @@ m.nominee_form_taken
 </p>
 
 <p>
-${docStatus(m.deed_taken)}
+${docStatus(
+m.deed_taken
+)}
 📄 দলিল
 </p>
 
 <p>
-${docStatus(m.porcha_taken)}
+${docStatus(
+m.porcha_taken
+)}
 📑 পর্চা
 </p>
 
@@ -1291,28 +1610,35 @@ m.other_document_taken
 ${
 m.other_document_details
 ?
-"<p><b>অন্যান্য:</b> "+
-escapeHtml(
+`
+<p>
+<b>অন্যান্য ডকুমেন্ট:</b>
+${escapeHtml(
 m.other_document_details
-)+
-"</p>"
-:""
+)}
+</p>
+`
+:
+""
 }
 
 <hr>
 
 <p>
-<b>📁 Folder:</b><br>
+<b>📁 ফোল্ডারের অবস্থান:</b>
+<br>
 ${escapeHtml(
-m.document_folder||
+m.document_folder ||
 "দেওয়া হয়নি"
 )}
 </p>
 
 <p>
-<b>📝 মন্তব্য:</b><br>
+<b>📝 মন্তব্য:</b>
+<br>
 ${escapeHtml(
-m.document_note||""
+m.document_note ||
+""
 )}
 </p>
 
@@ -1324,6 +1650,7 @@ document
 .style.display="flex";
 
 }
+
 
 
 /* =========================
@@ -1341,8 +1668,9 @@ return value
 }
 
 
+
 /* =========================
-CLOSE MEMBER VIEW
+CLOSE VIEW
 ========================= */
 
 function closeMemberView(){
@@ -1352,6 +1680,7 @@ document
 .style.display="none";
 
 }
+
 
 
 /* =========================
@@ -1366,6 +1695,7 @@ document
 
 }
 
+
 function closeProfileModal(){
 
 document
@@ -1374,15 +1704,17 @@ document
 
 }
 
+
 async function saveProfile(){
 
 alert(
-"Profile Save পরবর্তী ধাপে সংযুক্ত করা হবে।"
+"Profile Save এখনো database-এর সাথে সংযুক্ত করা হয়নি।"
 );
 
 closeProfileModal();
 
 }
+
 
 
 /* =========================
@@ -1393,20 +1725,23 @@ function openBalanceModal(type){
 
 balanceType=type;
 
+
 document
 .getElementById("balanceModal")
 .style.display="flex";
 
+
 document
 .getElementById("balanceTitle")
-.textContent=
-type==="fund_added"
+.textContent =
+type === "fund_added"
 ?
 "➕ Add Fund"
 :
 "➖ Reduce Fund";
 
 }
+
 
 function closeBalanceModal(){
 
@@ -1416,16 +1751,21 @@ document
 
 }
 
+
 async function submitBalanceChange(){
 
-const amount=
+const amount =
 parseFloat(
 document
 .getElementById("balanceAmount")
 .value
 );
 
-if(!amount || amount<=0){
+
+if(
+!amount ||
+amount <= 0
+){
 
 alert(
 "সঠিক টাকার পরিমাণ দিন।"
@@ -1435,8 +1775,9 @@ return;
 
 }
 
+
 alert(
-"Fund Save পরবর্তী ধাপে সংযুক্ত করা হবে।"
+"Fund Save এখনো database-এর সাথে সংযুক্ত করা হয়নি।"
 );
 
 closeBalanceModal();
@@ -1444,20 +1785,42 @@ closeBalanceModal();
 }
 
 
+
 /* =========================
-ESCAPE
+ESCAPE HTML
 ========================= */
 
 function escapeHtml(value){
 
-return String(value??"")
-.replace(/&/g,"&amp;")
-.replace(/</g,"&lt;")
-.replace(/>/g,"&gt;")
-.replace(/"/g,"&quot;")
-.replace(/'/g,"&#039;");
+return String(value ?? "")
+
+.replace(
+/&/g,
+"&amp;"
+)
+
+.replace(
+/</g,
+"&lt;"
+)
+
+.replace(
+/>/g,
+"&gt;"
+)
+
+.replace(
+/"/g,
+"&quot;"
+)
+
+.replace(
+/'/g,
+"&#039;"
+);
 
 }
+
 
 
 /* =========================

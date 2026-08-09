@@ -9,189 +9,233 @@
 
 <style>
 *{box-sizing:border-box}
+
 body{
-    margin:0;
-    font-family:Arial,"Noto Sans Bengali",sans-serif;
-    background:#f3f6f9;
-    color:#222;
+margin:0;
+font-family:Arial,"Noto Sans Bengali",sans-serif;
+background:#f3f6f9;
+color:#222;
 }
+
 button,input,select{
-    font:inherit;
+font:inherit;
 }
+
 input,select{
-    width:100%;
-    padding:12px;
-    margin:6px 0 14px;
-    border:1px solid #ccc;
-    border-radius:7px;
+width:100%;
+padding:12px;
+margin:6px 0 14px;
+border:1px solid #ccc;
+border-radius:7px;
 }
+
 button{
-    border:0;
-    border-radius:7px;
-    padding:11px 16px;
-    cursor:pointer;
+border:0;
+border-radius:7px;
+padding:11px 16px;
+cursor:pointer;
 }
+
 .login-page{
-    min-height:100vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
 }
+
 .login-box{
-    background:#fff;
-    width:95%;
-    max-width:420px;
-    padding:30px;
-    border-radius:15px;
-    box-shadow:0 5px 25px #0002;
+background:white;
+width:95%;
+max-width:420px;
+padding:30px;
+border-radius:15px;
+box-shadow:0 5px 25px #0002;
 }
+
 .login-box h1{
-    text-align:center;
+text-align:center;
 }
+
 .login-button{
-    width:100%;
-    background:#1769aa;
-    color:white;
+width:100%;
+background:#1769aa;
+color:white;
 }
+
 .dashboard{
-    display:none;
+display:none;
 }
+
 .header{
-    background:#1769aa;
-    color:white;
-    padding:18px 25px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
+background:#1769aa;
+color:white;
+padding:18px 25px;
+display:flex;
+justify-content:space-between;
+align-items:center;
 }
+
 .container{
-    max-width:1200px;
-    margin:auto;
-    padding:20px;
+max-width:1200px;
+margin:auto;
+padding:20px;
 }
+
 .card{
-    background:white;
-    border-radius:12px;
-    padding:20px;
-    margin-bottom:20px;
-    box-shadow:0 2px 10px #0001;
+background:white;
+border-radius:12px;
+padding:20px;
+margin-bottom:20px;
+box-shadow:0 2px 10px #0001;
 }
-.grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:15px;
-}
+
 .profile-mini{
-    width:50px;
-    height:50px;
-    border-radius:50%;
-    object-fit:cover;
-    vertical-align:middle;
+width:50px;
+height:50px;
+border-radius:50%;
+object-fit:cover;
+vertical-align:middle;
 }
+
 .logout{
-    background:#d32f2f;
-    color:white;
+background:#d32f2f;
+color:white;
 }
+
 .primary-btn{
-    background:#1769aa;
-    color:white;
+background:#1769aa;
+color:white;
 }
+
 .secondary-btn{
-    background:#555;
-    color:white;
+background:#555;
+color:white;
 }
+
 .add{
-    background:#198754;
-    color:white;
+background:#198754;
+color:white;
 }
+
 .reduce{
-    background:#dc3545;
-    color:white;
+background:#dc3545;
+color:white;
 }
+
 .save{
-    background:#198754;
-    color:white;
+background:#198754;
+color:white;
 }
+
 .cancel{
-    background:#777;
-    color:white;
+background:#777;
+color:white;
 }
+
+.delete-btn{
+background:#dc3545;
+color:white;
+}
+
 .action-btn{
-    background:#1769aa;
-    color:white;
-    padding:7px 10px;
+background:#1769aa;
+color:white;
+padding:7px 10px;
 }
+
 .modal{
-    display:none;
-    position:fixed;
-    inset:0;
-    background:#0008;
-    z-index:9999;
-    align-items:center;
-    justify-content:center;
-    padding:15px;
+display:none;
+position:fixed;
+inset:0;
+background:#0008;
+z-index:9999;
+align-items:center;
+justify-content:center;
+padding:15px;
 }
+
 .modal-box{
-    width:100%;
-    max-width:650px;
-    max-height:92vh;
-    overflow-y:auto;
-    background:white;
-    border-radius:12px;
-    padding:25px;
+width:100%;
+max-width:650px;
+max-height:92vh;
+overflow-y:auto;
+background:white;
+border-radius:12px;
+padding:25px;
 }
+
 .modal-buttons{
-    display:flex;
-    gap:10px;
-    margin-top:15px;
+display:flex;
+gap:10px;
+margin-top:15px;
 }
+
 .modal-buttons button{
-    flex:1;
+flex:1;
 }
+
 .check-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-    gap:10px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:10px;
 }
+
 .check-item{
-    border:1px solid #ddd;
-    padding:10px;
-    border-radius:7px;
+border:1px solid #ddd;
+padding:10px;
+border-radius:7px;
 }
+
 .check-item input{
-    width:auto;
-    margin:0 7px 0 0;
+width:auto;
+margin:0 7px 0 0;
 }
+
 table{
-    width:100%;
-    border-collapse:collapse;
+width:100%;
+border-collapse:collapse;
 }
+
 th,td{
-    padding:10px;
-    border-bottom:1px solid #ddd;
-    text-align:left;
+padding:10px;
+border-bottom:1px solid #ddd;
+text-align:left;
 }
+
 .table-wrap{
-    overflow-x:auto;
+overflow-x:auto;
 }
-.message{
-    margin:10px 0;
-    font-weight:bold;
-}
+
 .balance{
-    font-size:28px;
-    font-weight:bold;
+font-size:28px;
+font-weight:bold;
 }
+
+.message{
+margin:10px 0;
+font-weight:bold;
+}
+
+.member-info{
+background:#f7f7f7;
+padding:15px;
+border-radius:8px;
+margin-bottom:15px;
+}
+
 @media(max-width:600px){
-    .header{
-        flex-direction:column;
-        gap:10px;
-    }
+
+.header{
+flex-direction:column;
+gap:10px;
+}
+
 }
 </style>
 </head>
 
 <body>
+
 
 <!-- ================= LOGIN ================= -->
 
@@ -237,6 +281,7 @@ Login
 </div>
 
 
+
 <!-- ================= DASHBOARD ================= -->
 
 <div id="dashboardPage" class="dashboard">
@@ -270,6 +315,7 @@ Logout
 
 <div class="container">
 
+
 <!-- PROFILE -->
 
 <div class="card">
@@ -295,6 +341,7 @@ onclick="openProfileModal()"
 </button>
 
 </div>
+
 
 
 <!-- FUND -->
@@ -323,9 +370,8 @@ onclick="openBalanceModal('fund_reduced')"
 ➖ Reduce Fund
 </button>
 
-<div id="fundHistory"></div>
-
 </div>
+
 
 
 <!-- MEMBERS -->
@@ -364,12 +410,19 @@ oninput="loadMembers()"
 <thead>
 
 <tr>
+
 <th>Member ID</th>
+
 <th>নাম</th>
+
 <th>মোবাইল</th>
+
 <th>তারিখ</th>
+
 <th>Status</th>
+
 <th>Action</th>
+
 </tr>
 
 </thead>
@@ -377,9 +430,11 @@ oninput="loadMembers()"
 <tbody id="memberList">
 
 <tr>
+
 <td colspan="6">
 তথ্য লোড হচ্ছে...
 </td>
+
 </tr>
 
 </tbody>
@@ -393,6 +448,7 @@ oninput="loadMembers()"
 </div>
 
 </div>
+
 
 
 <!-- ================= PROFILE MODAL ================= -->
@@ -450,6 +506,7 @@ onclick="saveProfile()"
 </div>
 
 
+
 <!-- ================= FUND MODAL ================= -->
 
 <div id="balanceModal" class="modal">
@@ -499,6 +556,7 @@ onclick="submitBalanceChange()"
 </div>
 
 </div>
+
 
 
 <!-- ================= MEMBER MODAL ================= -->
@@ -568,8 +626,15 @@ id="memberJoinDate"
 <label>স্ট্যাটাস</label>
 
 <select id="memberStatus">
-<option value="active">Active</option>
-<option value="inactive">Inactive</option>
+
+<option value="active">
+Active
+</option>
+
+<option value="inactive">
+Inactive
+</option>
+
 </select>
 
 
@@ -619,6 +684,7 @@ id="memberJoinDate"
 
 </div>
 
+
 <label>চেকের পাতা সংখ্যা</label>
 
 <input
@@ -628,6 +694,7 @@ min="0"
 placeholder="চেকের পাতা সংখ্যা"
 >
 
+
 <label>অন্যান্য ডকুমেন্টের বিবরণ</label>
 
 <input
@@ -635,6 +702,7 @@ type="text"
 id="otherDocumentDetails"
 placeholder="অন্যান্য ডকুমেন্ট"
 >
+
 
 <label>ডকুমেন্ট ফোল্ডারের অবস্থান</label>
 
@@ -644,7 +712,9 @@ id="documentFolder"
 placeholder="D:\Samity Documents\000001"
 >
 
+
 <div id="memberMessage" class="message"></div>
+
 
 <div class="modal-buttons">
 
@@ -669,6 +739,7 @@ onclick="saveMember()"
 </div>
 
 
+
 <!-- ================= VIEW MEMBER ================= -->
 
 <div id="memberViewModal" class="modal">
@@ -679,6 +750,8 @@ onclick="saveMember()"
 
 <div id="memberDetails"></div>
 
+<div class="modal-buttons">
+
 <button
 class="cancel"
 onclick="closeMemberView()"
@@ -686,15 +759,26 @@ onclick="closeMemberView()"
 Close
 </button>
 
+<button
+class="delete-btn"
+id="deleteMemberButton"
+>
+🗑️ সদস্য মুছুন
+</button>
+
 </div>
 
 </div>
+
+</div>
+
 
 
 <script>
 
+
 /* ==========================================
-   SUPABASE
+SUPABASE
 ========================================== */
 
 const SUPABASE_URL =
@@ -709,49 +793,67 @@ SUPABASE_URL,
 SUPABASE_KEY
 );
 
-let currentUser = null;
-let currentBalanceAction = null;
+
+let currentUser=null;
+
+let currentBalanceAction=null;
+
+let currentViewedMemberId=null;
+
 
 
 /* ==========================================
-   LOGIN
+LOGIN
 ========================================== */
 
 document
 .getElementById("loginForm")
-.addEventListener("submit", async function(e){
+.addEventListener(
+"submit",
+async function(e){
 
 e.preventDefault();
 
 const email =
-document.getElementById("email")
-.value.trim();
+document
+.getElementById("email")
+.value
+.trim();
 
 const password =
-document.getElementById("password")
+document
+.getElementById("password")
 .value;
 
 const message =
-document.getElementById("loginMessage");
+document
+.getElementById("loginMessage");
 
-message.textContent =
+message.textContent=
 "Login হচ্ছে...";
+
 
 const result =
 await supabaseClient.auth
 .signInWithPassword({
-email,
-password
+
+email:email,
+
+password:password
+
 });
+
 
 if(result.error){
 
-message.textContent =
-"❌ Login ব্যর্থ: " +
+message.textContent=
+"❌ Login ব্যর্থ: "+
 result.error.message;
 
 return;
+
 }
+
 
 currentUser =
 result.data.user;
@@ -761,8 +863,9 @@ await showDashboard();
 });
 
 
+
 /* ==========================================
-   SESSION
+SESSION
 ========================================== */
 
 async function checkSession(){
@@ -787,8 +890,9 @@ await showDashboard();
 checkSession();
 
 
+
 /* ==========================================
-   DASHBOARD
+SHOW DASHBOARD
 ========================================== */
 
 async function showDashboard(){
@@ -801,6 +905,7 @@ document
 .getElementById("dashboardPage")
 .style.display="block";
 
+
 await loadManagerProfile();
 
 await loadMembers();
@@ -808,8 +913,9 @@ await loadMembers();
 }
 
 
+
 /* ==========================================
-   LOGOUT
+LOGOUT
 ========================================== */
 
 async function logout(){
@@ -833,20 +939,26 @@ document
 }
 
 
+
 /* ==========================================
-   PROFILE
+MANAGER PROFILE
 ========================================== */
 
 async function loadManagerProfile(){
 
 if(!currentUser)return;
 
+
 const result =
 await supabaseClient
 .from("manager_profiles")
 .select("*")
-.eq("user_id",currentUser.id)
+.eq(
+"user_id",
+currentUser.id
+)
 .maybeSingle();
+
 
 if(result.error){
 
@@ -856,33 +968,41 @@ result.error.message
 );
 
 return;
+
 }
+
 
 if(!result.data){
 
 document
 .getElementById("managerName")
-.textContent =
+.textContent=
 "Manager";
 
 return;
+
 }
+
 
 const p=result.data;
 
+
 document
 .getElementById("managerName")
-.textContent =
-p.full_name || "Manager";
+.textContent=
+p.full_name ||
+"Manager";
+
 
 document
 .getElementById("managerMobile")
-.textContent =
+.textContent=
 p.mobile
 ?
 "Mobile: "+p.mobile
 :
 "";
+
 
 if(p.photo_url){
 
@@ -899,6 +1019,7 @@ document
 }
 
 
+
 function openProfileModal(){
 
 document
@@ -910,38 +1031,47 @@ loadManagerProfileForEdit();
 }
 
 
+
 async function loadManagerProfileForEdit(){
 
 if(!currentUser)return;
+
 
 const result =
 await supabaseClient
 .from("manager_profiles")
 .select("*")
-.eq("user_id",currentUser.id)
+.eq(
+"user_id",
+currentUser.id
+)
 .maybeSingle();
+
 
 if(result.data){
 
 document
 .getElementById("profileName")
-.value =
-result.data.full_name || "";
+.value=
+result.data.full_name ||
+"";
 
 document
 .getElementById("profileMobile")
-.value =
-result.data.mobile || "";
+.value=
+result.data.mobile ||
+"";
 
 document
 .getElementById("photoPreview")
-.src =
+.src=
 result.data.photo_url ||
 "https://placehold.co/200x200";
 
 }
 
 }
+
 
 
 function closeProfileModal(){
@@ -953,21 +1083,25 @@ document
 }
 
 
+
 async function saveProfile(){
 
 const name =
 document
 .getElementById("profileName")
-.value.trim();
+.value
+.trim();
 
 const mobile =
 document
 .getElementById("profileMobile")
-.value.trim();
+.value
+.trim();
 
 const message =
 document
 .getElementById("profileMessage");
+
 
 if(!name){
 
@@ -975,18 +1109,23 @@ message.textContent=
 "Manager-এর নাম লিখুন।";
 
 return;
+
 }
+
 
 const result =
 await supabaseClient
 .from("manager_profiles")
 .upsert({
 
-user_id:currentUser.id,
+user_id:
+currentUser.id,
 
-full_name:name,
+full_name:
+name,
 
-mobile:mobile,
+mobile:
+mobile,
 
 updated_at:
 new Date().toISOString()
@@ -995,13 +1134,17 @@ new Date().toISOString()
 onConflict:"user_id"
 });
 
+
 if(result.error){
 
 message.textContent=
-"❌ "+result.error.message;
+"❌ "+
+result.error.message;
 
 return;
+
 }
+
 
 message.textContent=
 "✅ Profile saved.";
@@ -1016,8 +1159,9 @@ closeProfileModal,
 }
 
 
+
 /* ==========================================
-   FUND
+FUND
 ========================================== */
 
 function openBalanceModal(action){
@@ -1028,14 +1172,16 @@ document
 .getElementById("balanceModal")
 .style.display="flex";
 
+
 document
 .getElementById("modalTitle")
-.textContent =
+.textContent=
 action==="fund_added"
 ?
 "➕ Add Fund"
 :
 "➖ Reduce Fund";
+
 
 document
 .getElementById("balanceAmount")
@@ -1048,6 +1194,7 @@ document
 }
 
 
+
 function closeBalanceModal(){
 
 document
@@ -1055,6 +1202,7 @@ document
 .style.display="none";
 
 }
+
 
 
 async function submitBalanceChange(){
@@ -1069,11 +1217,13 @@ document
 const description =
 document
 .getElementById("balanceDescription")
-.value.trim();
+.value
+.trim();
 
 const message =
 document
 .getElementById("balanceMessage");
+
 
 if(!amount || amount<=0){
 
@@ -1081,7 +1231,9 @@ message.textContent=
 "সঠিক টাকার পরিমাণ দিন।";
 
 return;
+
 }
+
 
 const result =
 await supabaseClient
@@ -1101,16 +1253,21 @@ description || null
 
 });
 
+
 if(result.error){
 
 message.textContent=
-"❌ "+result.error.message;
+"❌ "+
+result.error.message;
 
 return;
+
 }
+
 
 message.textContent=
 "✅ সফল হয়েছে।";
+
 
 setTimeout(
 closeBalanceModal,
@@ -1120,8 +1277,9 @@ closeBalanceModal,
 }
 
 
+
 /* ==========================================
-   MEMBER ID
+GENERATE MEMBER ID
 ========================================== */
 
 async function generateMemberId(){
@@ -1138,6 +1296,7 @@ ascending:false
 )
 .limit(1);
 
+
 if(
 result.error ||
 !result.data ||
@@ -1148,20 +1307,28 @@ return "000001";
 
 }
 
+
 const last =
 parseInt(
 result.data[0].member_id,
 10
 )||0;
 
-return String(last+1)
-.padStart(6,"0");
+
+return String(
+last+1
+)
+.padStart(
+6,
+"0"
+);
 
 }
 
 
+
 /* ==========================================
-   MEMBER MODAL
+OPEN MEMBER
 ========================================== */
 
 async function openMemberModal(){
@@ -1170,9 +1337,11 @@ document
 .getElementById("memberModal")
 .style.display="flex";
 
+
 document
 .getElementById("memberMessage")
 .textContent="";
+
 
 document
 .getElementById("memberJoinDate")
@@ -1181,23 +1350,14 @@ new Date()
 .toISOString()
 .split("T")[0];
 
-try{
 
 document
 .getElementById("newMemberId")
 .value=
 await generateMemberId();
 
-}catch(error){
-
-document
-.getElementById("memberMessage")
-.textContent=
-"❌ Member ID তৈরি হয়নি";
-
 }
 
-}
 
 
 function closeMemberModal(){
@@ -1209,8 +1369,9 @@ document
 }
 
 
+
 /* ==========================================
-   SAVE MEMBER
+SAVE MEMBER
 ========================================== */
 
 async function saveMember(){
@@ -1219,105 +1380,59 @@ const message =
 document
 .getElementById("memberMessage");
 
+
 const memberId =
 document
 .getElementById("newMemberId")
-.value.trim();
+.value
+.trim();
+
 
 const fullName =
 document
 .getElementById("memberName")
-.value.trim();
+.value
+.trim();
+
 
 const father =
 document
 .getElementById("fatherName")
-.value.trim();
+.value
+.trim();
+
 
 const mobile =
 document
 .getElementById("memberMobile")
-.value.trim();
+.value
+.trim();
+
 
 const nid =
 document
 .getElementById("memberNid")
-.value.trim();
+.value
+.trim();
+
 
 const address =
 document
 .getElementById("memberAddress")
-.value.trim();
+.value
+.trim();
+
 
 const joinDate =
 document
 .getElementById("memberJoinDate")
 .value;
 
+
 const status =
 document
 .getElementById("memberStatus")
 .value;
-
-
-/* DOCUMENTS */
-
-const photoTaken =
-document
-.getElementById("photoTaken")
-.checked;
-
-const signatureTaken =
-document
-.getElementById("signatureTaken")
-.checked;
-
-const nidTaken =
-document
-.getElementById("nidTaken")
-.checked;
-
-const chequeTaken =
-document
-.getElementById("chequeTaken")
-.checked;
-
-const chequePages =
-Number(
-document
-.getElementById("chequePages")
-.value
-)||0;
-
-const nomineeFormTaken =
-document
-.getElementById("nomineeFormTaken")
-.checked;
-
-const deedTaken =
-document
-.getElementById("deedTaken")
-.checked;
-
-const porchaTaken =
-document
-.getElementById("porchaTaken")
-.checked;
-
-const otherDocumentTaken =
-document
-.getElementById("otherDocumentTaken")
-.checked;
-
-const otherDocumentDetails =
-document
-.getElementById("otherDocumentDetails")
-.value.trim();
-
-const documentFolder =
-document
-.getElementById("documentFolder")
-.value.trim();
 
 
 if(!fullName){
@@ -1329,33 +1444,38 @@ return;
 
 }
 
+
 message.textContent=
 "⏳ সদস্য সংরক্ষণ হচ্ছে...";
 
 
 /*
- IMPORTANT:
- প্রথমে মূল সদস্য তথ্য save করছি।
+এখানে member_no এবং member_id
+দুটিই একই ৬ ডিজিট ID দেওয়া হচ্ছে।
 */
 
-const memberResult =
-await supabaseClient
-.from("members")
-.insert({
+const memberData={
 
-member_id:memberId,
+member_id:
+memberId,
 
-member_no:memberId,
+member_no:
+memberId,
 
-full_name:fullName,
+full_name:
+fullName,
 
-father_husband_name:father,
+father_husband_name:
+father,
 
-mobile:mobile,
+mobile:
+mobile,
 
-nid:nid,
+nid:
+nid,
 
-address:address,
+address:
+address,
 
 join_date:
 joinDate || null,
@@ -1363,47 +1483,46 @@ joinDate || null,
 status:
 status || "active"
 
-})
+};
+
+
+const result =
+await supabaseClient
+.from("members")
+.insert(memberData)
 .select()
 .single();
 
 
-if(memberResult.error){
+if(result.error){
 
 message.textContent=
 "❌ সদস্য সংরক্ষণ হয়নি: "+
-memberResult.error.message;
+result.error.message;
 
 return;
 
 }
 
 
-/*
- DOCUMENT CHECKLIST
- আলাদা table থাকলে পরে এখানে
- ব্যবহার করা যাবে।
-*/
-
 message.textContent=
 "✅ সদস্য সফলভাবে যোগ হয়েছে।";
 
+
 await loadMembers();
 
+
 setTimeout(
-function(){
-
-closeMemberModal();
-
-},
+closeMemberModal,
 900
 );
 
 }
 
 
+
 /* ==========================================
-   LOAD MEMBERS
+LOAD MEMBERS
 ========================================== */
 
 async function loadMembers(){
@@ -1412,7 +1531,9 @@ const tbody =
 document
 .getElementById("memberList");
 
+
 if(!tbody)return;
+
 
 const search =
 document
@@ -1422,8 +1543,8 @@ document
 .toLowerCase();
 
 
-let query =
-supabaseClient
+const result =
+await supabaseClient
 .from("members")
 .select("*")
 .order(
@@ -1434,15 +1555,12 @@ ascending:false
 );
 
 
-const result =
-await query;
-
-
 if(result.error){
 
 tbody.innerHTML=`
 
 <tr>
+
 <td colspan="6">
 
 ❌ তথ্য লোড হয়নি:
@@ -1451,6 +1569,7 @@ result.error.message
 )}
 
 </td>
+
 </tr>
 
 `;
@@ -1473,7 +1592,7 @@ function(m){
 return (
 
 String(
-m.member_id||""
+m.member_id || ""
 )
 .toLowerCase()
 .includes(search)
@@ -1481,7 +1600,7 @@ m.member_id||""
 ||
 
 String(
-m.full_name||""
+m.full_name || ""
 )
 .toLowerCase()
 .includes(search)
@@ -1489,7 +1608,7 @@ m.full_name||""
 ||
 
 String(
-m.mobile||""
+m.mobile || ""
 )
 .toLowerCase()
 .includes(search)
@@ -1507,9 +1626,11 @@ if(members.length===0){
 tbody.innerHTML=`
 
 <tr>
+
 <td colspan="6">
 কোনো সদস্য পাওয়া যায়নি।
 </td>
+
 </tr>
 
 `;
@@ -1520,7 +1641,8 @@ return;
 
 
 tbody.innerHTML =
-members.map(
+members
+.map(
 function(m){
 
 return `
@@ -1579,13 +1701,15 @@ onclick="viewMember('${m.id}')"
 `;
 
 }
-).join("");
+)
+.join("");
 
 }
 
 
+
 /* ==========================================
-   VIEW MEMBER
+VIEW MEMBER
 ========================================== */
 
 async function viewMember(id){
@@ -1594,7 +1718,10 @@ const result =
 await supabaseClient
 .from("members")
 .select("*")
-.eq("id",id)
+.eq(
+"id",
+id
+)
 .single();
 
 
@@ -1612,12 +1739,18 @@ return;
 const m=result.data;
 
 
+currentViewedMemberId =
+m.id;
+
+
 document
 .getElementById("memberDetails")
 .innerHTML=`
 
+<div class="member-info">
+
 <p>
-<b>Member ID:</b>
+<b>Member ID:</b><br>
 ${escapeHtml(
 m.member_id ||
 m.member_no ||
@@ -1626,7 +1759,7 @@ m.member_no ||
 </p>
 
 <p>
-<b>নাম:</b>
+<b>সদস্যের নাম:</b><br>
 ${escapeHtml(
 m.full_name ||
 ""
@@ -1634,7 +1767,7 @@ m.full_name ||
 </p>
 
 <p>
-<b>পিতা/স্বামী:</b>
+<b>পিতা/স্বামীর নাম:</b><br>
 ${escapeHtml(
 m.father_husband_name ||
 ""
@@ -1642,7 +1775,7 @@ m.father_husband_name ||
 </p>
 
 <p>
-<b>মোবাইল:</b>
+<b>মোবাইল:</b><br>
 ${escapeHtml(
 m.mobile ||
 ""
@@ -1650,7 +1783,7 @@ m.mobile ||
 </p>
 
 <p>
-<b>NID:</b>
+<b>NID:</b><br>
 ${escapeHtml(
 m.nid ||
 ""
@@ -1658,7 +1791,7 @@ m.nid ||
 </p>
 
 <p>
-<b>ঠিকানা:</b>
+<b>ঠিকানা:</b><br>
 ${escapeHtml(
 m.address ||
 ""
@@ -1666,7 +1799,7 @@ m.address ||
 </p>
 
 <p>
-<b>যোগদানের তারিখ:</b>
+<b>যোগদানের তারিখ:</b><br>
 ${escapeHtml(
 m.join_date ||
 ""
@@ -1674,12 +1807,14 @@ m.join_date ||
 </p>
 
 <p>
-<b>Status:</b>
+<b>Status:</b><br>
 ${escapeHtml(
 m.status ||
 ""
 )}
 </p>
+
+</div>
 
 `;
 
@@ -1688,8 +1823,96 @@ document
 .getElementById("memberViewModal")
 .style.display="flex";
 
+
+document
+.getElementById("deleteMemberButton")
+.onclick=
+function(){
+
+deleteMember(
+currentViewedMemberId
+);
+
+};
+
 }
 
+
+
+/* ==========================================
+DELETE MEMBER
+========================================== */
+
+async function deleteMember(id){
+
+if(!id){
+
+alert(
+"সদস্যের ID পাওয়া যায়নি।"
+);
+
+return;
+
+}
+
+
+const answer =
+confirm(
+"⚠️ আপনি কি নিশ্চিত?\n\n"+
+"এই সদস্যের তথ্য স্থায়ীভাবে মুছে যাবে।\n\n"+
+"মুছে ফেলতে OK চাপুন।"
+);
+
+
+if(!answer){
+
+return;
+
+}
+
+
+const result =
+await supabaseClient
+.from("members")
+.delete()
+.eq(
+"id",
+id
+);
+
+
+if(result.error){
+
+alert(
+"❌ সদস্য মুছে ফেলা যায়নি:\n\n"+
+result.error.message
+);
+
+return;
+
+}
+
+
+alert(
+"✅ সদস্য সফলভাবে মুছে ফেলা হয়েছে।"
+);
+
+
+currentViewedMemberId=null;
+
+
+closeMemberView();
+
+
+await loadMembers();
+
+}
+
+
+
+/* ==========================================
+CLOSE VIEW
+========================================== */
 
 function closeMemberView(){
 
@@ -1697,21 +1920,46 @@ document
 .getElementById("memberViewModal")
 .style.display="none";
 
+currentViewedMemberId=null;
+
 }
 
 
+
 /* ==========================================
-   ESCAPE HTML
+ESCAPE HTML
 ========================================== */
 
 function escapeHtml(value){
 
-return String(value ?? "")
-.replace(/&/g,"&amp;")
-.replace(/</g,"&lt;")
-.replace(/>/g,"&gt;")
-.replace(/"/g,"&quot;")
-.replace(/'/g,"&#039;");
+return String(
+value ?? ""
+)
+
+.replace(
+/&/g,
+"&amp;"
+)
+
+.replace(
+/</g,
+"&lt;"
+)
+
+.replace(
+/>/g,
+"&gt;"
+)
+
+.replace(
+/"/g,
+"&quot;"
+)
+
+.replace(
+/'/g,
+"&#039;"
+);
 
 }
 

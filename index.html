@@ -1,1029 +1,261 @@
-<!DOCTYPE html>
-<html lang="bn">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+Email
 
-<title>সমবায় সমিতি ম্যানেজমেন্ট</title>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<style>
-*{box-sizing:border-box}
-
-body{
-    margin:0;
-    font-family:Arial,sans-serif;
-    background:#f4f6f8;
-}
-
-.login-page{
-    min-height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-}
-
-.login-box{
-    background:white;
-    width:380px;
-    max-width:95%;
-    padding:25px;
-    border-radius:12px;
-    box-shadow:0 2px 15px #ccc;
-}
-
-.dashboard{
-    display:none;
-}
-
-.container{
-    max-width:1100px;
-    margin:auto;
-    padding:20px;
-}
-
-.card{
-    background:white;
-    padding:20px;
-    margin-bottom:20px;
-    border-radius:12px;
-    box-shadow:0 2px 8px #ddd;
-}
-
-input,select,textarea{
-    width:100%;
-    padding:11px;
-    margin:6px 0 12px;
-    border:1px solid #ccc;
-    border-radius:6px;
-}
-
-button{
-    border:0;
-    padding:10px 15px;
-    border-radius:6px;
-    cursor:pointer;
-    margin:3px;
-}
-
-.login-button,
-.primary-btn,
-.save{
-    background:#1976d2;
-    color:white;
-}
-
-.logout,
-.reduce{
-    background:#d32f2f;
-    color:white;
-}
-
-.add{
-    background:#2e7d32;
-    color:white;
-}
-
-.secondary-btn{
-    background:#555;
-    color:white;
-}
-
-.cancel{
-    background:#ddd;
-}
-
-.topbar{
-    background:white;
-    padding:15px 20px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:20px;
-}
-
-.profile-mini{
-    width:45px;
-    height:45px;
-    border-radius:50%;
-    object-fit:cover;
-    vertical-align:middle;
-}
-
-.profile-photo{
-    width:150px;
-    height:150px;
-    border-radius:50%;
-    object-fit:cover;
-}
-
-.modal{
-    display:none;
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,.55);
-    justify-content:center;
-    align-items:center;
-    padding:15px;
-}
-
-.modal-content{
-    background:white;
-    width:100%;
-    max-width:600px;
-    max-height:90vh;
-    overflow:auto;
-    padding:25px;
-    border-radius:12px;
-}
-
-.member-item{
-    background:white;
-    border:1px solid #ddd;
-    padding:15px;
-    margin-top:10px;
-    border-radius:8px;
-}
-</style>
-</head>
-
-<body>
-
-
-<!-- LOGIN -->
-
-<div id="loginPage" class="login-page">
-
-<div class="login-box">
-
-<h2>🔐 Manager Login</h2>
-
-<form id="loginForm">
-
-<label>Email</label>
-
-<input
+\<input
 type="email"
 id="email"
 placeholder="Manager Email"
 required
+
 >
 
-<label>Password</label>
+Password
 
-<input
+\<input
 type="password"
 id="password"
 placeholder="Password"
 required
+
 >
 
-<button
+\<button
 class="login-button"
 type="submit"
-style="width:100%"
+
 >
+
 Login
-</button>
-
-</form>
-
-<p id="loginMessage"></p>
-
-</div>
-
-</div>
 
 
-
-<!-- DASHBOARD -->
-
-<div id="dashboardPage" class="dashboard">
-
-<div class="container">
-
-<div class="topbar">
-
-<div>
-
-<img
+\<img
 id="miniPhoto"
 class="profile-mini"
-src="https://placehold.co/100x100"
+src="[https://placehold.co/100x100](https://placehold.co/100x100)"
 alt="Manager"
+
 >
 
-<b id="managerName">
-Manager
-</b>
-
-</div>
-
-<button
+\<button
 class="logout"
 onclick="logout()"
+
 >
+
 Logout
-</button>
-
-</div>
 
 
-<!-- PROFILE -->
-
-<div class="card">
-
-<h2>👤 Manager Profile</h2>
-
-<img
+\<img
 id="profilePhoto"
 class="profile-photo"
-src="https://placehold.co/200x200"
+src="[https://placehold.co/200x200](https://placehold.co/200x200)"
 alt="Manager"
+
 >
 
-<br>
-
-<button
-class="primary-btn"
+\<button
+class="edit-profile-btn"
 onclick="openProfileModal()"
+
 >
+
 ✏️ Edit Profile
-</button>
-
-</div>
 
 
-<!-- FUND -->
-
-<div class="card">
-
-<h2>💰 Fund</h2>
-
-<button
+\<button
 class="add"
-onclick="openBalanceModal('fund_added')"
+onclick="openBalanceModal('fund\_added')"
+
 >
+
 ➕ Add Fund
-</button>
 
-<button
+
+\<button
 class="reduce"
-onclick="openBalanceModal('fund_reduced')"
+onclick="openBalanceModal('fund\_reduced')"
+
 >
+
 ➖ Reduce Fund
-</button>
-
-</div>
 
 
-<!-- MEMBERS -->
+\<button
+class="module"
+onclick="openMembers()"
 
-<div class="card">
+>
 
-<h2>👥 সদস্য</h2>
-
-<button
+\<button
 class="primary-btn"
 onclick="openMemberModal()"
->
-➕ নতুন সদস্য
-</button>
 
-<input
+>
+
+➕ নতুন সদস্য
+
+
+\<input
 type="text"
 id="memberSearch"
 placeholder="Member ID / নাম / মোবাইল দিয়ে খুঁজুন..."
 oninput="loadMembers()"
+
 >
 
-<button
+\<button
 class="secondary-btn"
 onclick="loadMembers()"
+
 >
+
 🔄 Refresh
-</button>
-
-<div id="memberList"></div>
-
-</div>
-
-</div>
-
-</div>
 
 
-
-<!-- PROFILE MODAL -->
-
-<div id="profileModal" class="modal">
-
-<div class="modal-content">
-
-<h2>👤 Manager Profile</h2>
-
-<img
+\<img
 id="photoPreview"
 class="profile-photo"
-src="https://placehold.co/200x200"
+style="display\:block;margin:10px auto 20px"
+src="[https://placehold.co/200x200](https://placehold.co/200x200)"
+
 >
 
-<input
+\<input
 type="text"
 id="profileName"
 placeholder="Manager-এর নাম"
+
 >
 
-<input
+\<input
 type="tel"
 id="profileMobile"
 placeholder="01XXXXXXXXX"
+
 >
 
-<input
+\<input
 type="file"
 id="profilePhotoFile"
-accept="image/*"
+accept="image/\*"
+
 >
 
-<button
+\<button
 class="cancel"
 onclick="closeProfileModal()"
->
-Cancel
-</button>
 
-<button
+>
+
+Cancel
+
+
+\<button
 class="save"
 onclick="saveProfile()"
+
 >
+
 💾 Save
-</button>
-
-</div>
-
-</div>
 
 
-
-<!-- FUND MODAL -->
-
-<div id="balanceModal" class="modal">
-
-<div class="modal-content">
-
-<h2 id="balanceTitle">
-Fund
-</h2>
-
-<input
+\<input
 type="number"
 id="balanceAmount"
 min="1"
 step="0.01"
 placeholder="টাকার পরিমাণ"
+
 >
 
-<input
+\<input
 type="text"
 id="balanceDescription"
 placeholder="কারণ লিখুন"
+
 >
 
-<button
+\<button
 class="cancel"
 onclick="closeBalanceModal()"
->
-Cancel
-</button>
 
-<button
+>
+
+Cancel
+
+
+\<button
 class="save"
 onclick="submitBalanceChange()"
+
 >
+
 💾 Save
-</button>
-
-</div>
-
-</div>
 
 
-
-<!-- MEMBER MODAL -->
-
-<div id="memberModal" class="modal">
-
-<div class="modal-content">
-
-<h2>➕ নতুন সদস্য</h2>
-
-<label>Member ID</label>
-
-<input
+\<input
 type="text"
 id="newMemberId"
 readonly
 placeholder="Auto Generate"
+
 >
 
-<label>পূর্ণ নাম</label>
-
-<input
+\<input
 type="text"
 id="memberName"
 placeholder="পূর্ণ নাম"
+
 >
 
-<label>পিতা/স্বামীর নাম</label>
-
-<input
+\<input
 type="text"
 id="fatherName"
 placeholder="নাম"
+
 >
 
-<label>মোবাইল</label>
-
-<input
+\<input
 type="tel"
 id="memberMobile"
 placeholder="01XXXXXXXXX"
+
 >
 
-<label>NID</label>
-
-<input
+\<input
 type="text"
 id="memberNid"
 placeholder="NID"
+
 >
 
-<label>যোগদানের তারিখ</label>
-
-<input
+\<input
 type="date"
 id="memberJoinDate"
+
 >
 
-<p id="memberMessage"></p>
-
-<button
+\<button
 class="cancel"
 onclick="closeMemberModal()"
->
-Cancel
-</button>
 
-<button
+>
+
+Cancel
+
+
+\<button
 class="save"
 onclick="saveMember()"
+
 >
+
 💾 Save Member
-</button>
-
-</div>
-
-</div>
 
 
-
-<!-- MEMBER VIEW -->
-
-<div id="memberViewModal" class="modal">
-
-<div class="modal-content">
-
-<h2>👤 সদস্যের তথ্য</h2>
-
-<div id="memberDetails"></div>
-
-<button
+\<button
 class="cancel"
 onclick="closeMemberView()"
+
 >
+
 Close
-</button>
-
-</div>
-
-</div>
-
-
-
-<script>
-
-/* SUPABASE */
-
-const SUPABASE_URL =
-"https://tcdilhooslygsvdcqkte.supabase.co";
-
-const SUPABASE_KEY =
-"sb_publishable_JelXduaAwElDbU0JABTFgg_yLXzPyNx";
-
-const supabaseClient =
-window.supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
-);
-
-
-/* LOGIN */
-
-document
-.getElementById("loginForm")
-.addEventListener(
-"submit",
-async function(e){
-
-e.preventDefault();
-
-const email =
-document.getElementById("email").value.trim();
-
-const password =
-document.getElementById("password").value;
-
-const msg =
-document.getElementById("loginMessage");
-
-msg.textContent="Login হচ্ছে...";
-
-const result =
-await supabaseClient.auth.signInWithPassword({
-email:email,
-password:password
-});
-
-if(result.error){
-
-msg.textContent =
-"❌ "+result.error.message;
-
-return;
-
-}
-
-document.getElementById("loginPage")
-.style.display="none";
-
-document.getElementById("dashboardPage")
-.style.display="block";
-
-loadMembers();
-
-}
-);
-
-
-/* SESSION */
-
-async function checkSession(){
-
-const result =
-await supabaseClient.auth.getSession();
-
-if(
-result.data &&
-result.data.session
-){
-
-document.getElementById("loginPage")
-.style.display="none";
-
-document.getElementById("dashboardPage")
-.style.display="block";
-
-loadMembers();
-
-}
-
-}
-
-
-/* LOGOUT */
-
-async function logout(){
-
-await supabaseClient.auth.signOut();
-
-document.getElementById("dashboardPage")
-.style.display="none";
-
-document.getElementById("loginPage")
-.style.display="flex";
-
-}
-
-
-/* MEMBER ID */
-
-async function generateMemberId(){
-
-const result =
-await supabaseClient
-.from("members")
-.select("member_id")
-.order("member_id",{ascending:false})
-.limit(1);
-
-if(
-result.error ||
-!result.data ||
-result.data.length===0
-){
-
-return "000001";
-
-}
-
-const last =
-parseInt(
-result.data[0].member_id,
-10
-)||0;
-
-return String(last+1).padStart(6,"0");
-
-}
-
-
-/* OPEN MEMBER */
-
-async function openMemberModal(){
-
-document.getElementById("memberModal")
-.style.display="flex";
-
-document.getElementById("newMemberId")
-.value =
-await generateMemberId();
-
-document.getElementById("memberJoinDate")
-.value =
-new Date()
-.toISOString()
-.split("T")[0];
-
-}
-
-
-/* CLOSE MEMBER */
-
-function closeMemberModal(){
-
-document.getElementById("memberModal")
-.style.display="none";
-
-}
-
-
-/* SAVE MEMBER */
-
-async function saveMember(){
-
-const msg =
-document.getElementById("memberMessage");
-
-const memberId =
-document.getElementById("newMemberId").value;
-
-const name =
-document.getElementById("memberName")
-.value.trim();
-
-const father =
-document.getElementById("fatherName")
-.value.trim();
-
-const mobile =
-document.getElementById("memberMobile")
-.value.trim();
-
-const nid =
-document.getElementById("memberNid")
-.value.trim();
-
-const joinDate =
-document.getElementById("memberJoinDate")
-.value;
-
-if(!name){
-
-msg.textContent=
-"❌ সদস্যের নাম লিখুন।";
-
-return;
-
-}
-
-msg.textContent=
-"সদস্য সংরক্ষণ হচ্ছে...";
-
-const result =
-await supabaseClient
-.from("members")
-.insert({
-
-member_id:memberId,
-
-full_name:name,
-
-father_husband_name:father,
-
-mobile:mobile,
-
-nid:nid,
-
-join_date:joinDate || null,
-
-status:"active"
-
-})
-.select()
-.single();
-
-if(result.error){
-
-msg.textContent =
-"❌ সংরক্ষণ হয়নি: "+
-result.error.message;
-
-return;
-
-}
-
-msg.textContent =
-"✅ সদস্য সফলভাবে যোগ হয়েছে।";
-
-await loadMembers();
-
-setTimeout(
-closeMemberModal,
-800
-);
-
-}
-
-
-/* LOAD MEMBERS */
-
-async function loadMembers(){
-
-const list =
-document.getElementById("memberList");
-
-if(!list) return;
-
-list.innerHTML=
-"⏳ সদস্য লোড হচ্ছে...";
-
-const search =
-document.getElementById("memberSearch")
-.value.trim();
-
-let query =
-supabaseClient
-.from("members")
-.select("*");
-
-const result =
-await query;
-
-if(result.error){
-
-list.innerHTML=
-"❌ তথ্য লোড হয়নি: "+
-result.error.message;
-
-return;
-
-}
-
-let members =
-result.data || [];
-
-if(search){
-
-const s =
-search.toLowerCase();
-
-members =
-members.filter(function(m){
-
-return String(m.member_id || "")
-.toLowerCase()
-.includes(s)
-
-||
-
-String(m.full_name || "")
-.toLowerCase()
-.includes(s)
-
-||
-
-String(m.mobile || "")
-.toLowerCase()
-.includes(s);
-
-});
-
-}
-
-if(members.length===0){
-
-list.innerHTML=
-"কোনো সদস্য পাওয়া যায়নি।";
-
-return;
-
-}
-
-list.innerHTML =
-members.map(function(m){
-
-return `
-
-<div class="member-item">
-
-<b>
-Member ID:
-${escapeHtml(m.member_id)}
-</b>
-
-<br><br>
-
-👤 ${escapeHtml(m.full_name)}
-
-<br>
-
-📱 ${escapeHtml(m.mobile || "")}
-
-<br><br>
-
-<button
-class="primary-btn"
-onclick="viewMember('${m.id}')"
->
-👁️ View
-</button>
-
-</div>
-
-`;
-
-}).join("");
-
-}
-
-
-/* VIEW */
-
-async function viewMember(id){
-
-const result =
-await supabaseClient
-.from("members")
-.select("*")
-.eq("id",id)
-.single();
-
-if(result.error){
-
-alert("সদস্য পাওয়া যায়নি।");
-
-return;
-
-}
-
-const m=result.data;
-
-document.getElementById("memberDetails")
-.innerHTML=`
-
-<p>
-<b>Member ID:</b>
-${escapeHtml(m.member_id)}
-</p>
-
-<p>
-<b>নাম:</b>
-${escapeHtml(m.full_name)}
-</p>
-
-<p>
-<b>পিতা/স্বামী:</b>
-${escapeHtml(m.father_husband_name || "")}
-</p>
-
-<p>
-<b>মোবাইল:</b>
-${escapeHtml(m.mobile || "")}
-</p>
-
-<p>
-<b>NID:</b>
-${escapeHtml(m.nid || "")}
-</p>
-
-<p>
-<b>যোগদানের তারিখ:</b>
-${escapeHtml(m.join_date || "")}
-</p>
-
-`;
-
-document.getElementById("memberViewModal")
-.style.display="flex";
-
-}
-
-
-function closeMemberView(){
-
-document.getElementById("memberViewModal")
-.style.display="none";
-
-}
-
-
-/* PROFILE */
-
-function openProfileModal(){
-
-document.getElementById("profileModal")
-.style.display="flex";
-
-}
-
-function closeProfileModal(){
-
-document.getElementById("profileModal")
-.style.display="none";
-
-}
-
-function saveProfile(){
-
-alert("Profile Save প্রস্তুত করা হবে।");
-
-}
-
-
-/* FUND */
-
-function openBalanceModal(type){
-
-document.getElementById("balanceModal")
-.style.display="flex";
-
-document.getElementById("balanceTitle")
-.textContent =
-type==="fund_added"
-?
-"➕ Add Fund"
-:
-"➖ Reduce Fund";
-
-}
-
-function closeBalanceModal(){
-
-document.getElementById("balanceModal")
-.style.display="none";
-
-}
-
-function submitBalanceChange(){
-
-alert("Fund Save প্রস্তুত করা হবে।");
-
-closeBalanceModal();
-
-}
-
-
-/* ESCAPE */
-
-function escapeHtml(value){
-
-return String(value ?? "")
-.replace(/&/g,"&amp;")
-.replace(/</g,"&lt;")
-.replace(/>/g,"&gt;")
-.replace(/"/g,"&quot;")
-.replace(/'/g,"&#039;");
-
-}
-
-
-/* START */
-
-checkSession();
-
-</script>
-
-</body>
-</html>

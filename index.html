@@ -3,104 +3,96 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>সমবায় সমিতি ম্যানেজমেন্ট</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     * {
       box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
     }
 
     body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #e8f5e9, #e3f2fd);
       min-height: 100vh;
-      background: linear-gradient(135deg, #0f766e, #164e63);
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 20px;
     }
 
     .login-box {
-      width: 100%;
+      width: 90%;
       max-width: 400px;
-      background: #ffffff;
-      border-radius: 18px;
+      background: white;
       padding: 30px;
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.12);
+      text-align: center;
     }
 
     .logo {
-      width: 70px;
-      height: 70px;
-      margin: 0 auto 15px;
-      border-radius: 50%;
-      background: #0f766e;
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 30px;
+      font-size: 45px;
+      margin-bottom: 5px;
     }
 
     h1 {
-      text-align: center;
-      color: #164e63;
-      font-size: 24px;
-      margin-bottom: 8px;
+      margin: 5px 0;
+      color: #146c43;
+      font-size: 26px;
     }
 
     .subtitle {
-      text-align: center;
-      color: #777;
+      color: #666;
       margin-bottom: 25px;
-      font-size: 14px;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 7px;
-      color: #333;
-      font-weight: bold;
     }
 
     input {
       width: 100%;
       padding: 13px;
+      margin: 8px 0;
       border: 1px solid #ddd;
       border-radius: 9px;
-      margin-bottom: 17px;
       font-size: 15px;
       outline: none;
     }
 
     input:focus {
-      border-color: #0f766e;
+      border-color: #146c43;
     }
 
     button {
       width: 100%;
-      padding: 14px;
+      padding: 13px;
+      margin-top: 12px;
       border: none;
       border-radius: 9px;
-      background: #0f766e;
+      background: #146c43;
       color: white;
       font-size: 16px;
-      font-weight: bold;
       cursor: pointer;
     }
 
     button:hover {
-      background: #115e59;
+      background: #0f5132;
     }
 
-    .footer {
-      text-align: center;
-      margin-top: 20px;
-      color: #888;
-      font-size: 12px;
+    #message {
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    .success {
+      color: green;
+    }
+
+    .error {
+      color: red;
+    }
+
+    .loading {
+      color: #555;
     }
   </style>
 </head>
@@ -112,53 +104,99 @@
     <div class="logo">🏦</div>
 
     <h1>সমবায় সমিতি</h1>
+    <div class="subtitle">ম্যানেজমেন্ট সিস্টেম</div>
 
-    <p class="subtitle">
-      ম্যানেজমেন্ট সিস্টেম
-    </p>
-
-    <form>
-
-      <label>ইমেইল / ইউজারনেম</label>
+    <form id="loginForm">
 
       <input
-        type="text"
-        placeholder="আপনার ইমেইল লিখুন"
+        type="email"
+        id="email"
+        placeholder="ইমেইল"
+        autocomplete="email"
+        required
       >
-
-      <label>পাসওয়ার্ড</label>
 
       <input
         type="password"
-        placeholder="আপনার পাসওয়ার্ড লিখুন"
+        id="password"
+        placeholder="পাসওয়ার্ড"
+        autocomplete="current-password"
+        required
       >
 
-      <button type="button">
+      <button type="submit" id="loginButton">
         লগইন করুন
       </button>
 
     </form>
 
-    <div class="footer">
-      © 2026 Cooperative Management System
-    </div>
+    <div id="message"></div>
 
   </div>
 
+  <script>
+
+    const SUPABASE_URL =
+      "https://tcdilhooslygsvdcqkte.supabase.co";
+
+    const SUPABASE_PUBLISHABLE_KEY =
+      "sb_publishable_JelXduaAwElDbU0JABTFgg_yLXzPyNx";
+
+    const supabaseClient = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_PUBLISHABLE_KEY
+    );
+
+    const loginForm = document.getElementById("loginForm");
+    const loginButton = document.getElementById("loginButton");
+    const message = document.getElementById("message");
+
+    loginForm.addEventListener("submit", async function(e) {
+
+      e.preventDefault();
+
+      const email =
+        document.getElementById("email").value.trim();
+
+      const password =
+        document.getElementById("password").value;
+
+      message.className = "loading";
+      message.textContent = "লগইন হচ্ছে...";
+
+      loginButton.disabled = true;
+      loginButton.textContent = "অপেক্ষা করুন...";
+
+      const { data, error } =
+        await supabaseClient.auth.signInWithPassword({
+          email: email,
+          password: password
+        });
+
+      if (error) {
+
+        message.className = "error";
+        message.textContent =
+          "লগইন ব্যর্থ: " + error.message;
+
+        loginButton.disabled = false;
+        loginButton.textContent = "লগইন করুন";
+
+        return;
+      }
+
+      message.className = "success";
+      message.textContent = "লগইন সফল হয়েছে!";
+
+      loginButton.textContent = "সফল হয়েছে";
+
+      setTimeout(function() {
+        alert("স্বাগতম! Dashboard পরবর্তী ধাপে তৈরি করা হবে।");
+      }, 500);
+
+    });
+
+  </script>
+
 </body>
-  <!-- Supabase -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script>
-  const SUPABASE_URL = "https://tcdilhooslygsvdcqkte.supabase.co";
-
-  const SUPABASE_PUBLISHABLE_KEY = "এখানে_তোমার_কপি_করা_Publishable_Key_পেস্ট_করো";
-
-  const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_PUBLISHABLE_KEY
-  );
-
-  console.log("Supabase connected:", !!supabaseClient);
-</script>
 </html>

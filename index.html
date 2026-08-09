@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>সমবায় সমিতি ম্যানেজমেন্ট</title>
+
+  <title>Samity Management</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -15,186 +16,410 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #e8f5e9, #e3f2fd);
+      background: #f3f6fa;
+    }
+
+    .login-page {
       min-height: 100vh;
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
+      padding: 20px;
     }
 
     .login-box {
-      width: 90%;
+      width: 100%;
       max-width: 400px;
       background: white;
       padding: 30px;
-      border-radius: 18px;
-      box-shadow: 0 10px 30px rgba(0,0,0,.12);
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.10);
+    }
+
+    .login-box h1 {
       text-align: center;
+      margin-bottom: 8px;
+      color: #123b5d;
     }
 
-    .logo {
-      font-size: 45px;
-      margin-bottom: 5px;
-    }
-
-    h1 {
-      margin: 5px 0;
-      color: #146c43;
-      font-size: 26px;
-    }
-
-    .subtitle {
-      color: #666;
+    .login-box p {
+      text-align: center;
+      color: #777;
       margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      margin-bottom: 6px;
+      font-weight: bold;
     }
 
     input {
       width: 100%;
-      padding: 13px;
-      margin: 8px 0;
-      border: 1px solid #ddd;
-      border-radius: 9px;
-      font-size: 15px;
-      outline: none;
-    }
-
-    input:focus {
-      border-color: #146c43;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
     }
 
     button {
       width: 100%;
       padding: 13px;
-      margin-top: 12px;
+      margin-top: 20px;
       border: none;
-      border-radius: 9px;
-      background: #146c43;
+      border-radius: 8px;
+      background: #1261a0;
       color: white;
       font-size: 16px;
       cursor: pointer;
     }
 
     button:hover {
-      background: #0f5132;
+      background: #0d4d80;
     }
 
     #message {
       margin-top: 15px;
-      font-size: 14px;
+      text-align: center;
+      font-weight: bold;
     }
 
-    .success {
-      color: green;
+    .dashboard {
+      display: none;
+      min-height: 100vh;
     }
 
-    .error {
-      color: red;
+    .topbar {
+      background: #123b5d;
+      color: white;
+      padding: 18px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
-    .loading {
-      color: #555;
+    .topbar h2 {
+      margin: 0;
+    }
+
+    .logout {
+      width: auto;
+      margin: 0;
+      padding: 8px 15px;
+      background: #d9534f;
+    }
+
+    .content {
+      padding: 25px;
+    }
+
+    .welcome {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+    }
+
+    .card h3 {
+      margin-top: 0;
+      color: #123b5d;
     }
   </style>
 </head>
 
 <body>
 
-  <div class="login-box">
+  <!-- =========================
+       MANAGER LOGIN
+  ========================== -->
 
-    <div class="logo">🏦</div>
+  <div class="login-page" id="loginPage">
 
-    <h1>সমবায় সমিতি</h1>
-    <div class="subtitle">ম্যানেজমেন্ট সিস্টেম</div>
+    <div class="login-box">
 
-    <form id="loginForm">
+      <h1>সমবায় ব্যবস্থাপনা</h1>
 
-      <input
-        type="email"
-        id="email"
-        placeholder="ইমেইল"
-        autocomplete="email"
-        required
-      >
+      <p>Manager Login</p>
 
-      <input
-        type="password"
-        id="password"
-        placeholder="পাসওয়ার্ড"
-        autocomplete="current-password"
-        required
-      >
+      <form id="loginForm">
 
-      <button type="submit" id="loginButton">
-        লগইন করুন
-      </button>
+        <label>Email</label>
 
-    </form>
+        <input
+          type="email"
+          id="email"
+          placeholder="Manager Email"
+          required
+        >
 
-    <div id="message"></div>
+        <label>Password</label>
+
+        <input
+          type="password"
+          id="password"
+          placeholder="Password"
+          required
+        >
+
+        <button type="submit">
+          Login
+        </button>
+
+      </form>
+
+      <div id="message"></div>
+
+    </div>
 
   </div>
+
+
+  <!-- =========================
+       MANAGER DASHBOARD
+  ========================== -->
+
+  <div class="dashboard" id="dashboard">
+
+    <div class="topbar">
+
+      <h2>Manager Dashboard</h2>
+
+      <button
+        class="logout"
+        onclick="logout()"
+      >
+        Logout
+      </button>
+
+    </div>
+
+    <div class="content">
+
+      <div class="welcome">
+
+        <h2>স্বাগতম Manager 👋</h2>
+
+        <p>
+          এখান থেকে সমবায় সমিতির সদস্য,
+          হিসাব, কর্মী, DPS, FDR, Loan এবং
+          অন্যান্য কার্যক্রম পরিচালনা করা যাবে।
+        </p>
+
+      </div>
+
+
+      <div class="cards">
+
+        <div class="card">
+          <h3>👥 Members</h3>
+          <p>সদস্য ব্যবস্থাপনা</p>
+        </div>
+
+        <div class="card">
+          <h3>💳 Accounts</h3>
+          <p>সঞ্চয়, DPS, FDR ও Loan</p>
+        </div>
+
+        <div class="card">
+          <h3>👨‍💼 Staff</h3>
+          <p>Field Officer ও কর্মী ব্যবস্থাপনা</p>
+        </div>
+
+        <div class="card">
+          <h3>📈 Rate Setting</h3>
+          <p>সুদ/মুনাফার হার নির্ধারণ</p>
+        </div>
+
+        <div class="card">
+          <h3>💰 Transactions</h3>
+          <p>জমা ও উত্তোলন</p>
+        </div>
+
+        <div class="card">
+          <h3>📊 Reports</h3>
+          <p>লেনদেন ও হিসাব রিপোর্ট</p>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================
+       SUPABASE
+  ========================== -->
 
   <script>
 
     const SUPABASE_URL =
       "https://tcdilhooslygsvdcqkte.supabase.co";
 
-    const SUPABASE_PUBLISHABLE_KEY =
+    const SUPABASE_KEY =
       "sb_publishable_JelXduaAwElDbU0JABTFgg_yLXzPyNx";
 
-    const supabaseClient = window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_PUBLISHABLE_KEY
-    );
 
-    const loginForm = document.getElementById("loginForm");
-    const loginButton = document.getElementById("loginButton");
-    const message = document.getElementById("message");
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
 
-    loginForm.addEventListener("submit", async function(e) {
 
-      e.preventDefault();
+    // =========================
+    // MANAGER LOGIN
+    // =========================
 
-      const email =
-        document.getElementById("email").value.trim();
+    document
+      .getElementById("loginForm")
+      .addEventListener("submit", async function(e) {
 
-      const password =
-        document.getElementById("password").value;
+        e.preventDefault();
 
-      message.className = "loading";
-      message.textContent = "লগইন হচ্ছে...";
+        const email =
+          document
+            .getElementById("email")
+            .value
+            .trim();
 
-      loginButton.disabled = true;
-      loginButton.textContent = "অপেক্ষা করুন...";
+        const password =
+          document
+            .getElementById("password")
+            .value;
 
-      const { data, error } =
-        await supabaseClient.auth.signInWithPassword({
-          email: email,
-          password: password
-        });
+        const message =
+          document.getElementById("message");
 
-      if (error) {
+        message.style.color = "#333";
+        message.textContent = "Login হচ্ছে...";
 
-        message.className = "error";
-        message.textContent =
-          "লগইন ব্যর্থ: " + error.message;
 
-        loginButton.disabled = false;
-        loginButton.textContent = "লগইন করুন";
+        const {
+          data,
+          error
+        } =
+          await supabaseClient.auth.signInWithPassword({
+            email: email,
+            password: password
+          });
 
-        return;
-      }
 
-      message.className = "success";
-      message.textContent = "লগইন সফল হয়েছে!";
+        if (error) {
 
-      loginButton.textContent = "সফল হয়েছে";
+          message.style.color = "red";
 
-      setTimeout(function() {
-        alert("স্বাগতম! Dashboard পরবর্তী ধাপে তৈরি করা হবে।");
-      }, 500);
+          message.textContent =
+            "Login failed: " + error.message;
 
-    });
+          return;
+        }
+
+
+        const user =
+          data.user;
+
+
+        // =========================
+        // CHECK MANAGER ROLE
+        // =========================
+
+        const {
+          data: roleData,
+          error: roleError
+        } =
+          await supabaseClient
+            .from("user_roles")
+            .select("role")
+            .eq("user_id", user.id)
+            .single();
+
+
+        if (roleError || !roleData) {
+
+          await supabaseClient.auth.signOut();
+
+          message.style.color = "red";
+
+          message.textContent =
+            "এই User-এর কোনো role পাওয়া যায়নি।";
+
+          return;
+        }
+
+
+        if (roleData.role !== "manager") {
+
+          await supabaseClient.auth.signOut();
+
+          message.style.color = "red";
+
+          message.textContent =
+            "শুধু Manager Login করতে পারবেন।";
+
+          return;
+        }
+
+
+        // =========================
+        // SHOW DASHBOARD
+        // =========================
+
+        document
+          .getElementById("loginPage")
+          .style.display = "none";
+
+        document
+          .getElementById("dashboard")
+          .style.display = "block";
+
+      });
+
+
+    // =========================
+    // LOGOUT
+    // =========================
+
+    async function logout() {
+
+      await supabaseClient.auth.signOut();
+
+      document
+        .getElementById("dashboard")
+        .style.display = "none";
+
+      document
+        .getElementById("loginPage")
+        .style.display = "flex";
+
+      document
+        .getElementById("email")
+        .value = "";
+
+      document
+        .getElementById("password")
+        .value = "";
+
+      document
+        .getElementById("message")
+        .textContent = "";
+
+    }
 
   </script>
 

@@ -2623,6 +2623,1370 @@ document.addEventListener(
 );
 
 </script>
+<script>
+/* =========================================================
+   SAMITY MANAGEMENT - COMPLETE JAVASCRIPT
+   Login / Logout / Members / View / Edit / Delete / Search
+   Profile / Fund / Account Modal Controls
+   ========================================================= */
 
+const SUPABASE_URL =
+    "https://tcdilhooslygsvdcqkte.supabase.co";
+
+const SUPABASE_KEY =
+    "sb_publishable_JelXduaAwElDbU0JABTFgg_yLXzPyNx";
+
+let supabaseClient = null;
+let currentUser = null;
+let currentEditId = null;
+let currentFundType = "fund_added";
+
+
+/* =========================================================
+   BASIC HELPERS
+   ========================================================= */
+
+function $(id) {
+    return document.getElementById(id);
+}
+
+function escapeHtml(value) {
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+function showMessage(id, text, error = false) {
+    const el = $(id);
+
+    if (!el) return;
+
+    el.textContent = text;
+    el.style.color = error ? "red" : "green";
+}
+
+
+/* =========================================================
+   PAGE SECTION
+   ========================================================= */
+
+function showSection(sectionId) {
+
+    document.querySelectorAll(".section").forEach(section => {
+        section.classList.remove("active");
+    });
+
+    const section = $(sectionId);
+
+    if (section) {
+        section.classList.add("active");
+    }
+
+    if (sectionId === "membersSection") {
+        loadMembers();
+    }
+}
+
+
+/* =========================================================
+   LOGIN
+   ========================================================= */
+
+async function loginUser(email, password) {
+
+    if (!supabaseClient) {
+        throw new Error("Supabase connection পাওয়া যায়নি।");
+    }
+
+    const { data, error } =
+        await supabaseClient.auth.signInWithPassword({
+            email: email,
+            password: password
+        });
+
+    if (error) {
+        throw error;
+    }
+
+    currentUser = data.user;
+
+    return data.user;
+}
+
+
+function showDashboard() {
+
+    const loginBox =
+        document.querySelector(".login-box");
+
+    if (loginBox) {
+        loginBox.style.display = "none";
+    }
+
+    document.querySelectorAll(
+        ".topbar, .container"
+    ).forEach(el => {
+        el.style.display = "";
+    });
+
+    loadMembers();
+}
+
+
+async function logout() {
+
+    try {
+
+        if (supabaseClient) {
+            await supabaseClient.auth.signOut();
+        }
+
+    } catch (error) {
+        console.error(error);
+    }
+
+    currentUser = null;
+
+    document.querySelectorAll(
+        ".topbar, .container"
+    ).forEach(el => {
+        el.style.display = "none";
+    });
+
+    const loginBox =
+        document.querySelector(".login-box");
+
+    if (loginBox) {
+        loginBox.style.display = "block";
+    }
+
+    if ($("email")) {
+        $("email").value = "";
+    }
+
+    if ($("password")) {
+        $("password").value = "";
+    }
+
+    if ($("loginMessage")) {
+        $("loginMessage").textContent = "";
+    }
+}
+
+
+/* =========================================================
+   MEMBER MODAL
+   ========================================================= */
+
+function openMemberModal() {
+
+    currentEditId = null;
+
+    const modal =
+        document.querySelector("#memberModal");
+
+    if (modal) {
+        modal.style.display = "flex";
+    }
+
+    const saveButton =
+        $("saveMemberButton");
+
+    if (saveButton) {
+        saveButton.textContent =
+            "💾 Save Member";
+    }
+
+    clearMemberForm();
+
+    generateMemberId();
+}
+
+
+function closeMemberModal() {
+
+    const modal =
+        document.querySelector("#memberModal");
+
+    if (modal) {
+        modal.style.display = "none";
+    }
+}
+
+
+function clearMemberForm() {
+
+    const fields = [
+        "newMemberId",
+        "memberName",
+        "fatherName",
+        "memberMobile",
+        "memberNid",
+        "memberAddress",
+        "memberJoinDate",
+        "otherDocumentDetails",
+        "documentFolder"
+    ];
+
+    fields.forEach(id => {
+
+        if ($(id)) {
+            $(id).value = "";
+        }
+
+    });
+
+    if ($("chequePages")) {
+        $("chequePages").value = "0";
+    }
+
+    if ($("memberStatus")) {
+        $("memberStatus").value = "active";
+    }
+
+    if ($("memberMessage")) {
+        $("memberMessage").textContent = "";
+    }
+}
+
+
+/* =========================================================
+   MEMBER ID - 6 DIGITS
+   ========================================================= */
+
+async function generateMemberId() {
+
+    if (!supabaseClient) return;
+
+    try {
+
+        const { data, error } =
+            await supabaseClient
+                .from("members")
+                .select("member_id")
+                .order("member_id", {
+                    ascending: false
+                })
+                .limit(1);
+
+        if (error) {
+            throw error;
+        }
+
+        let nextId = 1;
+
+        if (
+            data &&
+            data.length > 0 &&
+            data[0].member_id
+        ) {
+
+            const lastId =
+                parseInt(
+                    String(data[0].member_id)
+                        .replace(/\D/g, ""),
+                    10
+                );
+
+            if (!isNaN(lastId)) {
+                nextId = lastId + 1;
+            }
+        }
+
+        if ($("newMemberId")) {
+
+            $("newMemberId").value =
+                String(nextId).padStart(6, "0");
+
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Member ID error:",
+            error
+        );
+
+        if ($("newMemberId")) {
+            $("newMemberId").value =
+                "000001";
+        }
+    }
+}
+
+
+/* =========================================================
+   SAVE MEMBER
+   ========================================================= */
+
+async function saveMember() {
+
+    if (!supabaseClient) {
+
+        alert(
+            "Supabase connection পাওয়া যায়নি।"
+        );
+
+        return;
+    }
+
+    const name =
+        $("memberName")?.value.trim();
+
+    if (!name) {
+
+        alert(
+            "সদস্যের পূর্ণ নাম দিন।"
+        );
+
+        return;
+    }
+
+    const memberData = {
+
+        member_id:
+            $("newMemberId")?.value || "",
+
+        name:
+            name,
+
+        father_name:
+            $("fatherName")?.value.trim() || "",
+
+        mobile:
+            $("memberMobile")?.value.trim() || "",
+
+        nid:
+            $("memberNid")?.value.trim() || "",
+
+        address:
+            $("memberAddress")?.value.trim() || "",
+
+        join_date:
+            $("memberJoinDate")?.value ||
+            new Date()
+                .toISOString()
+                .slice(0, 10),
+
+        status:
+            $("memberStatus")?.value ||
+            "active",
+
+        cheque_pages:
+            Number(
+                $("chequePages")?.value || 0
+            ),
+
+        other_document_details:
+            $("otherDocumentDetails")
+                ?.value.trim() || "",
+
+        document_folder:
+            $("documentFolder")
+                ?.value.trim() || ""
+    };
+
+
+    const saveButton =
+        $("saveMemberButton");
+
+    if (saveButton) {
+        saveButton.disabled = true;
+        saveButton.textContent =
+            "⏳ Saving...";
+    }
+
+
+    try {
+
+        let result;
+
+        if (currentEditId) {
+
+            result =
+                await supabaseClient
+                    .from("members")
+                    .update(memberData)
+                    .eq("id", currentEditId);
+
+        } else {
+
+            result =
+                await supabaseClient
+                    .from("members")
+                    .insert([memberData]);
+
+        }
+
+        if (result.error) {
+            throw result.error;
+        }
+
+
+        alert(
+            currentEditId
+                ? "✅ সদস্যের তথ্য আপডেট হয়েছে।"
+                : "✅ নতুন সদস্য সফলভাবে যোগ হয়েছে।"
+        );
+
+
+        closeMemberModal();
+
+        currentEditId = null;
+
+        await loadMembers();
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "❌ Save করা যায়নি:\n" +
+            error.message
+        );
+
+    } finally {
+
+        if (saveButton) {
+            saveButton.disabled = false;
+            saveButton.textContent =
+                currentEditId
+                    ? "💾 Update Member"
+                    : "💾 Save Member";
+        }
+    }
+}
+
+
+/* =========================================================
+   LOAD MEMBERS
+   ========================================================= */
+
+async function loadMembers() {
+
+    if (!supabaseClient) return;
+
+    const list =
+        $("memberList");
+
+    if (!list) return;
+
+
+    list.innerHTML = `
+        <tr>
+            <td colspan="6">
+                ⏳ Loading...
+            </td>
+        </tr>
+    `;
+
+
+    const search =
+        $("memberSearch")
+            ?.value
+            .trim() || "";
+
+
+    try {
+
+        let query =
+            supabaseClient
+                .from("members")
+                .select("*");
+
+
+        if (search) {
+
+            query =
+                query.or(
+                    "member_id.ilike.%" +
+                    search +
+                    "%,name.ilike.%" +
+                    search +
+                    "%,mobile.ilike.%" +
+                    search +
+                    "%"
+                );
+        }
+
+
+        query =
+            query.order(
+                "created_at",
+                {
+                    ascending: false
+                }
+            );
+
+
+        const { data, error } =
+            await query;
+
+
+        if (error) {
+            throw error;
+        }
+
+
+        list.innerHTML = "";
+
+
+        if (!data || data.length === 0) {
+
+            list.innerHTML = `
+                <tr>
+                    <td colspan="6">
+                        কোনো সদস্য পাওয়া যায়নি।
+                    </td>
+                </tr>
+            `;
+
+        } else {
+
+            data.forEach(member => {
+
+                const row =
+                    document.createElement("tr");
+
+
+                row.innerHTML = `
+
+                    <td>
+                        ${escapeHtml(
+                            member.member_id || ""
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            member.name || ""
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            member.mobile || ""
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            member.join_date || ""
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            member.status || ""
+                        )}
+                    </td>
+
+                    <td>
+
+                        <button
+                            type="button"
+                            onclick="viewMember('${member.id}')"
+                        >
+                            👁️ View
+                        </button>
+
+                        <button
+                            type="button"
+                            onclick="editMember('${member.id}')"
+                        >
+                            ✏️ Edit
+                        </button>
+
+                        <button
+                            type="button"
+                            onclick="deleteMember('${member.id}')"
+                        >
+                            🗑️ Delete
+                        </button>
+
+                    </td>
+
+                `;
+
+
+                list.appendChild(row);
+
+            });
+        }
+
+
+        if ($("memberCount")) {
+
+            $("memberCount").textContent =
+                data ? data.length : 0;
+
+        }
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        list.innerHTML = `
+            <tr>
+                <td colspan="6">
+                    ❌ সদস্য লোড হয়নি।
+                </td>
+            </tr>
+        `;
+
+        showMessage(
+            "memberMessage",
+            error.message,
+            true
+        );
+    }
+}
+
+
+/* =========================================================
+   VIEW MEMBER
+   ========================================================= */
+
+async function viewMember(id) {
+
+    if (!supabaseClient) return;
+
+
+    try {
+
+        const { data, error } =
+            await supabaseClient
+                .from("members")
+                .select("*")
+                .eq("id", id)
+                .single();
+
+
+        if (error) {
+            throw error;
+        }
+
+
+        const details =
+            $("memberDetails");
+
+
+        if (!details) {
+
+            alert(
+                JSON.stringify(
+                    data,
+                    null,
+                    2
+                )
+            );
+
+            return;
+        }
+
+
+        details.innerHTML = `
+
+            <h2>👤 সদস্যের বিস্তারিত তথ্য</h2>
+
+            <hr>
+
+            <p>
+                <b>Member ID:</b>
+                ${escapeHtml(
+                    data.member_id || ""
+                )}
+            </p>
+
+            <p>
+                <b>নাম:</b>
+                ${escapeHtml(
+                    data.name || ""
+                )}
+            </p>
+
+            <p>
+                <b>পিতা/স্বামী:</b>
+                ${escapeHtml(
+                    data.father_name || ""
+                )}
+            </p>
+
+            <p>
+                <b>মোবাইল:</b>
+                ${escapeHtml(
+                    data.mobile || ""
+                )}
+            </p>
+
+            <p>
+                <b>NID:</b>
+                ${escapeHtml(
+                    data.nid || ""
+                )}
+            </p>
+
+            <p>
+                <b>ঠিকানা:</b>
+                ${escapeHtml(
+                    data.address || ""
+                )}
+            </p>
+
+            <p>
+                <b>যোগদানের তারিখ:</b>
+                ${escapeHtml(
+                    data.join_date || ""
+                )}
+            </p>
+
+            <p>
+                <b>Status:</b>
+                ${escapeHtml(
+                    data.status || ""
+                )}
+            </p>
+
+            <p>
+                <b>চেকের পাতা:</b>
+                ${escapeHtml(
+                    data.cheque_pages || 0
+                )}
+            </p>
+
+            <p>
+                <b>অন্যান্য ডকুমেন্ট:</b>
+                ${escapeHtml(
+                    data.other_document_details ||
+                    ""
+                )}
+            </p>
+
+            <p>
+                <b>ডকুমেন্ট ফোল্ডার:</b>
+                ${escapeHtml(
+                    data.document_folder ||
+                    ""
+                )}
+            </p>
+
+        `;
+
+
+        const modal =
+            document.querySelector(
+                "#memberViewModal"
+            );
+
+
+        if (modal) {
+            modal.style.display = "flex";
+        }
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "❌ View করা যায়নি:\n" +
+            error.message
+        );
+    }
+}
+
+
+function closeMemberView() {
+
+    const modal =
+        document.querySelector(
+            "#memberViewModal"
+        );
+
+    if (modal) {
+        modal.style.display = "none";
+    }
+}
+
+
+/* =========================================================
+   EDIT MEMBER
+   ========================================================= */
+
+async function editMember(id) {
+
+    if (!supabaseClient) return;
+
+
+    try {
+
+        const { data, error } =
+            await supabaseClient
+                .from("members")
+                .select("*")
+                .eq("id", id)
+                .single();
+
+
+        if (error) {
+            throw error;
+        }
+
+
+        currentEditId = id;
+
+
+        if ($("newMemberId"))
+            $("newMemberId").value =
+                data.member_id || "";
+
+
+        if ($("memberName"))
+            $("memberName").value =
+                data.name || "";
+
+
+        if ($("fatherName"))
+            $("fatherName").value =
+                data.father_name || "";
+
+
+        if ($("memberMobile"))
+            $("memberMobile").value =
+                data.mobile || "";
+
+
+        if ($("memberNid"))
+            $("memberNid").value =
+                data.nid || "";
+
+
+        if ($("memberAddress"))
+            $("memberAddress").value =
+                data.address || "";
+
+
+        if ($("memberJoinDate"))
+            $("memberJoinDate").value =
+                data.join_date || "";
+
+
+        if ($("memberStatus"))
+            $("memberStatus").value =
+                data.status || "active";
+
+
+        if ($("chequePages"))
+            $("chequePages").value =
+                data.cheque_pages || 0;
+
+
+        if ($("otherDocumentDetails"))
+            $("otherDocumentDetails").value =
+                data.other_document_details ||
+                "";
+
+
+        if ($("documentFolder"))
+            $("documentFolder").value =
+                data.document_folder || "";
+
+
+        if ($("saveMemberButton"))
+            $("saveMemberButton").textContent =
+                "💾 Update Member";
+
+
+        const modal =
+            document.querySelector(
+                "#memberModal"
+            );
+
+
+        if (modal) {
+            modal.style.display = "flex";
+        }
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "❌ Edit করা যায়নি:\n" +
+            error.message
+        );
+    }
+}
+
+
+/* =========================================================
+   DELETE MEMBER
+   ========================================================= */
+
+async function deleteMember(id) {
+
+    if (!supabaseClient) return;
+
+
+    const confirmed =
+        confirm(
+            "⚠️ এই সদস্যকে Delete করতে চান?\n\n" +
+            "Delete করার পর তথ্যটি আর এই তালিকায় থাকবে না।"
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    try {
+
+        const { error } =
+            await supabaseClient
+                .from("members")
+                .delete()
+                .eq("id", id);
+
+
+        if (error) {
+            throw error;
+        }
+
+
+        alert(
+            "✅ সদস্য Delete হয়েছে।"
+        );
+
+
+        await loadMembers();
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "❌ Delete করা যায়নি:\n" +
+            error.message
+        );
+    }
+}
+
+
+/* =========================================================
+   MANAGER PROFILE
+   ========================================================= */
+
+function openProfileModal() {
+
+    const modal =
+        document.querySelector(
+            "#profileModal"
+        );
+
+    if (modal) {
+        modal.style.display = "flex";
+    }
+}
+
+
+function closeProfileModal() {
+
+    const modal =
+        document.querySelector(
+            "#profileModal"
+        );
+
+    if (modal) {
+        modal.style.display = "none";
+    }
+}
+
+
+async function saveProfile() {
+
+    const name =
+        $("profileName")
+            ?.value
+            .trim() || "";
+
+    const mobile =
+        $("profileMobile")
+            ?.value
+            .trim() || "";
+
+
+    if (!name) {
+
+        alert(
+            "Manager-এর নাম দিন।"
+        );
+
+        return;
+    }
+
+
+    if ($("managerTitle")) {
+
+        $("managerTitle").textContent =
+            "👤 " + name;
+
+    }
+
+
+    closeProfileModal();
+
+    alert(
+        "✅ Profile আপডেট হয়েছে।"
+    );
+}
+
+
+/* =========================================================
+   FUND
+   ========================================================= */
+
+function openBalanceModal(type) {
+
+    currentFundType = type;
+
+
+    const modal =
+        document.querySelector(
+            "#balanceModal"
+        );
+
+
+    if (modal) {
+        modal.style.display = "flex";
+    }
+}
+
+
+function closeBalanceModal() {
+
+    const modal =
+        document.querySelector(
+            "#balanceModal"
+        );
+
+
+    if (modal) {
+        modal.style.display = "none";
+    }
+}
+
+
+async function submitBalanceChange() {
+
+    const amount =
+        Number(
+            $("balanceAmount")
+                ?.value || 0
+        );
+
+
+    const description =
+        $("balanceDescription")
+            ?.value
+            .trim() || "";
+
+
+    if (amount <= 0) {
+
+        alert(
+            "সঠিক টাকার পরিমাণ দিন।"
+        );
+
+        return;
+    }
+
+
+    alert(
+        "Fund transaction প্রস্তুত হয়েছে:\n" +
+        (currentFundType === "fund_added"
+            ? "➕ Add Fund"
+            : "➖ Reduce Fund") +
+        "\nAmount: ৳ " +
+        amount.toFixed(2)
+    );
+
+
+    closeBalanceModal();
+
+
+    if ($("balanceAmount"))
+        $("balanceAmount").value = "";
+
+
+    if ($("balanceDescription"))
+        $("balanceDescription").value = "";
+}
+
+
+/* =========================================================
+   ACCOUNT MODAL
+   ========================================================= */
+
+function openAccountModal() {
+
+    const modal =
+        document.querySelector(
+            "#accountModal"
+        );
+
+
+    if (modal) {
+        modal.style.display = "flex";
+    }
+}
+
+
+function closeAccountModal() {
+
+    const modal =
+        document.querySelector(
+            "#accountModal"
+        );
+
+
+    if (modal) {
+        modal.style.display = "none";
+    }
+}
+
+
+async function saveAccount() {
+
+    const memberId =
+        $("accountMemberId")
+            ?.value
+            .trim() || "";
+
+
+    if (!memberId) {
+
+        alert(
+            "Member ID দিন।"
+        );
+
+        return;
+    }
+
+
+    alert(
+        "Account module-এর database অংশ পরের ধাপে যুক্ত করা হবে।"
+    );
+}
+
+
+/* =========================================================
+   MODAL OUTSIDE CLICK
+   ========================================================= */
+
+window.addEventListener(
+    "click",
+    function(event) {
+
+        const modals =
+            document.querySelectorAll(
+                ".modal"
+            );
+
+
+        modals.forEach(modal => {
+
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+
+        });
+
+    }
+);
+
+
+/* =========================================================
+   PAGE LOAD
+   ========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    async function() {
+
+        try {
+
+            if (
+                typeof window.supabase ===
+                "undefined"
+            ) {
+
+                console.error(
+                    "Supabase JS library পাওয়া যায়নি।"
+                );
+
+                return;
+            }
+
+
+            supabaseClient =
+                window.supabase.createClient(
+                    SUPABASE_URL,
+                    SUPABASE_KEY
+                );
+
+
+            /* LOGIN FORM */
+
+            const loginForm =
+                $("loginForm");
+
+
+            if (loginForm) {
+
+                loginForm.addEventListener(
+                    "submit",
+                    async function(event) {
+
+                        event.preventDefault();
+
+
+                        const email =
+                            $("email")
+                                ?.value
+                                .trim() || "";
+
+
+                        const password =
+                            $("password")
+                                ?.value || "";
+
+
+                        if (!email ||
+                            !password) {
+
+                            showMessage(
+                                "loginMessage",
+                                "Email এবং Password দিন।",
+                                true
+                            );
+
+                            return;
+                        }
+
+
+                        showMessage(
+                            "loginMessage",
+                            "⏳ Login হচ্ছে..."
+                        );
+
+
+                        try {
+
+                            await loginUser(
+                                email,
+                                password
+                            );
+
+
+                            showDashboard();
+
+
+                            showMessage(
+                                "loginMessage",
+                                ""
+                            );
+
+
+                        } catch (error) {
+
+                            console.error(error);
+
+
+                            showMessage(
+                                "loginMessage",
+                                "❌ " +
+                                error.message,
+                                true
+                            );
+                        }
+
+                    }
+                );
+            }
+
+
+            /* CHECK EXISTING LOGIN */
+
+            const sessionResult =
+                await supabaseClient
+                    .auth
+                    .getSession();
+
+
+            if (
+                sessionResult.data &&
+                sessionResult.data.session
+            ) {
+
+                currentUser =
+                    sessionResult
+                        .data
+                        .session
+                        .user;
+
+
+                showDashboard();
+
+            } else {
+
+                document.querySelectorAll(
+                    ".topbar, .container"
+                ).forEach(el => {
+                    el.style.display = "none";
+                });
+
+            }
+
+
+            /* AUTH STATE */
+
+            supabaseClient.auth.onAuthStateChange(
+                function(event, session) {
+
+                    if (session) {
+
+                        currentUser =
+                            session.user;
+
+                    } else {
+
+                        currentUser = null;
+
+                    }
+
+                }
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Initialization error:",
+                error
+            );
+
+        }
+
+    }
+);
+</script>
 </body>
 </html>

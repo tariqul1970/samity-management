@@ -1432,596 +1432,658 @@ document
 SAVE MEMBER
 ========================================== */
 
+/* =========================
+   MEMBER SYSTEM
+========================= */
+
 async function saveMember(){
 
-const message =
-document
-.getElementById("memberMessage");
+    const msg = document.getElementById("memberMessage");
 
+    const memberId =
+        document.getElementById("newMemberId").value.trim();
 
-const memberId =
-document
-.getElementById("newMemberId")
-.value
-.trim();
+    const fullName =
+        document.getElementById("memberName").value.trim();
 
+    const father =
+        document.getElementById("fatherName").value.trim();
 
-const fullName =
-document
-.getElementById("memberName")
-.value
-.trim();
+    const mobile =
+        document.getElementById("memberMobile").value.trim();
 
+    const nid =
+        document.getElementById("memberNid").value.trim();
 
-const father =
-document
-.getElementById("fatherName")
-.value
-.trim();
+    const addressEl =
+        document.getElementById("memberAddress");
 
+    const address =
+        addressEl ? addressEl.value.trim() : "";
 
-const mobile =
-document
-.getElementById("memberMobile")
-.value
-.trim();
+    const joinDate =
+        document.getElementById("memberJoinDate").value;
 
+    const statusEl =
+        document.getElementById("memberStatus");
 
-const nid =
-document
-.getElementById("memberNid")
-.value
-.trim();
+    const status =
+        statusEl ? statusEl.value : "active";
 
+    if(!fullName){
 
-const address =
-document
-.getElementById("memberAddress")
-.value
-.trim();
+        msg.textContent =
+            "❌ সদস্যের নাম লিখুন।";
 
+        return;
+    }
 
-const joinDate =
-document
-.getElementById("memberJoinDate")
-.value;
+    if(!memberId){
 
+        msg.textContent =
+            "❌ Member ID পাওয়া যায়নি।";
 
-const status =
-document
-.getElementById("memberStatus")
-.value;
+        return;
+    }
 
+    msg.textContent =
+        "⏳ সদস্য সংরক্ষণ হচ্ছে...";
 
-if(!fullName){
+    const result =
+        await supabaseClient
+        .from("members")
+        .insert({
 
-message.textContent=
-"❌ সদস্যের নাম লিখুন।";
+            member_id: memberId,
 
-return;
+            member_no: memberId,
 
+            full_name: fullName,
+
+            father_husband_name: father,
+
+            mobile: mobile,
+
+            nid: nid,
+
+            address: address,
+
+            join_date:
+                joinDate || null,
+
+            status: status
+
+        })
+        .select()
+        .single();
+
+    if(result.error){
+
+        msg.textContent =
+            "❌ সদস্য সংরক্ষণ হয়নি: " +
+            result.error.message;
+
+        return;
+    }
+
+    msg.textContent =
+        "✅ সদস্য সফলভাবে যোগ হয়েছে।";
+
+    await loadMembers();
+
+    setTimeout(function(){
+
+        closeMemberModal();
+
+    },800);
 }
 
 
-message.textContent=
-"⏳ সদস্য সংরক্ষণ হচ্ছে...";
-
-
-/*
-এখানে member_no এবং member_id
-দুটিই একই ৬ ডিজিট ID দেওয়া হচ্ছে।
-*/
-
-const memberData={
-
-member_id:
-memberId,
-
-member_no:
-memberId,
-
-full_name:
-fullName,
-
-father_husband_name:
-father,
-
-mobile:
-mobile,
-
-nid:
-nid,
-
-address:
-address,
-
-join_date:
-joinDate || null,
-
-status:
-status || "active"
-
-};
-
-
-const result =
-await supabaseClient
-.from("members")
-.insert(memberData)
-.select()
-.single();
-
-
-if(result.error){
-
-message.textContent=
-"❌ সদস্য সংরক্ষণ হয়নি: "+
-result.error.message;
-
-return;
-
-}
-
-
-message.textContent=
-"✅ সদস্য সফলভাবে যোগ হয়েছে।";
-
-
-await loadMembers();
-
-
-setTimeout(
-closeMemberModal,
-900
-);
-
-}
-
-
-
-/* ==========================================
-LOAD MEMBERS
-========================================== */
+/* =========================
+   LOAD MEMBERS
+========================= */
 
 async function loadMembers(){
 
-const tbody =
-document
-.getElementById("memberList");
+    const tbody =
+        document.getElementById("memberList");
 
+    if(!tbody) return;
 
-if(!tbody)return;
+    const search =
+        document.getElementById("memberSearch")
+        ?.value.trim()
+        .toLowerCase() || "";
 
+    const result =
+        await supabaseClient
+        .from("members")
+        .select("*")
+        .order("created_at",{ascending:false});
 
-const search =
-document
-.getElementById("memberSearch")
-.value
-.trim()
-.toLowerCase();
+    if(result.error){
 
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="6">
+                    ❌ তথ্য লোড হয়নি:
+                    ${escapeHtml(result.error.message)}
+                </td>
+            </tr>
+        `;
 
-const result =
-await supabaseClient
-.from("members")
-.select("*")
-.order(
-"created_at",
-{
-ascending:false
-}
-);
+        return;
+    }
 
+    let members =
+        result.data || [];
 
-if(result.error){
+    if(search){
 
-tbody.innerHTML=`
+        members =
+            members.filter(function(m){
 
-<tr>
+                return (
 
-<td colspan="6">
+                    String(m.member_id || "")
+                    .toLowerCase()
+                    .includes(search)
 
-❌ তথ্য লোড হয়নি:
-${escapeHtml(
-result.error.message
-)}
+                    ||
 
-</td>
+                    String(m.member_no || "")
+                    .toLowerCase()
+                    .includes(search)
 
-</tr>
+                    ||
 
-`;
+                    String(m.full_name || "")
+                    .toLowerCase()
+                    .includes(search)
 
-return;
+                    ||
 
-}
+                    String(m.mobile || "")
+                    .toLowerCase()
+                    .includes(search)
 
+                );
 
-let members =
-result.data || [];
+            });
+    }
 
+    if(members.length === 0){
 
-if(search){
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="6">
+                    কোনো সদস্য পাওয়া যায়নি।
+                </td>
+            </tr>
+        `;
 
-members =
-members.filter(
-function(m){
+        return;
+    }
 
-return (
+    tbody.innerHTML =
+        members.map(function(m){
 
-String(
-m.member_id || ""
-)
-.toLowerCase()
-.includes(search)
+            return `
 
-||
+            <tr>
 
-String(
-m.full_name || ""
-)
-.toLowerCase()
-.includes(search)
+                <td>
+                    ${escapeHtml(
+                        m.member_id ||
+                        m.member_no ||
+                        ""
+                    )}
+                </td>
 
-||
+                <td>
+                    ${escapeHtml(
+                        m.full_name || ""
+                    )}
+                </td>
 
-String(
-m.mobile || ""
-)
-.toLowerCase()
-.includes(search)
+                <td>
+                    ${escapeHtml(
+                        m.mobile || ""
+                    )}
+                </td>
 
-);
+                <td>
+                    ${escapeHtml(
+                        m.join_date || ""
+                    )}
+                </td>
 
-}
-);
+                <td>
+                    ${m.status === "active"
+                        ? "🟢 Active"
+                        : "🔴 Inactive"}
+                </td>
 
-}
+                <td>
 
+                    <button
+                        class="action-btn"
+                        onclick="viewMember('${m.id}')"
+                    >
+                        👁️ View
+                    </button>
 
-if(members.length===0){
+                </td>
 
-tbody.innerHTML=`
+            </tr>
 
-<tr>
+            `;
 
-<td colspan="6">
-কোনো সদস্য পাওয়া যায়নি।
-</td>
-
-</tr>
-
-`;
-
-return;
-
-}
-
-
-tbody.innerHTML =
-members
-.map(
-function(m){
-
-return `
-
-<tr>
-
-<td>
-${escapeHtml(
-m.member_id ||
-m.member_no ||
-""
-)}
-</td>
-
-<td>
-${escapeHtml(
-m.full_name ||
-""
-)}
-</td>
-
-<td>
-${escapeHtml(
-m.mobile ||
-""
-)}
-</td>
-
-<td>
-${escapeHtml(
-m.join_date ||
-""
-)}
-</td>
-
-<td>
-${escapeHtml(
-m.status ||
-""
-)}
-</td>
-
-<td>
-
-<button
-class="action-btn"
-onclick="viewMember('${m.id}')"
->
-👁️ View
-</button>
-
-</td>
-
-</tr>
-
-`;
-
-}
-)
-.join("");
-
+        }).join("");
 }
 
 
-
-/* ==========================================
-VIEW MEMBER
-========================================== */
+/* =========================
+   VIEW MEMBER
+========================= */
 
 async function viewMember(id){
 
-const result =
-await supabaseClient
-.from("members")
-.select("*")
-.eq(
-"id",
-id
-)
-.single();
+    const result =
+        await supabaseClient
+        .from("members")
+        .select("*")
+        .eq("id",id)
+        .single();
 
+    if(result.error){
 
-if(result.error){
+        alert(
+            "সদস্যের তথ্য পাওয়া যায়নি।"
+        );
 
-alert(
-"সদস্যের তথ্য পাওয়া যায়নি।"
-);
+        return;
+    }
 
-return;
+    const m =
+        result.data;
 
+    const details =
+        document.getElementById(
+            "memberDetails"
+        );
+
+    if(!details) return;
+
+    details.innerHTML = `
+
+        <h3>👤 সদস্যের তথ্য</h3>
+
+        <p>
+            <b>Member ID:</b>
+            ${escapeHtml(
+                m.member_id ||
+                m.member_no ||
+                ""
+            )}
+        </p>
+
+        <p>
+            <b>নাম:</b>
+            ${escapeHtml(
+                m.full_name || ""
+            )}
+        </p>
+
+        <p>
+            <b>পিতা/স্বামী:</b>
+            ${escapeHtml(
+                m.father_husband_name || ""
+            )}
+        </p>
+
+        <p>
+            <b>মোবাইল:</b>
+            ${escapeHtml(
+                m.mobile || ""
+            )}
+        </p>
+
+        <p>
+            <b>NID:</b>
+            ${escapeHtml(
+                m.nid || ""
+            )}
+        </p>
+
+        <p>
+            <b>ঠিকানা:</b>
+            ${escapeHtml(
+                m.address || ""
+            )}
+        </p>
+
+        <p>
+            <b>যোগদানের তারিখ:</b>
+            ${escapeHtml(
+                m.join_date || ""
+            )}
+        </p>
+
+        <p>
+            <b>Status:</b>
+            ${escapeHtml(
+                m.status || ""
+            )}
+        </p>
+
+        <br>
+
+        <button
+            class="save"
+            onclick="editMember('${m.id}')"
+        >
+            ✏️ Edit
+        </button>
+
+        <button
+            class="delete-btn"
+            onclick="deleteMember('${m.id}')"
+        >
+            🗑️ সদস্য মুছুন
+        </button>
+
+    `;
+
+    document.getElementById(
+        "memberViewModal"
+    ).style.display = "flex";
 }
 
 
-const m=result.data;
+/* =========================
+   EDIT MEMBER
+========================= */
 
+async function editMember(id){
 
-currentViewedMemberId =
-m.id;
+    const result =
+        await supabaseClient
+        .from("members")
+        .select("*")
+        .eq("id",id)
+        .single();
 
+    if(result.error){
 
-document
-.getElementById("memberDetails")
-.innerHTML=`
+        alert(
+            "সদস্যের তথ্য পাওয়া যায়নি।"
+        );
 
-<div class="member-info">
+        return;
+    }
 
-<p>
-<b>Member ID:</b><br>
-${escapeHtml(
-m.member_id ||
-m.member_no ||
-""
-)}
-</p>
+    const m =
+        result.data;
 
-<p>
-<b>সদস্যের নাম:</b><br>
-${escapeHtml(
-m.full_name ||
-""
-)}
-</p>
+    document.getElementById(
+        "memberViewModal"
+    ).style.display = "none";
 
-<p>
-<b>পিতা/স্বামীর নাম:</b><br>
-${escapeHtml(
-m.father_husband_name ||
-""
-)}
-</p>
+    document.getElementById(
+        "memberModal"
+    ).style.display = "flex";
 
-<p>
-<b>মোবাইল:</b><br>
-${escapeHtml(
-m.mobile ||
-""
-)}
-</p>
+    document.getElementById(
+        "newMemberId"
+    ).value =
+        m.member_id ||
+        m.member_no ||
+        "";
 
-<p>
-<b>NID:</b><br>
-${escapeHtml(
-m.nid ||
-""
-)}
-</p>
+    document.getElementById(
+        "memberName"
+    ).value =
+        m.full_name || "";
 
-<p>
-<b>ঠিকানা:</b><br>
-${escapeHtml(
-m.address ||
-""
-)}
-</p>
+    document.getElementById(
+        "fatherName"
+    ).value =
+        m.father_husband_name || "";
 
-<p>
-<b>যোগদানের তারিখ:</b><br>
-${escapeHtml(
-m.join_date ||
-""
-)}
-</p>
+    document.getElementById(
+        "memberMobile"
+    ).value =
+        m.mobile || "";
 
-<p>
-<b>Status:</b><br>
-${escapeHtml(
-m.status ||
-""
-)}
-</p>
+    document.getElementById(
+        "memberNid"
+    ).value =
+        m.nid || "";
 
-</div>
+    if(document.getElementById(
+        "memberAddress"
+    )){
 
-`;
+        document.getElementById(
+            "memberAddress"
+        ).value =
+            m.address || "";
+    }
 
+    document.getElementById(
+        "memberJoinDate"
+    ).value =
+        m.join_date || "";
 
-document
-.getElementById("memberViewModal")
-.style.display="flex";
+    if(document.getElementById(
+        "memberStatus"
+    )){
 
+        document.getElementById(
+            "memberStatus"
+        ).value =
+            m.status || "active";
+    }
 
-document
-.getElementById("deleteMemberButton")
-.onclick=
-function(){
+    const button =
+        document.querySelector(
+            '#memberModal button[onclick="saveMember()"]'
+        );
 
-deleteMember(
-currentViewedMemberId
-);
+    if(button){
 
-};
+        button.textContent =
+            "💾 Update Member";
 
+        button.onclick =
+            function(){
+
+                updateMember(id);
+
+            };
+    }
 }
 
 
+/* =========================
+   UPDATE MEMBER
+========================= */
 
-/* ==========================================
-DELETE MEMBER
-========================================== */
+async function updateMember(id){
+
+    const msg =
+        document.getElementById(
+            "memberMessage"
+        );
+
+    const fullName =
+        document.getElementById(
+            "memberName"
+        ).value.trim();
+
+    const father =
+        document.getElementById(
+            "fatherName"
+        ).value.trim();
+
+    const mobile =
+        document.getElementById(
+            "memberMobile"
+        ).value.trim();
+
+    const nid =
+        document.getElementById(
+            "memberNid"
+        ).value.trim();
+
+    const address =
+        document.getElementById(
+            "memberAddress"
+        )?.value.trim() || "";
+
+    const joinDate =
+        document.getElementById(
+            "memberJoinDate"
+        ).value;
+
+    const status =
+        document.getElementById(
+            "memberStatus"
+        )?.value || "active";
+
+    if(!fullName){
+
+        msg.textContent =
+            "❌ সদস্যের নাম লিখুন।";
+
+        return;
+    }
+
+    msg.textContent =
+        "⏳ তথ্য আপডেট হচ্ছে...";
+
+    const result =
+        await supabaseClient
+        .from("members")
+        .update({
+
+            full_name: fullName,
+
+            father_husband_name: father,
+
+            mobile: mobile,
+
+            nid: nid,
+
+            address: address,
+
+            join_date:
+                joinDate || null,
+
+            status: status
+
+        })
+        .eq("id",id);
+
+    if(result.error){
+
+        msg.textContent =
+            "❌ আপডেট হয়নি: " +
+            result.error.message;
+
+        return;
+    }
+
+    msg.textContent =
+        "✅ সদস্যের তথ্য আপডেট হয়েছে।";
+
+    await loadMembers();
+
+    setTimeout(function(){
+
+        closeMemberModal();
+
+    },800);
+}
+
+
+/* =========================
+   DELETE MEMBER
+========================= */
 
 async function deleteMember(id){
 
-if(!id){
+    const confirmDelete =
+        confirm(
+            "⚠️ এই সদস্যকে মুছে ফেলতে চান?"
+        );
 
-alert(
-"সদস্যের ID পাওয়া যায়নি।"
-);
+    if(!confirmDelete){
 
-return;
+        return;
+    }
 
+    const result =
+        await supabaseClient
+        .from("members")
+        .delete()
+        .eq("id",id);
+
+    if(result.error){
+
+        alert(
+            "❌ সদস্য মুছে ফেলা যায়নি:\n\n" +
+            result.error.message
+        );
+
+        return;
+    }
+
+    alert(
+        "✅ সদস্য সফলভাবে মুছে ফেলা হয়েছে।"
+    );
+
+    closeMemberView();
+
+    await loadMembers();
 }
 
 
-const answer =
-confirm(
-"⚠️ আপনি কি নিশ্চিত?\n\n"+
-"এই সদস্যের তথ্য স্থায়ীভাবে মুছে যাবে।\n\n"+
-"মুছে ফেলতে OK চাপুন।"
-);
-
-
-if(!answer){
-
-return;
-
-}
-
-
-const result =
-await supabaseClient
-.from("members")
-.delete()
-.eq(
-"id",
-id
-);
-
-
-if(result.error){
-
-alert(
-"❌ সদস্য মুছে ফেলা যায়নি:\n\n"+
-result.error.message
-);
-
-return;
-
-}
-
-
-alert(
-"✅ সদস্য সফলভাবে মুছে ফেলা হয়েছে।"
-);
-
-
-currentViewedMemberId=null;
-
-
-closeMemberView();
-
-
-await loadMembers();
-
-}
-
-
-
-/* ==========================================
-CLOSE VIEW
-========================================== */
+/* =========================
+   CLOSE MEMBER VIEW
+========================= */
 
 function closeMemberView(){
 
-document
-.getElementById("memberViewModal")
-.style.display="none";
+    const modal =
+        document.getElementById(
+            "memberViewModal"
+        );
 
-currentViewedMemberId=null;
+    if(modal){
 
+        modal.style.display =
+            "none";
+    }
 }
 
 
-
-/* ==========================================
-ESCAPE HTML
-========================================== */
+/* =========================
+   ESCAPE HTML
+========================= */
 
 function escapeHtml(value){
 
-return String(
-value ?? ""
-)
-
-.replace(
-/&/g,
-"&amp;"
-)
-
-.replace(
-/</g,
-"&lt;"
-)
-
-.replace(
-/>/g,
-"&gt;"
-)
-
-.replace(
-/"/g,
-"&quot;"
-)
-
-.replace(
-/'/g,
-"&#039;"
-);
-
+    return String(
+        value ?? ""
+    )
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
 }
-
-</script>
 
 </body>
 </html>

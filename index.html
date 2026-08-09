@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>সমবায় ব্যবস্থাপনা</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -15,18 +14,23 @@ body{
 margin:0;
 font-family:Arial,sans-serif;
 background:#f3f6fa;
-color:#172033
+color:#172033;
 }
 
-button,input{font-family:inherit}
-button{cursor:pointer}
+button,input,select,textarea{
+font-family:inherit;
+}
+
+button{
+cursor:pointer;
+}
 
 .login-page{
 min-height:100vh;
 display:flex;
 justify-content:center;
 align-items:center;
-padding:20px
+padding:20px;
 }
 
 .login-box{
@@ -35,24 +39,36 @@ max-width:430px;
 background:#fff;
 padding:35px;
 border-radius:18px;
-box-shadow:0 10px 35px rgba(0,0,0,.10)
+box-shadow:0 10px 35px rgba(0,0,0,.1);
 }
 
-.login-box h1{text-align:center}
-.login-box p{text-align:center;color:#667085}
+.login-box h1{
+text-align:center;
+margin:0 0 8px;
+}
+
+.login-box p{
+text-align:center;
+color:#667085;
+}
 
 label{
 display:block;
 font-weight:bold;
-margin:12px 0 7px
+margin:12px 0 7px;
 }
 
-input{
+input,select,textarea{
 width:100%;
-padding:13px;
+padding:12px;
 border:1px solid #d0d5dd;
 border-radius:9px;
-font-size:15px
+font-size:15px;
+}
+
+textarea{
+min-height:90px;
+resize:vertical;
 }
 
 .login-button{
@@ -64,41 +80,41 @@ border-radius:9px;
 background:#2563eb;
 color:#fff;
 font-size:16px;
-font-weight:bold
+font-weight:bold;
 }
 
 #message{
 text-align:center;
 margin-top:15px;
-color:#d92d20
+color:#d92d20;
 }
 
 #dashboardPage{
 display:none;
-min-height:100vh
+min-height:100vh;
 }
 
 .topbar{
 background:#fff;
-padding:15px 25px;
+padding:14px 25px;
 display:flex;
 justify-content:space-between;
 align-items:center;
 box-shadow:0 2px 12px rgba(0,0,0,.08);
 position:sticky;
 top:0;
-z-index:10
+z-index:10;
 }
 
 .topbar-left{
 display:flex;
 align-items:center;
-gap:12px
+gap:12px;
 }
 
 .topbar-left h2{
 margin:0;
-font-size:20px
+font-size:20px;
 }
 
 .profile-mini{
@@ -106,7 +122,7 @@ width:45px;
 height:45px;
 border-radius:50%;
 object-fit:cover;
-border:2px solid #2563eb
+border:2px solid #2563eb;
 }
 
 .logout{
@@ -115,13 +131,13 @@ background:#fee4e2;
 color:#b42318;
 padding:10px 16px;
 border-radius:8px;
-font-weight:bold
+font-weight:bold;
 }
 
 .dashboard{
-max-width:1200px;
+max-width:1250px;
 margin:auto;
-padding:25px
+padding:25px;
 }
 
 .profile-card{
@@ -132,26 +148,28 @@ display:flex;
 align-items:center;
 gap:25px;
 box-shadow:0 5px 20px rgba(0,0,0,.06);
-margin-bottom:20px
+margin-bottom:20px;
 }
 
 .profile-photo{
-width:130px;
-height:130px;
+width:120px;
+height:120px;
 border-radius:50%;
 object-fit:cover;
-border:4px solid #2563eb
+border:4px solid #2563eb;
 }
 
-.profile-info{flex:1}
+.profile-info{
+flex:1;
+}
 
 .profile-info h2{
-margin:0 0 8px
+margin:0 0 8px;
 }
 
 .profile-info p{
 margin:7px 0;
-color:#667085
+color:#667085;
 }
 
 .edit-profile-btn{
@@ -161,7 +179,7 @@ background:#2563eb;
 color:#fff;
 padding:10px 18px;
 border-radius:8px;
-font-weight:bold
+font-weight:bold;
 }
 
 .balance-card{
@@ -170,63 +188,164 @@ border-radius:16px;
 padding:25px;
 box-shadow:0 5px 20px rgba(0,0,0,.06);
 margin-bottom:25px;
-text-align:center
+text-align:center;
 }
 
 .balance-title{
 color:#667085;
-font-size:16px
 }
 
 .balance{
 font-size:38px;
 font-weight:bold;
-margin:12px 0 20px
+margin:12px 0 20px;
 }
 
 .balance-buttons{
 display:flex;
 justify-content:center;
 gap:10px;
-flex-wrap:wrap
+flex-wrap:wrap;
 }
 
 .balance-buttons button{
 border:0;
 padding:11px 18px;
 border-radius:8px;
-font-weight:bold
+font-weight:bold;
 }
 
 .add{
 background:#dcfae6;
-color:#027a48
+color:#027a48;
 }
 
 .reduce{
 background:#fee4e2;
-color:#b42318
+color:#b42318;
 }
 
-.cards{
+.modules{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-gap:18px
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:16px;
+margin-bottom:25px;
 }
 
-.card{
+.module{
 background:#fff;
-padding:22px;
+padding:20px;
 border-radius:14px;
 box-shadow:0 5px 18px rgba(0,0,0,.06);
-cursor:pointer;
-transition:.2s
+border:0;
+text-align:left;
 }
 
-.card:hover{transform:translateY(-3px)}
+.module h3{
+margin:0 0 8px;
+}
 
-.card h3{margin-top:0}
-.card p{color:#667085}
+.module p{
+margin:0;
+color:#667085;
+}
+
+.section{
+display:none;
+background:#fff;
+border-radius:16px;
+padding:25px;
+box-shadow:0 5px 20px rgba(0,0,0,.06);
+margin-bottom:25px;
+}
+
+.section.active{
+display:block;
+}
+
+.section-head{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:10px;
+flex-wrap:wrap;
+margin-bottom:20px;
+}
+
+.section-head h2{
+margin:0;
+}
+
+.primary-btn{
+border:0;
+background:#2563eb;
+color:#fff;
+padding:11px 18px;
+border-radius:8px;
+font-weight:bold;
+}
+
+.secondary-btn{
+border:0;
+background:#eaecf0;
+color:#344054;
+padding:10px 16px;
+border-radius:8px;
+font-weight:bold;
+}
+
+.member-toolbar{
+display:grid;
+grid-template-columns:1fr auto;
+gap:10px;
+margin-bottom:20px;
+}
+
+.member-table-wrap{
+overflow-x:auto;
+}
+
+.member-table{
+width:100%;
+border-collapse:collapse;
+}
+
+.member-table th,
+.member-table td{
+padding:12px 10px;
+border-bottom:1px solid #eaecf0;
+text-align:left;
+}
+
+.member-table th{
+background:#f8fafc;
+}
+
+.badge{
+display:inline-block;
+padding:5px 9px;
+border-radius:20px;
+font-size:12px;
+font-weight:bold;
+}
+
+.active-badge{
+background:#dcfae6;
+color:#027a48;
+}
+
+.inactive-badge{
+background:#fee4e2;
+color:#b42318;
+}
+
+.action-btn{
+border:0;
+background:#eef4ff;
+color:#175cd3;
+padding:7px 10px;
+border-radius:7px;
+}
 
 .modal{
 display:none;
@@ -236,118 +355,124 @@ background:rgba(0,0,0,.5);
 justify-content:center;
 align-items:center;
 padding:20px;
-z-index:100
+z-index:100;
 }
 
 .modal-box{
 background:#fff;
 width:100%;
-max-width:500px;
+max-width:600px;
 padding:25px;
 border-radius:16px;
 max-height:90vh;
-overflow-y:auto
+overflow-y:auto;
 }
 
-.modal-box h2{margin-top:0}
+.modal-box h2{
+margin-top:0;
+}
+
+.form-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:5px 15px;
+}
+
+.full{
+grid-column:1/-1;
+}
 
 .modal-buttons{
 display:flex;
 justify-content:flex-end;
 gap:10px;
-margin-top:20px
+margin-top:20px;
 }
 
 .modal-buttons button{
 border:0;
 padding:11px 18px;
 border-radius:8px;
-font-weight:bold
+font-weight:bold;
 }
 
 .cancel{
 background:#eaecf0;
-color:#344054
+color:#344054;
 }
 
 .save{
 background:#2563eb;
-color:#fff
-}
-
-.photo-preview{
-width:120px;
-height:120px;
-border-radius:50%;
-object-fit:cover;
-display:block;
-margin:10px auto 20px;
-border:3px solid #2563eb
+color:#fff;
 }
 
 .modal-message{
 text-align:center;
-margin-top:12px
+margin-top:12px;
 }
 
 .history{
-margin-top:25px;
 background:#fff;
 border-radius:16px;
 padding:20px;
-box-shadow:0 5px 20px rgba(0,0,0,.06)
+box-shadow:0 5px 20px rgba(0,0,0,.06);
 }
 
-.history h3{margin-top:0}
+.history h3{
+margin-top:0;
+}
 
 .history-item{
 padding:12px 0;
 border-bottom:1px solid #eaecf0;
 display:flex;
 justify-content:space-between;
-gap:10px
+gap:10px;
 }
 
 .green{
 color:#027a48;
-font-weight:bold
+font-weight:bold;
 }
 
 .red{
 color:#b42318;
-font-weight:bold
+font-weight:bold;
 }
 
-@media(max-width:600px){
+@media(max-width:700px){
 
 .topbar{
-padding:12px 15px
+padding:12px 15px;
 }
 
 .topbar-left h2{
-font-size:16px
+font-size:16px;
 }
 
 .dashboard{
-padding:15px
+padding:15px;
 }
 
 .profile-card{
 flex-direction:column;
-text-align:center
+text-align:center;
 }
 
-.profile-photo{
-width:110px;
-height:110px
+.form-grid{
+grid-template-columns:1fr;
+}
+
+.full{
+grid-column:auto;
+}
+
+.member-toolbar{
+grid-template-columns:1fr;
 }
 
 .balance{
-font-size:30px
-}
-
-.history-item{
-flex-direction:column
+font-size:30px;
 }
 
 }
@@ -417,7 +542,7 @@ src="https://placehold.co/100x100"
 alt="Manager"
 >
 
-<h2>Manager Dashboard</h2>
+<h2>সমবায় ব্যবস্থাপনা</h2>
 
 </div>
 
@@ -442,7 +567,7 @@ Logout
 id="profilePhoto"
 class="profile-photo"
 src="https://placehold.co/200x200"
-alt="Manager Photo"
+alt="Manager"
 >
 
 <div class="profile-info">
@@ -507,36 +632,145 @@ onclick="openBalanceModal('fund_reduced')"
 
 <!-- MODULES -->
 
-<div class="cards">
+<div class="modules">
 
-<div class="card">
+<button
+class="module"
+onclick="openMembers()"
+>
+
 <h3>👥 Members</h3>
+
 <p>সদস্য ব্যবস্থাপনা</p>
-</div>
 
-<div class="card">
+</button>
+
+
+<button class="module">
+
 <h3>💳 Savings</h3>
+
 <p>সঞ্চয় হিসাব</p>
-</div>
 
-<div class="card">
+</button>
+
+
+<button class="module">
+
 <h3>📅 DPS</h3>
+
 <p>DPS ব্যবস্থাপনা</p>
-</div>
 
-<div class="card">
+</button>
+
+
+<button class="module">
+
 <h3>🏦 FDR</h3>
+
 <p>FDR ব্যবস্থাপনা</p>
-</div>
 
-<div class="card">
+</button>
+
+
+<button class="module">
+
 <h3>💰 Loan</h3>
+
 <p>Loan ব্যবস্থাপনা</p>
+
+</button>
+
+
+<button class="module">
+
+<h3>👨‍💼 Staff</h3>
+
+<p>Field Officer ও Staff</p>
+
+</button>
+
 </div>
 
-<div class="card">
-<h3>👨‍💼 Staff</h3>
-<p>Field Officer ও Staff</p>
+
+<!-- MEMBERS -->
+
+<div
+id="membersSection"
+class="section"
+>
+
+<div class="section-head">
+
+<h2>👥 সদস্য ব্যবস্থাপনা</h2>
+
+<button
+class="primary-btn"
+onclick="openMemberModal()"
+>
+➕ নতুন সদস্য
+</button>
+
+</div>
+
+
+<div class="member-toolbar">
+
+<input
+type="text"
+id="memberSearch"
+placeholder="Member ID / নাম / মোবাইল দিয়ে খুঁজুন..."
+oninput="loadMembers()"
+>
+
+<button
+class="secondary-btn"
+onclick="loadMembers()"
+>
+🔄 Refresh
+</button>
+
+</div>
+
+
+<div class="member-table-wrap">
+
+<table class="member-table">
+
+<thead>
+
+<tr>
+
+<th>Member ID</th>
+
+<th>সদস্যের নাম</th>
+
+<th>মোবাইল</th>
+
+<th>তারিখ</th>
+
+<th>Status</th>
+
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody id="memberList">
+
+<tr>
+
+<td colspan="6">
+Loading...
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
 </div>
 
 </div>
@@ -546,10 +780,12 @@ onclick="openBalanceModal('fund_reduced')"
 
 <div class="history">
 
-<h3>📜 Fund Transaction History</h3>
+<h3>
+📜 Fund Transaction History
+</h3>
 
 <div id="fundHistory">
-এখনো কোনো Transaction নেই।
+এখনো কোনো Fund Transaction নেই।
 </div>
 
 </div>
@@ -561,20 +797,27 @@ onclick="openBalanceModal('fund_reduced')"
 
 <!-- PROFILE MODAL -->
 
-<div id="profileModal" class="modal">
+<div
+id="profileModal"
+class="modal"
+>
 
 <div class="modal-box">
 
-<h2>👤 Manager Profile</h2>
+<h2>
+👤 Manager Profile
+</h2>
 
 <img
 id="photoPreview"
-class="photo-preview"
+class="profile-photo"
+style="display:block;margin:10px auto 20px"
 src="https://placehold.co/200x200"
-alt="Photo"
 >
 
-<label>Manager Name</label>
+<label>
+Manager Name
+</label>
 
 <input
 type="text"
@@ -582,7 +825,9 @@ id="profileName"
 placeholder="Manager-এর নাম"
 >
 
-<label>Mobile Number</label>
+<label>
+Mobile Number
+</label>
 
 <input
 type="tel"
@@ -590,7 +835,9 @@ id="profileMobile"
 placeholder="01XXXXXXXXX"
 >
 
-<label>Manager Photo</label>
+<label>
+Manager Photo
+</label>
 
 <input
 type="file"
@@ -629,7 +876,10 @@ class="modal-message"
 
 <!-- BALANCE MODAL -->
 
-<div id="balanceModal" class="modal">
+<div
+id="balanceModal"
+class="modal"
+>
 
 <div class="modal-box">
 
@@ -637,7 +887,9 @@ class="modal-message"
 ➕ Add Fund
 </h2>
 
-<label>Amount</label>
+<label>
+Amount
+</label>
 
 <input
 type="number"
@@ -647,7 +899,9 @@ step="0.01"
 placeholder="টাকার পরিমাণ"
 >
 
-<label>Description</label>
+<label>
+Description
+</label>
 
 <input
 type="text"
@@ -683,11 +937,211 @@ class="modal-message"
 </div>
 
 
+<!-- MEMBER MODAL -->
+
+<div
+id="memberModal"
+class="modal"
+>
+
+<div class="modal-box">
+
+<h2>
+➕ নতুন সদস্য
+</h2>
+
+<div class="form-grid">
+
+
+<div class="full">
+
+<label>
+Member ID
+</label>
+
+<input
+type="text"
+id="newMemberId"
+readonly
+placeholder="Auto Generate"
+>
+
+</div>
+
+
+<div>
+
+<label>
+সদস্যের নাম *
+</label>
+
+<input
+type="text"
+id="memberName"
+placeholder="পূর্ণ নাম"
+>
+
+</div>
+
+
+<div>
+
+<label>
+পিতা/স্বামীর নাম
+</label>
+
+<input
+type="text"
+id="fatherName"
+placeholder="নাম"
+>
+
+</div>
+
+
+<div>
+
+<label>
+মোবাইল নম্বর
+</label>
+
+<input
+type="tel"
+id="memberMobile"
+placeholder="01XXXXXXXXX"
+>
+
+</div>
+
+
+<div>
+
+<label>
+NID নম্বর
+</label>
+
+<input
+type="text"
+id="memberNid"
+placeholder="NID"
+>
+
+</div>
+
+
+<div class="full">
+
+<label>
+ঠিকানা
+</label>
+
+<textarea
+id="memberAddress"
+placeholder="সম্পূর্ণ ঠিকানা"
+></textarea>
+
+</div>
+
+
+<div>
+
+<label>
+যোগদানের তারিখ
+</label>
+
+<input
+type="date"
+id="memberJoinDate"
+>
+
+</div>
+
+
+<div>
+
+<label>
+Status
+</label>
+
+<select id="memberStatus">
+
+<option value="active">
+Active
+</option>
+
+<option value="inactive">
+Inactive
+</option>
+
+</select>
+
+</div>
+
+</div>
+
+
+<div class="modal-buttons">
+
+<button
+class="cancel"
+onclick="closeMemberModal()"
+>
+Cancel
+</button>
+
+<button
+class="save"
+onclick="saveMember()"
+>
+💾 Save Member
+</button>
+
+</div>
+
+<div
+id="memberMessage"
+class="modal-message"
+></div>
+
+</div>
+
+</div>
+
+
+<!-- MEMBER VIEW -->
+
+<div
+id="memberViewModal"
+class="modal"
+>
+
+<div class="modal-box">
+
+<h2>
+👤 সদস্যের বিস্তারিত
+</h2>
+
+<div id="memberDetails"></div>
+
+<div class="modal-buttons">
+
+<button
+class="cancel"
+onclick="closeMemberView()"
+>
+Close
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
 <script>
 
-/* =========================================
-SUPABASE
-========================================= */
+/* SUPABASE */
 
 const SUPABASE_URL =
 "https://tcdilhooslygsvdcqkte.supabase.co";
@@ -701,14 +1155,11 @@ SUPABASE_URL,
 SUPABASE_KEY
 );
 
+let currentUser = null;
+let currentBalanceAction = null;
 
-let currentUser=null;
-let currentBalanceAction=null;
 
-
-/* =========================================
-LOGIN
-========================================= */
+/* LOGIN */
 
 document
 .getElementById("loginForm")
@@ -716,36 +1167,30 @@ document
 
 e.preventDefault();
 
-const email=
-document.getElementById("email")
-.value.trim();
+const email =
+document.getElementById("email").value.trim();
 
-const password=
-document.getElementById("password")
-.value;
+const password =
+document.getElementById("password").value;
 
-const message=
+const message =
 document.getElementById("message");
 
 message.textContent="Login হচ্ছে...";
 
-
-const result=
+const result =
 await supabaseClient.auth.signInWithPassword({
 email:email,
 password:password
 });
 
-
 if(result.error){
 
-message.textContent=
-"Login failed: "+
-result.error.message;
+message.textContent =
+"Login failed: "+result.error.message;
 
 return;
 }
-
 
 currentUser=result.data.user;
 
@@ -754,36 +1199,29 @@ await checkManagerRole();
 });
 
 
-/* =========================================
-CHECK ROLE
-========================================= */
+/* MANAGER ROLE */
 
 async function checkManagerRole(){
 
-const result=
+const result =
 await supabaseClient
 .from("user_roles")
 .select("role")
 .eq("user_id",currentUser.id)
 .maybeSingle();
 
-
 if(result.error){
 
-document.getElementById("message")
-.textContent=
-"Role check failed: "+
-result.error.message;
+document.getElementById("message").textContent =
+"Role check failed: "+result.error.message;
 
 return;
 }
 
-
 if(!result.data ||
 result.data.role!=="manager"){
 
-document.getElementById("message")
-.textContent=
+document.getElementById("message").textContent =
 "এই User-এর manager role পাওয়া যায়নি।";
 
 await supabaseClient.auth.signOut();
@@ -791,23 +1229,18 @@ await supabaseClient.auth.signOut();
 return;
 }
 
-
-showDashboard();
+await showDashboard();
 
 }
 
 
-/* =========================================
-DASHBOARD
-========================================= */
+/* DASHBOARD */
 
 async function showDashboard(){
 
-document.getElementById("loginPage")
-.style.display="none";
+document.getElementById("loginPage").style.display="none";
 
-document.getElementById("dashboardPage")
-.style.display="block";
+document.getElementById("dashboardPage").style.display="block";
 
 await loadManagerProfile();
 
@@ -818,315 +1251,161 @@ await loadFundHistory();
 }
 
 
-/* =========================================
-PROFILE LOAD
-========================================= */
+/* PROFILE */
 
 async function loadManagerProfile(){
 
-const result=
+const result =
 await supabaseClient
 .from("manager_profiles")
 .select("*")
 .eq("user_id",currentUser.id)
 .maybeSingle();
 
-
 if(result.error){
-console.log(result.error);
 return;
 }
-
 
 if(!result.data){
 
-document.getElementById("managerName")
-.textContent=
-currentUser.user_metadata?.full_name ||
-"Avijit Das";
+document.getElementById("managerName").textContent =
+currentUser.user_metadata?.full_name || "Avijit Das";
 
 return;
 }
 
+const p=result.data;
 
-const profile=result.data;
+document.getElementById("managerName").textContent =
+p.full_name || "Manager";
 
+document.getElementById("managerMobile").textContent =
+"Mobile: "+(p.mobile||"—");
 
-document.getElementById("managerName")
-.textContent=
-profile.full_name ||
-"Manager";
+if(p.photo_url){
 
+document.getElementById("profilePhoto").src=p.photo_url;
 
-document.getElementById("managerMobile")
-.textContent=
-"Mobile: "+
-(profile.mobile||"—");
-
-
-if(profile.photo_url){
-
-document.getElementById("profilePhoto")
-.src=profile.photo_url;
-
-document.getElementById("miniPhoto")
-.src=profile.photo_url;
+document.getElementById("miniPhoto").src=p.photo_url;
 
 }
 
 }
 
-
-/* =========================================
-PROFILE MODAL
-========================================= */
 
 async function openProfileModal(){
 
-document.getElementById("profileModal")
-.style.display="flex";
+document.getElementById("profileModal").style.display="flex";
 
-
-const result=
+const result =
 await supabaseClient
 .from("manager_profiles")
 .select("*")
 .eq("user_id",currentUser.id)
 .maybeSingle();
 
+const p=result.data;
 
-const profile=result.data;
+document.getElementById("profileName").value =
+p?.full_name || "Avijit Das";
 
+document.getElementById("profileMobile").value =
+p?.mobile || "";
 
-document.getElementById("profileName")
-.value=
-profile?.full_name ||
-"Avijit Das";
+document.getElementById("photoPreview").src =
+p?.photo_url || "https://placehold.co/200x200";
 
-
-document.getElementById("profileMobile")
-.value=
-profile?.mobile ||
-"";
-
-
-document.getElementById("photoPreview")
-.src=
-profile?.photo_url ||
-"https://placehold.co/200x200";
-
-
-document.getElementById("profileMessage")
-.textContent="";
+document.getElementById("profileMessage").textContent="";
 
 }
 
-
-/* =========================================
-CLOSE PROFILE
-========================================= */
 
 function closeProfileModal(){
 
-document.getElementById("profileModal")
-.style.display="none";
+document.getElementById("profileModal").style.display="none";
 
 }
 
 
-/* =========================================
-PHOTO PREVIEW
-========================================= */
-
 function previewPhoto(event){
 
-const file=
-event.target.files[0];
+const file=event.target.files[0];
 
-if(!file)return;
+if(file){
 
-document.getElementById("photoPreview")
-.src=
+document.getElementById("photoPreview").src =
 URL.createObjectURL(file);
 
 }
 
+}
 
-/* =========================================
-SAVE PROFILE
-========================================= */
 
 async function saveProfile(){
 
-const msg=
+const msg =
 document.getElementById("profileMessage");
 
+const name =
+document.getElementById("profileName").value.trim();
 
-const name=
-document.getElementById("profileName")
-.value.trim();
-
-
-const mobile=
-document.getElementById("profileMobile")
-.value.trim();
-
-
-const file=
-document.getElementById("profilePhotoFile")
-.files[0];
-
+const mobile =
+document.getElementById("profileMobile").value.trim();
 
 if(!name){
 
-msg.textContent=
-"Manager-এর নাম লিখুন।";
+msg.textContent="Manager-এর নাম লিখুন।";
 
 return;
 }
 
+msg.textContent="Profile save হচ্ছে...";
 
-msg.textContent="Saving...";
-
-
-let photoUrl=null;
-
-
-const old=
+const saved =
 await supabaseClient
 .from("manager_profiles")
-.select("photo_url")
-.eq("user_id",currentUser.id)
-.maybeSingle();
-
-
-photoUrl=
-old.data?.photo_url||null;
-
-
-/* PHOTO */
-
-if(file){
-
-const extension=
-file.name
-.split(".")
-.pop()
-.toLowerCase();
-
-
-const path=
-currentUser.id+
-"/manager."+
-extension;
-
-
-const upload=
-await supabaseClient
-.storage
-.from("manager-photos")
-.upload(
-path,
-file,
-{
-upsert:true,
-contentType:file.type
-}
-);
-
-
-if(upload.error){
-
-msg.textContent=
-"Photo upload failed: "+
-upload.error.message;
-
-return;
-}
-
-
-const publicUrl=
-supabaseClient
-.storage
-.from("manager-photos")
-.getPublicUrl(path);
-
-
-photoUrl=
-publicUrl.data.publicUrl+
-"?t="+Date.now();
-
-}
-
-
-/* SAVE */
-
-const saved=
-await supabaseClient
-.from("manager_profiles")
-.upsert(
-{
+.upsert({
 user_id:currentUser.id,
 full_name:name,
 mobile:mobile,
-photo_url:photoUrl,
 updated_at:new Date().toISOString()
-},
-{
+},{
 onConflict:"user_id"
-}
-);
-
+});
 
 if(saved.error){
 
-msg.textContent=
-"Profile save failed: "+
-saved.error.message;
+msg.textContent =
+"Profile save failed: "+saved.error.message;
 
 return;
 }
 
-
-msg.textContent=
+msg.textContent =
 "Profile successfully saved!";
-
 
 await loadManagerProfile();
 
-
-setTimeout(
-closeProfileModal,
-700
-);
+setTimeout(closeProfileModal,700);
 
 }
 
 
-/* =========================================
-BALANCE
-========================================= */
+/* BALANCE */
 
 async function loadManagerBalance(){
 
-const result=
+const result =
 await supabaseClient
 .rpc("get_manager_balance");
 
-
 if(result.error){
 
-console.log(
-"Balance error:",
-result.error
-);
-
-document.getElementById("balance")
-.textContent="৳0.00";
+document.getElementById("balance").textContent =
+"৳0.00";
 
 return;
 }
-
 
 setBalance(result.data||0);
 
@@ -1135,156 +1414,97 @@ setBalance(result.data||0);
 
 function setBalance(amount){
 
-document.getElementById("balance")
-.textContent=
-"৳"+
-Number(amount)
-.toLocaleString(
-"en-BD",
-{
+document.getElementById("balance").textContent =
+"৳"+Number(amount).toLocaleString("en-BD",{
 minimumFractionDigits:2,
 maximumFractionDigits:2
-}
-);
+});
 
 }
 
-
-/* =========================================
-BALANCE MODAL
-========================================= */
 
 function openBalanceModal(action){
 
 currentBalanceAction=action;
 
-document.getElementById("balanceModal")
-.style.display="flex";
+document.getElementById("balanceModal").style.display="flex";
 
-
-document.getElementById("modalTitle")
-.textContent=
+document.getElementById("modalTitle").textContent =
 action==="fund_added"
-?
-"➕ Add Fund"
-:
-"➖ Reduce Fund";
+?"➕ Add Fund"
+:"➖ Reduce Fund";
 
+document.getElementById("balanceAmount").value="";
 
-document.getElementById("balanceAmount")
-.value="";
+document.getElementById("balanceDescription").value="";
 
-document.getElementById("balanceDescription")
-.value="";
-
-document.getElementById("balanceMessage")
-.textContent="";
+document.getElementById("balanceMessage").textContent="";
 
 }
 
-
-/* =========================================
-CLOSE BALANCE
-========================================= */
 
 function closeBalanceModal(){
 
-document.getElementById("balanceModal")
-.style.display="none";
+document.getElementById("balanceModal").style.display="none";
 
 }
 
 
-/* =========================================
-CHANGE BALANCE
-========================================= */
-
 async function submitBalanceChange(){
 
-const amount=
-Number(
-document.getElementById("balanceAmount")
-.value
-);
+const amount =
+Number(document.getElementById("balanceAmount").value);
 
+const description =
+document.getElementById("balanceDescription").value.trim();
 
-const description=
-document.getElementById("balanceDescription")
-.value.trim();
-
-
-const msg=
+const msg =
 document.getElementById("balanceMessage");
-
 
 if(!amount || amount<=0){
 
-msg.textContent=
+msg.textContent =
 "সঠিক টাকার পরিমাণ দিন।";
 
 return;
 }
 
+msg.textContent="Processing...";
 
-msg.textContent=
-"Processing...";
-
-
-const result=
+const result =
 await supabaseClient
-.rpc(
-"change_manager_fund",
-{
-p_transaction_type:
-currentBalanceAction,
-
-p_amount:
-amount,
-
-p_description:
-description||null
-}
-);
-
+.rpc("change_manager_fund",{
+p_transaction_type:currentBalanceAction,
+p_amount:amount,
+p_description:description||null
+});
 
 if(result.error){
 
-msg.textContent=
-"Transaction failed: "+
-result.error.message;
+msg.textContent =
+"Transaction failed: "+result.error.message;
 
 return;
 }
-
 
 setBalance(result.data);
 
 await loadFundHistory();
 
-
-msg.textContent=
+msg.textContent =
 "Transaction successful!";
 
-
-setTimeout(
-closeBalanceModal,
-700
-);
+setTimeout(closeBalanceModal,700);
 
 }
 
 
-/* =========================================
-FUND HISTORY
-========================================= */
-
 async function loadFundHistory(){
 
-const box=
+const box =
 document.getElementById("fundHistory");
 
-
-const result=
+const result =
 await supabaseClient
 .from("manager_fund_ledger")
 .select("*")
@@ -1292,56 +1512,40 @@ await supabaseClient
 .order("created_at",{ascending:false})
 .limit(20);
 
-
 if(result.error){
 
-box.textContent=
+box.textContent =
 "History load failed.";
 
 return;
 }
 
-
 if(!result.data ||
 result.data.length===0){
 
-box.textContent=
+box.textContent =
 "এখনো কোনো Fund Transaction নেই।";
 
 return;
 }
 
+box.innerHTML =
+result.data.map(item=>{
 
-box.innerHTML=
-result.data.map(function(item){
+const add =
+item.transaction_type==="fund_added";
 
-const add=
-item.transaction_type===
-"fund_added";
+const type =
+add?"➕ Fund Added":"➖ Fund Reduced";
 
+const cls =
+add?"green":"red";
 
-const type=
-add
-?
-"➕ Fund Added"
-:
-"➖ Fund Reduced";
-
-
-const cls=
-add
-?
-"green"
-:
-"red";
-
-
-const date=
-new Date(item.created_at)
-.toLocaleString("bn-BD");
-
+const date =
+new Date(item.created_at).toLocaleString("bn-BD");
 
 return `
+
 <div class="history-item">
 
 <div>
@@ -1351,7 +1555,7 @@ ${type}
 </div>
 
 <div>
-${item.description||"কোনো বিবরণ নেই"}
+${escapeHtml(item.description||"কোনো বিবরণ নেই")}
 </div>
 
 <small>
@@ -1365,6 +1569,7 @@ ${date}
 </div>
 
 </div>
+
 `;
 
 }).join("");
@@ -1372,9 +1577,407 @@ ${date}
 }
 
 
-/* =========================================
-LOGOUT
-========================================= */
+/* MEMBERS */
+
+function openMembers(){
+
+document
+.getElementById("membersSection")
+.classList.add("active");
+
+loadMembers();
+
+window.scrollTo({
+top:
+document.getElementById("membersSection").offsetTop-70,
+behavior:"smooth"
+});
+
+}
+
+
+async function generateMemberId(){
+
+const result =
+await supabaseClient
+.from("members")
+.select("member_id")
+.order("member_id",{ascending:false})
+.limit(1);
+
+if(
+result.error ||
+!result.data ||
+result.data.length===0
+){
+
+return "100001";
+
+}
+
+const last =
+Number(result.data[0].member_id);
+
+const next =
+last+1;
+
+if(next>999999){
+
+throw new Error(
+"Member ID limit শেষ হয়ে গেছে।"
+);
+
+}
+
+return String(next).padStart(6,"0");
+
+}
+
+
+async function openMemberModal(){
+
+document.getElementById("memberModal").style.display="flex";
+
+document.getElementById("memberMessage").textContent="";
+
+document.getElementById("memberName").value="";
+
+document.getElementById("fatherName").value="";
+
+document.getElementById("memberMobile").value="";
+
+document.getElementById("memberNid").value="";
+
+document.getElementById("memberAddress").value="";
+
+document.getElementById("memberStatus").value="active";
+
+document.getElementById("memberJoinDate").value =
+new Date().toISOString().split("T")[0];
+
+try{
+
+document.getElementById("newMemberId").value =
+await generateMemberId();
+
+}catch(error){
+
+document.getElementById("memberMessage").textContent =
+error.message;
+
+}
+
+}
+
+
+function closeMemberModal(){
+
+document.getElementById("memberModal").style.display="none";
+
+}
+
+
+async function saveMember(){
+
+const msg =
+document.getElementById("memberMessage");
+
+const memberId =
+document.getElementById("newMemberId").value;
+
+const fullName =
+document.getElementById("memberName").value.trim();
+
+const father =
+document.getElementById("fatherName").value.trim();
+
+const mobile =
+document.getElementById("memberMobile").value.trim();
+
+const nid =
+document.getElementById("memberNid").value.trim();
+
+const address =
+document.getElementById("memberAddress").value.trim();
+
+const joinDate =
+document.getElementById("memberJoinDate").value;
+
+const status =
+document.getElementById("memberStatus").value;
+
+if(!fullName){
+
+msg.textContent =
+"সদস্যের নাম লিখুন।";
+
+return;
+}
+
+if(!/^\d{6}$/.test(memberId)){
+
+msg.textContent =
+"Member ID সঠিক নয়।";
+
+return;
+}
+
+msg.textContent =
+"সদস্য সংরক্ষণ হচ্ছে...";
+
+const result =
+await supabaseClient
+.from("members")
+.insert({
+member_id:memberId,
+full_name:fullName,
+father_husband_name:father,
+mobile:mobile,
+nid:nid,
+address:address,
+join_date:joinDate||null,
+status:status
+})
+.select()
+.single();
+
+if(result.error){
+
+msg.textContent =
+"সদস্য সংরক্ষণ হয়নি: "+result.error.message;
+
+return;
+}
+
+msg.textContent =
+"সদস্য সফলভাবে যোগ হয়েছে। Member ID: "+memberId;
+
+await loadMembers();
+
+setTimeout(
+closeMemberModal,
+900
+);
+
+}
+
+
+async function loadMembers(){
+
+const tbody =
+document.getElementById("memberList");
+
+const search =
+document.getElementById("memberSearch").value.trim();
+
+let query =
+supabaseClient
+.from("members")
+.select("*")
+.order("created_at",{ascending:false});
+
+if(search){
+
+query =
+query.or(
+"member_id.ilike.%"+search+"%,"+
+"full_name.ilike.%"+search+"%,"+
+"mobile.ilike.%"+search+"%"
+);
+
+}
+
+const result=await query;
+
+if(result.error){
+
+tbody.innerHTML =
+`
+<tr>
+<td colspan="6">
+সদস্য লোড হয়নি: ${escapeHtml(result.error.message)}
+</td>
+</tr>
+`;
+
+return;
+}
+
+if(
+!result.data ||
+result.data.length===0
+){
+
+tbody.innerHTML =
+`
+<tr>
+<td colspan="6">
+কোনো সদস্য পাওয়া যায়নি।
+</td>
+</tr>
+`;
+
+return;
+}
+
+tbody.innerHTML =
+result.data.map(member=>{
+
+const badge =
+member.status==="active"
+
+?
+
+'<span class="badge active-badge">Active</span>'
+
+:
+
+'<span class="badge inactive-badge">Inactive</span>';
+
+return `
+
+<tr>
+
+<td>
+<strong>
+${escapeHtml(member.member_id)}
+</strong>
+</td>
+
+<td>
+${escapeHtml(member.full_name)}
+</td>
+
+<td>
+${escapeHtml(member.mobile||"—")}
+</td>
+
+<td>
+${escapeHtml(member.join_date||"—")}
+</td>
+
+<td>
+${badge}
+</td>
+
+<td>
+
+<button
+class="action-btn"
+onclick="viewMember('${member.id}')"
+>
+👁️ View
+</button>
+
+</td>
+
+</tr>
+
+`;
+
+}).join("");
+
+}
+
+
+async function viewMember(id){
+
+const result =
+await supabaseClient
+.from("members")
+.select("*")
+.eq("id",id)
+.single();
+
+if(result.error){
+
+alert(
+"সদস্যের তথ্য পাওয়া যায়নি।"
+);
+
+return;
+}
+
+const m=result.data;
+
+document.getElementById("memberDetails").innerHTML = `
+
+<p>
+<strong>Member ID:</strong>
+${escapeHtml(m.member_id)}
+</p>
+
+<p>
+<strong>নাম:</strong>
+${escapeHtml(m.full_name)}
+</p>
+
+<p>
+<strong>পিতা/স্বামীর নাম:</strong>
+${escapeHtml(m.father_husband_name||"—")}
+</p>
+
+<p>
+<strong>মোবাইল:</strong>
+${escapeHtml(m.mobile||"—")}
+</p>
+
+<p>
+<strong>NID:</strong>
+${escapeHtml(m.nid||"—")}
+</p>
+
+<p>
+<strong>ঠিকানা:</strong>
+${escapeHtml(m.address||"—")}
+</p>
+
+<p>
+<strong>যোগদানের তারিখ:</strong>
+${escapeHtml(m.join_date||"—")}
+</p>
+
+<p>
+<strong>Status:</strong>
+${escapeHtml(m.status||"—")}
+</p>
+
+<hr>
+
+<p>
+💳 এই সদস্যের Savings, DPS, FDR এবং Loan
+হিসাব পরবর্তী ধাপে যুক্ত করা হবে।
+</p>
+
+`;
+
+document.getElementById("memberViewModal").style.display="flex";
+
+}
+
+
+function closeMemberView(){
+
+document.getElementById("memberViewModal").style.display="none";
+
+}
+
+
+/* SECURITY */
+
+function escapeHtml(value){
+
+return String(value??"")
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
+
+}
+
+
+/* LOGOUT */
 
 async function logout(){
 
@@ -1382,27 +1985,21 @@ await supabaseClient.auth.signOut();
 
 currentUser=null;
 
-document.getElementById("dashboardPage")
-.style.display="none";
+document.getElementById("dashboardPage").style.display="none";
 
-document.getElementById("loginPage")
-.style.display="flex";
+document.getElementById("loginPage").style.display="flex";
 
-document.getElementById("password")
-.value="";
+document.getElementById("password").value="";
 
 }
 
 
-/* =========================================
-SESSION
-========================================= */
+/* SESSION */
 
 async function checkSession(){
 
-const result=
+const result =
 await supabaseClient.auth.getSession();
-
 
 if(
 result.data &&
@@ -1410,7 +2007,7 @@ result.data.session &&
 result.data.session.user
 ){
 
-currentUser=
+currentUser =
 result.data.session.user;
 
 await checkManagerRole();
@@ -1418,7 +2015,6 @@ await checkManagerRole();
 }
 
 }
-
 
 checkSession();
 

@@ -1943,22 +1943,25 @@ async function deleteMember(id){
 
     if(
         !confirm(
-            "এই সদস্যকে Delete করতে চান?"
+            "এই সদস্যকে নিষ্ক্রিয় করতে চান?\n\n" +
+            "সদস্যের Account ও Transaction ইতিহাস মুছে যাবে না।"
         )
     ){
         return;
     }
 
-    const {error} =
+    const { error } =
         await db
             .from("members")
-            .delete()
-            .eq("id",id);
+            .update({
+                status: "inactive"
+            })
+            .eq("id", id);
 
     if(error){
 
         alert(
-            "❌ Delete failed:\n" +
+            "❌ সদস্য নিষ্ক্রিয় করা যায়নি:\n" +
             error.message
         );
 
@@ -1966,12 +1969,11 @@ async function deleteMember(id){
     }
 
     alert(
-        "✅ সদস্য Delete হয়েছে।"
+        "✅ সদস্য নিষ্ক্রিয় করা হয়েছে।"
     );
 
     await loadMembers();
 }
-
 
 /* =========================================================
    ACCOUNT NUMBER

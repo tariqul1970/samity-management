@@ -2669,7 +2669,7 @@ async function saveProfile(){
     const {error} =
         await db
             .from("user_profiles")
-            .update({
+            .upsert({
 
                 full_name:
                     name,
@@ -2704,7 +2704,45 @@ async function saveProfile(){
         "✅ Profile আপডেট হয়েছে।"
     );
 }
+async function loadProfile() {
 
+    if (!currentUser) {
+        return;
+    }
+
+    const { data, error } = await db
+        .from("user_profiles")
+        .select("full_name, phone")
+        .eq("id", currentUser.id)
+        .maybeSingle();
+
+    if (error) {
+        console.error("Profile load error:", error);
+        return;
+    }
+
+    if (!data) {
+        return;
+    }
+
+    if ($("profileName")) {
+        $("profileName").value = data.full_name || "";
+    }
+
+    if ($("profileMobile")) {
+        $("profileMobile").value = data.phone || "";
+    }
+
+    if ($("managerTitle")) {
+        $("managerTitle").textContent =
+            "👤 " + (data.full_name || "Manager");
+    }
+
+    if ($("ownerTitle")) {
+        $("ownerTitle").textContent =
+            "👤 " + (data.full_name || "Owner");
+    }
+}
 
 /* =========================================================
    REPORTS
@@ -2872,10 +2910,12 @@ document.addEventListener(
             session.data.session
         ){
 
-            currentUser =
-                session.data.session.user;
+           currentUser =
+session.data.session.user;
 
-            await checkManagerRole();
+await loadProfile();
+
+await checkManagerRole();
         }
 
     }

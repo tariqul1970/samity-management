@@ -2666,14 +2666,36 @@ async function saveProfile(){
     }
 
 
-    const { error } = await db
+   const { data: existingProfile, error: roleError } = await db
+    .from("user_profiles")
+    .select("role")
+    .eq("id", currentUser.id)
+    .maybeSingle();
+
+if (roleError) {
+    alert(
+        "❌ Role load হয়নি:\n" +
+        roleError.message
+    );
+    return;
+}
+
+const { error } = await db
     .from("user_profiles")
     .upsert({
         id: currentUser.id,
         full_name: name,
         phone: mobile,
-        role: currentUser.role
+        role: existingProfile?.role || "manager"
     });
+
+if (error) {
+    alert(
+        "❌ Profile update হয়নি:\n" +
+        error.message
+    );
+    return;
+}
 
 
     if(error){

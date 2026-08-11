@@ -2671,7 +2671,8 @@ async function saveProfile(){
     .upsert({
         id: currentUser.id,
         full_name: name,
-        phone: mobile
+        phone: mobile,
+        role: currentUser.role
     });
 
 

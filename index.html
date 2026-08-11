@@ -1,14 +1,10 @@
 <!DOCTYPE html>
 <html lang="bn">
-
 <head>
-
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
-
-<title>Samity Management - Manager Panel</title>
+<title>Samity Management</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -40,18 +36,17 @@ button{
 }
 
 .login-box{
-    width:360px;
-    max-width:92%;
+    width:380px;
+    max-width:94%;
     margin:80px auto;
     background:#fff;
     padding:30px;
-    border-radius:14px;
+    border-radius:15px;
     box-shadow:0 8px 30px rgba(0,0,0,.12);
 }
 
 .login-box h2{
     text-align:center;
-    margin-bottom:25px;
 }
 
 label{
@@ -67,7 +62,6 @@ textarea{
     padding:11px;
     border:1px solid #ccd3dc;
     border-radius:8px;
-    outline:none;
 }
 
 textarea{
@@ -79,18 +73,23 @@ textarea{
 .save{
     width:100%;
     background:#087f5b;
-    color:#fff;
+    color:white;
     font-weight:bold;
     margin-top:18px;
 }
 
+.message{
+    margin-top:10px;
+    font-weight:bold;
+}
+
 .topbar{
     background:#075e54;
-    color:#fff;
+    color:white;
     padding:15px 22px;
     display:flex;
-    align-items:center;
     justify-content:space-between;
+    align-items:center;
     position:sticky;
     top:0;
     z-index:20;
@@ -102,7 +101,7 @@ textarea{
 
 .logout{
     background:#c92a2a;
-    color:#fff;
+    color:white;
 }
 
 .layout{
@@ -111,8 +110,8 @@ textarea{
 }
 
 .sidebar{
-    width:240px;
-    background:#fff;
+    width:245px;
+    background:white;
     border-right:1px solid #ddd;
     padding:15px;
 }
@@ -127,7 +126,7 @@ textarea{
 .sidebar button:hover,
 .sidebar button.active{
     background:#087f5b;
-    color:#fff;
+    color:white;
 }
 
 .content{
@@ -144,7 +143,7 @@ textarea{
 }
 
 .card{
-    background:#fff;
+    background:white;
     padding:20px;
     border-radius:12px;
     margin-bottom:18px;
@@ -171,31 +170,37 @@ textarea{
 
 .btn{
     background:#087f5b;
-    color:#fff;
+    color:white;
     margin:4px;
 }
 
 .btn-danger{
     background:#c92a2a;
-    color:#fff;
+    color:white;
     margin:4px;
 }
 
 .btn-warning{
     background:#e67700;
-    color:#fff;
+    color:white;
     margin:4px;
 }
 
 .btn-blue{
     background:#1971c2;
-    color:#fff;
+    color:white;
     margin:4px;
 }
 
 .btn-dark{
     background:#343a40;
-    color:#fff;
+    color:white;
+    margin:4px;
+}
+
+.btn-purple{
+    background:#7048e8;
+    color:white;
     margin:4px;
 }
 
@@ -206,7 +211,7 @@ textarea{
 }
 
 .stat{
-    background:#fff;
+    background:white;
     padding:20px;
     border-radius:12px;
     box-shadow:0 3px 12px rgba(0,0,0,.06);
@@ -220,10 +225,14 @@ textarea{
     font-size:25px;
 }
 
+.table-wrap{
+    overflow-x:auto;
+}
+
 table{
     width:100%;
     border-collapse:collapse;
-    background:#fff;
+    background:white;
 }
 
 th,
@@ -231,15 +240,11 @@ td{
     border-bottom:1px solid #eee;
     padding:10px;
     text-align:left;
-    vertical-align:middle;
+    white-space:nowrap;
 }
 
 th{
     background:#f1f3f5;
-}
-
-.table-wrap{
-    overflow-x:auto;
 }
 
 .search{
@@ -258,8 +263,8 @@ th{
 }
 
 .modal-box{
-    background:#fff;
-    width:650px;
+    background:white;
+    width:700px;
     max-width:100%;
     max-height:90vh;
     overflow:auto;
@@ -287,28 +292,45 @@ th{
     grid-column:1/-1;
 }
 
-.message{
-    margin-top:10px;
+.badge{
+    display:inline-block;
+    padding:5px 9px;
+    border-radius:20px;
+    font-size:12px;
     font-weight:bold;
 }
 
-.role-card{
-    border-left:5px solid #087f5b;
+.badge-green{
+    background:#d3f9d8;
+    color:#087f23;
 }
 
-@media(max-width:800px){
-
-    .sidebar{
-        width:200px;
-    }
-
-    .form-grid{
-        grid-template-columns:1fr;
-    }
-
+.badge-red{
+    background:#ffe3e3;
+    color:#c92a2a;
 }
 
-@media(max-width:600px){
+.badge-yellow{
+    background:#fff3bf;
+    color:#8d6b00;
+}
+
+.badge-blue{
+    background:#dbeafe;
+    color:#1864ab;
+}
+
+.owner-only,
+.manager-only,
+.employee-only{
+    display:none;
+}
+
+.print-only{
+    display:none;
+}
+
+@media(max-width:700px){
 
     .layout{
         display:block;
@@ -329,18 +351,55 @@ th{
         padding:12px;
     }
 
-    .topbar h2{
-        font-size:17px;
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+
+    .full{
+        grid-column:auto;
+    }
+
+}
+
+@media print{
+
+    body{
+        background:white;
+    }
+
+    .topbar,
+    .sidebar,
+    .no-print{
+        display:none!important;
+    }
+
+    .content{
+        padding:0;
+    }
+
+    .section{
+        display:none!important;
+    }
+
+    .print-only{
+        display:block!important;
+    }
+
+    .print-area{
+        display:block!important;
+        width:100%;
+    }
+
+    table{
+        font-size:12px;
     }
 
 }
 
 </style>
-
 </head>
 
 <body>
-
 
 <!-- =====================================================
      LOGIN
@@ -355,17 +414,17 @@ th{
         <label>Email</label>
 
         <input
-            type="email"
             id="email"
-            placeholder="Manager Email"
+            type="email"
+            placeholder="Email"
             required
         >
 
         <label>Password</label>
 
         <input
-            type="password"
             id="password"
+            type="password"
             placeholder="Password"
             required
         >
@@ -374,7 +433,7 @@ th{
             type="submit"
             class="login-button"
         >
-            Login
+            🔐 Login
         </button>
 
         <div
@@ -391,11 +450,24 @@ th{
      APPLICATION
 ===================================================== -->
 
-<div id="app" style="display:none">
+<div
+    id="app"
+    style="display:none"
+>
 
-    <div class="topbar">
+<div class="topbar">
+
+    <div>
 
         <h2>🏦 Samity Management</h2>
+
+        <small id="roleTitle"></small>
+
+    </div>
+
+    <div>
+
+        <span id="topUserName"></span>
 
         <button
             class="logout"
@@ -406,611 +478,557 @@ th{
 
     </div>
 
+</div>
 
-    <div class="layout">
 
+<div class="layout">
 
-        <!-- SIDEBAR -->
 
-        <aside class="sidebar">
+<!-- =====================================================
+     SIDEBAR
+===================================================== -->
 
-            <button onclick="showSection('profileSection')">
-                👤 Profile
-            </button>
+<aside class="sidebar">
 
-            <button onclick="showSection('peopleSection')">
-                👥 People & Print
-            </button>
+    <button onclick="showSection('dashboardSection')">
+        🏠 Dashboard
+    </button>
 
-            <button onclick="showSection('fundSection')">
-                💰 My Fund
-            </button>
+    <button onclick="showSection('profileSection')">
+        👤 Profile
+    </button>
 
-            <button onclick="showSection('employeesSection')">
-                👥 Employees
-            </button>
+    <button
+        id="managerMenu"
+        onclick="showSection('managersSection')"
+        style="display:none"
+    >
+        👨‍💼 Managers
+    </button>
 
-            <button onclick="showSection('membersSection')">
-                👤 Members
-            </button>
+    <button onclick="showSection('employeesSection')">
+        👥 Employees
+    </button>
 
-            <button onclick="showSection('accountsSection')">
-                💳 Accounts
-            </button>
+    <button onclick="showSection('membersSection')">
+        👤 Members
+    </button>
 
-            <button onclick="showSection('transactionsSection')">
-                📊 Transactions
-            </button>
+    <button onclick="showSection('accountsSection')">
+        💳 Accounts
+    </button>
 
-            <button onclick="showSection('approvalSection')">
-                ✅ Approval
-            </button>
+    <button
+        id="approvalMenu"
+        onclick="showSection('approvalSection')"
+        style="display:none"
+    >
+        ✅ Approval
+    </button>
 
-            <button onclick="showSection('reportsSection')">
-                📊 Reports
-            </button>
+    <button onclick="showSection('reportsSection')">
+        📊 Reports
+    </button>
 
-            <button onclick="showSection('receiptsSection')">
-                🧾 Receipts
-            </button>
+    <button onclick="showSection('printSection')">
+        🖨️ A4 Print
+    </button>
 
-            <button onclick="showSection('settingsSection')">
-                ⚙️ Settings
-            </button>
+    <button onclick="showSection('settingsSection')">
+        ⚙️ Settings
+    </button>
 
-        </aside>
+</aside>
 
 
-        <!-- CONTENT -->
+<!-- =====================================================
+     CONTENT
+===================================================== -->
 
-        <main class="content">
+<main class="content">
 
 
-            <!-- PROFILE -->
+<!-- DASHBOARD -->
 
-            <section
-                id="profileSection"
-                class="section active"
-            >
+<section
+    id="dashboardSection"
+    class="section active"
+>
 
-                <div class="card">
+<div class="card">
 
-                    <div class="profile">
+    <h2 id="dashboardTitle">
+        🏠 Dashboard
+    </h2>
 
-                        <img
-                            id="miniPhoto"
-                            src="https://placehold.co/100x100"
-                            alt="Profile"
-                        >
+    <p id="dashboardDescription"></p>
 
-                        <div>
+</div>
 
-                            <h2 id="managerTitle">
-                                👤 Manager
-                            </h2>
+<div class="grid">
 
-                            <p id="managerEmail"></p>
+    <div class="stat">
 
-                        </div>
+        <h3>👤 Members</h3>
 
-                    </div>
-
-                    <button
-                        class="btn"
-                        onclick="openProfileModal()"
-                    >
-                        ✏️ Edit Profile
-                    </button>
-
-                    <button
-                        class="btn-dark"
-                        onclick="printCurrentProfile()"
-                    >
-                        🖨️ নিজের Profile Print
-                    </button>
-
-                </div>
-
-            </section>
-
-
-            <!-- PEOPLE -->
-
-            <section
-                id="peopleSection"
-                class="section"
-            >
-
-                <div class="card">
-
-                    <h2>
-                        👥 Manager / Owner / Employee
-                    </h2>
-
-                    <p>
-                        প্রত্যেক ব্যক্তির আলাদা Print করা যাবে।
-                    </p>
-
-                    <div class="table-wrap">
-
-                        <table>
-
-                            <thead>
-
-                                <tr>
-
-                                    <th>নাম</th>
-
-                                    <th>মোবাইল</th>
-
-                                    <th>Role</th>
-
-                                    <th>Status</th>
-
-                                    <th>Action</th>
-
-                                </tr>
-
-                            </thead>
-
-                            <tbody id="peopleList"></tbody>
-
-                        </table>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- FUND -->
-
-            <section
-                id="fundSection"
-                class="section"
-            >
-
-                <div class="card">
-
-                    <h2>💰 My Fund</h2>
-
-                    <div class="grid">
-
-                        <div class="stat">
-
-                            <h3>বর্তমান Balance</h3>
-
-                            <strong>
-                                ৳
-                                <span id="managerBalance">
-                                    0.00
-                                </span>
-                            </strong>
-
-                        </div>
-
-                        <div class="stat">
-
-                            <h3>➕ Add Fund</h3>
-
-                            <button
-                                class="btn"
-                                onclick="openBalanceModal('fund_added')"
-                            >
-                                Add Fund
-                            </button>
-
-                        </div>
-
-                        <div class="stat">
-
-                            <h3>➖ Reduce Fund</h3>
-
-                            <button
-                                class="btn-danger"
-                                onclick="openBalanceModal('fund_reduced')"
-                            >
-                                Reduce Fund
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- EMPLOYEES -->
-
-            <section
-                id="employeesSection"
-                class="section"
-            >
-
-                <div class="card">
-
-                    <h2>👥 Employees</h2>
-
-                    <button
-                        class="btn"
-                        onclick="openEmployeeModal()"
-                    >
-                        ➕ Add Employee
-                    </button>
-
-                    <div class="table-wrap">
-
-                        <table>
-
-                            <thead>
-
-                                <tr>
-
-                                    <th>Name</th>
-
-                                    <th>Phone</th>
-
-                                    <th>Role</th>
-
-                                    <th>Status</th>
-
-                                    <th>Action</th>
-
-                                </tr>
-
-                            </thead>
-
-                            <tbody id="employeeList"></tbody>
-
-                        </table>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- MEMBERS -->
-
-            <section
-                id="membersSection"
-                class="section"
-            >
-
-                <div class="card">
-
-                    <h2>
-                        👤 Members
-                        (<span id="memberCount">0</span>)
-                    </h2>
-
-                    <button
-                        class="btn"
-                        onclick="openMemberModal()"
-                    >
-                        ➕ নতুন সদস্য
-                    </button>
-
-                    <button
-                        class="btn-blue"
-                        onclick="loadMembers()"
-                    >
-                        🔄 Refresh
-                    </button>
-
-                    <input
-                        class="search"
-                        id="memberSearch"
-                        type="text"
-                        placeholder="Member ID / নাম / মোবাইল দিয়ে খুঁজুন..."
-                        oninput="loadMembers()"
-                    >
-
-                    <div class="table-wrap">
-
-                        <table>
-
-                            <thead>
-
-                                <tr>
-
-                                    <th>Member ID</th>
-
-                                    <th>নাম</th>
-
-                                    <th>মোবাইল</th>
-
-                                    <th>তারিখ</th>
-
-                                    <th>Status</th>
-
-                                    <th>Action</th>
-
-                                </tr>
-
-                            </thead>
-
-                            <tbody id="memberList"></tbody>
-
-                        </table>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- ACCOUNTS -->
-
-            <section
-                id="accountsSection"
-                class="section"
-            >
-
-                <div class="card">
-
-                    <h2>💳 Accounts</h2>
-
-                    <div class="grid">
-
-                        <div class="stat">
-
-                            <h3>💰 Savings</h3>
-
-                            <button
-                                class="btn"
-                                onclick="filterAccounts('Savings')"
-                            >
-                                Open
-                            </button>
-
-                        </div>
-
-                        <div class="stat">
-
-                            <h3>📅 DPS</h3>
-
-                            <button
-                                class="btn"
-                                onclick="filterAccounts('DPS')"
-                            >
-                                Open
-                            </button>
-
-                        </div>
-
-                        <div class="stat">
-
-                            <h3>📜 FDR</h3>
-
-                            <button
-                                class="btn"
-                                onclick="filterAccounts('FDR')"
-                            >
-                                Open
-                            </button>
-
-                        </div>
-
-                        <div class="stat">
-
-                            <h3>💳 Loan</h3>
-
-                            <button
-                                class="btn"
-                                onclick="filterAccounts('Loan')"
-                            >
-                                Open
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                    <br>
-
-                    <button
-                        class="btn"
-                        onclick="openAccountModal()"
-                    >
-                        ➕ Create Account
-                    </button>
-
-                    <div class="table-wrap">
-
-                        <table>
-
-                            <thead>
-
-                                <tr>
-
-                                    <th>Account Number</th>
-
-                                    <th>Member ID</th>
-
-                                    <th>Type</th>
-
-                                    <th>Balance</th>
-
-                                    <th>Status</th>
-
-                                </tr>
-
-                            </thead>
-
-                            <tbody id="accountList"></tbody>
-
-                        </table>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- TRANSACTIONS -->
-
-            <section
-                id="transactionsSection"
-                class="section"
-            >
-
-                <div class="card">
-
-                    <h2>📊 Transactions</h2>
-
-                    <p>
-                        এখানে Account transaction,
-                        deposit, withdrawal, loan ইত্যাদি
-                        দেখানো হবে।
-                    </p>
-
-                    <div id="transactionList">
-                        Transaction data এখানে আসবে।
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- APPROVAL -->
-
-            <section
-                id="approvalSection"
-                class="section"
-            >
-
-                <div class="card">
-
-                    <h2>✅ Approval</h2>
-
-                    <p>
-                        Employee বা অন্যান্য অনুমোদনযোগ্য
-                        কাজ এখানে Manager approve/reject করবে।
-                    </p>
-
-                    <div id="approvalList">
-                        কোনো pending approval নেই।
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- REPORTS -->
-
-            <section
-                id="reportsSection"
-                class="section"
-            >
-
-                <div class="card">
-
-                    <h2>📊 Reports</h2>
-
-                    <div class="grid">
-
-                        <div class="stat">
-
-                            <h3>👤 Members</h3>
-
-                            <strong id="reportMembers">
-                                0
-                            </strong>
-
-                        </div>
-
-                        <div class="stat">
-
-                            <h3>💳 Accounts</h3>
-
-                            <strong id="reportAccounts">
-                                0
-                            </strong>
-
-                        </div>
-
-                        <div class="stat">
-
-                            <h3>👥 Employees</h3>
-
-                            <strong id="reportEmployees">
-                                0
-                            </strong>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- RECEIPTS -->
-
-            <section
-                id="receiptsSection"
-                class="section"
-            >
-
-                <div class="card">
-
-                    <h2>🧾 Receipts</h2>
-
-                    <p>
-                        Deposit, withdrawal, loan এবং
-                        অন্যান্য transaction-এর receipt
-                        এখানে তৈরি করা হবে।
-                    </p>
-
-                </div>
-
-            </section>
-
-
-            <!-- SETTINGS -->
-
-            <section
-                id="settingsSection"
-                class="section"
-            >
-
-                <div class="card">
-
-                    <h2>⚙️ Settings</h2>
-
-                    <label>Samity Name</label>
-
-                    <input
-                        id="samityName"
-                        type="text"
-                        placeholder="Samity Management"
-                    >
-
-                    <button
-                        class="btn"
-                        onclick="saveSettings()"
-                    >
-                        💾 Save Settings
-                    </button>
-
-                </div>
-
-            </section>
-
-        </main>
+        <strong id="dashboardMembers">
+            0
+        </strong>
 
     </div>
 
+    <div class="stat">
+
+        <h3>💳 Accounts</h3>
+
+        <strong id="dashboardAccounts">
+            0
+        </strong>
+
+    </div>
+
+    <div class="stat">
+
+        <h3>👥 Employees</h3>
+
+        <strong id="dashboardEmployees">
+            0
+        </strong>
+
+    </div>
+
+    <div class="stat">
+
+        <h3>⏳ Pending</h3>
+
+        <strong id="dashboardPending">
+            0
+        </strong>
+
+    </div>
+
+</div>
+
+</section>
+
+
+<!-- PROFILE -->
+
+<section
+    id="profileSection"
+    class="section"
+>
+
+<div class="card">
+
+    <div class="profile">
+
+        <img
+            src="https://placehold.co/100x100"
+            alt="Profile"
+        >
+
+        <div>
+
+            <h2 id="profileTitle">
+                👤 User
+            </h2>
+
+            <p id="profileEmail"></p>
+
+            <p id="profileRole"></p>
+
+        </div>
+
+    </div>
+
+    <button
+        class="btn"
+        onclick="openProfileModal()"
+    >
+        ✏️ Edit Profile
+    </button>
+
+</div>
+
+</section>
+
+
+<!-- MANAGERS -->
+
+<section
+    id="managersSection"
+    class="section"
+>
+
+<div class="card">
+
+    <h2>👨‍💼 Managers</h2>
+
+    <div class="table-wrap">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                    <th>Print</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="managerList"></tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+</section>
+
+
+<!-- EMPLOYEES -->
+
+<section
+    id="employeesSection"
+    class="section"
+>
+
+<div class="card">
+
+    <h2>👥 Employees</h2>
+
+    <button
+        class="btn manager-only"
+        onclick="openEmployeeModal()"
+    >
+        ➕ Add Employee
+    </button>
+
+    <div class="table-wrap">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th>Print</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="employeeList"></tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+</section>
+
+
+<!-- MEMBERS -->
+
+<section
+    id="membersSection"
+    class="section"
+>
+
+<div class="card">
+
+    <h2>
+        👤 Members
+        (<span id="memberCount">0</span>)
+    </h2>
+
+    <div class="no-print">
+
+        <button
+            class="btn manager-only"
+            onclick="openMemberModal()"
+        >
+            ➕ নতুন সদস্য
+        </button>
+
+        <button
+            class="btn-blue"
+            onclick="loadMembers()"
+        >
+            🔄 Refresh
+        </button>
+
+        <input
+            id="memberSearch"
+            class="search"
+            placeholder="Member ID / নাম / মোবাইল"
+            oninput="loadMembers()"
+        >
+
+    </div>
+
+    <div class="table-wrap">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Member ID</th>
+                    <th>নাম</th>
+                    <th>পিতা</th>
+                    <th>মাতা</th>
+                    <th>মোবাইল</th>
+                    <th>ঠিকানা</th>
+                    <th>Created By</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th>Print</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="memberList"></tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+</section>
+
+
+<!-- ACCOUNTS -->
+
+<section
+    id="accountsSection"
+    class="section"
+>
+
+<div class="card">
+
+    <h2>💳 Accounts</h2>
+
+    <div class="no-print">
+
+        <button
+            class="btn manager-only"
+            onclick="openAccountModal()"
+        >
+            ➕ Create Account
+        </button>
+
+        <button
+            class="btn-blue"
+            onclick="loadAccounts()"
+        >
+            🔄 Refresh
+        </button>
+
+    </div>
+
+    <div class="table-wrap">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Account Number</th>
+                    <th>Member ID</th>
+                    <th>Type</th>
+                    <th>Balance</th>
+                    <th>Created By</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th>Print</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="accountList"></tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+</section>
+
+
+<!-- APPROVAL -->
+
+<section
+    id="approvalSection"
+    class="section"
+>
+
+<div class="card">
+
+    <h2>✅ Approval</h2>
+
+    <p>
+        Employee-এর তৈরি করা Member/Account
+        এখানে Manager approve বা reject করতে পারবে।
+    </p>
+
+    <button
+        class="btn-blue"
+        onclick="loadApprovals()"
+    >
+        🔄 Refresh
+    </button>
+
+    <div class="table-wrap">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Type</th>
+                    <th>Requested By</th>
+                    <th>Role</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="approvalList"></tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+</section>
+
+
+<!-- REPORTS -->
+
+<section
+    id="reportsSection"
+    class="section"
+>
+
+<div class="card">
+
+    <h2>📊 Reports</h2>
+
+    <div class="grid">
+
+        <div class="stat">
+            <h3>Members</h3>
+            <strong id="reportMembers">0</strong>
+        </div>
+
+        <div class="stat">
+            <h3>Accounts</h3>
+            <strong id="reportAccounts">0</strong>
+        </div>
+
+        <div class="stat">
+            <h3>Employees</h3>
+            <strong id="reportEmployees">0</strong>
+        </div>
+
+        <div class="stat">
+            <h3>Managers</h3>
+            <strong id="reportManagers">0</strong>
+        </div>
+
+    </div>
+
+</div>
+
+</section>
+
+
+<!-- PRINT -->
+
+<section
+    id="printSection"
+    class="section"
+>
+
+<div class="card">
+
+    <h2>🖨️ A4 Print</h2>
+
+    <p>
+        প্রত্যেক ব্যক্তির সম্পূর্ণ তথ্য আলাদাভাবে
+        A4 কাগজে Print করা যাবে।
+    </p>
+
+    <button
+        class="btn"
+        onclick="printCurrentUser()"
+    >
+        🖨️ আমার Profile Print
+    </button>
+
+</div>
+
+</section>
+
+
+<!-- SETTINGS -->
+
+<section
+    id="settingsSection"
+    class="section"
+>
+
+<div class="card">
+
+    <h2>⚙️ Settings</h2>
+
+    <label>Samity Name</label>
+
+    <input
+        id="samityName"
+        placeholder="Samity Management"
+    >
+
+    <button
+        class="btn"
+        onclick="saveSettings()"
+    >
+        💾 Save
+    </button>
+
+</div>
+
+</section>
+
+</main>
+
+</div>
 </div>
 
 
@@ -1023,350 +1041,129 @@ th{
     class="modal"
 >
 
-    <div class="modal-box">
+<div class="modal-box">
 
-        <div class="modal-header">
+<div class="modal-header">
 
-            <h2>👤 নতুন সদস্য</h2>
+<h2>👤 নতুন সদস্য</h2>
 
-            <button
-                class="close"
-                onclick="closeMemberModal()"
-            >
-                ✖
-            </button>
-
-        </div>
-
-        <div class="form-grid">
-
-            <div>
-
-                <label>Member ID</label>
-
-                <input
-                    id="newMemberId"
-                    readonly
-                >
-
-            </div>
-
-            <div>
-
-                <label>সদস্যের পূর্ণ নাম</label>
-
-                <input
-                    id="memberName"
-                    placeholder="পূর্ণ নাম"
-                >
-
-            </div>
-
-            <div>
-
-                <label>পিতা/স্বামীর নাম</label>
-
-                <input id="fatherName">
-
-            </div>
-
-            <div>
-
-                <label>মোবাইল</label>
-
-                <input
-                    id="memberMobile"
-                    placeholder="01XXXXXXXXX"
-                >
-
-            </div>
-
-            <div>
-
-                <label>NID</label>
-
-                <input id="memberNid">
-
-            </div>
-
-            <div>
-
-                <label>যোগদানের তারিখ</label>
-
-                <input
-                    id="memberJoinDate"
-                    type="date"
-                >
-
-            </div>
-
-            <div class="full">
-
-                <label>ঠিকানা</label>
-
-                <textarea id="memberAddress"></textarea>
-
-            </div>
-
-            <div>
-
-                <label>Status</label>
-
-                <select id="memberStatus">
-
-                    <option value="active">
-                        Active
-                    </option>
-
-                    <option value="inactive">
-                        Inactive
-                    </option>
-
-                </select>
-
-            </div>
-
-            <div>
-
-                <label>চেকের পাতা সংখ্যা</label>
-
-                <input
-                    id="chequePages"
-                    type="number"
-                    min="0"
-                    value="0"
-                >
-
-            </div>
-
-            <div class="full">
-
-                <label>অন্যান্য ডকুমেন্ট</label>
-
-                <input
-                    id="otherDocumentDetails"
-                >
-
-            </div>
-
-            <div class="full">
-
-                <label>ডকুমেন্ট ফোল্ডার</label>
-
-                <input
-                    id="documentFolder"
-                    placeholder="D:\Samity Documents\000001"
-                >
-
-            </div>
-
-        </div>
-
-        <div
-            id="memberMessage"
-            class="message"
-        ></div>
-
-        <button
-            class="save"
-            onclick="saveMember()"
-        >
-            💾 Save Member
-        </button>
-
-    </div>
+<button
+    class="close"
+    onclick="closeModal('memberModal')"
+>
+    ✖
+</button>
 
 </div>
 
+<div class="form-grid">
 
-<!-- =====================================================
-     EMPLOYEE MODAL
-===================================================== -->
+<div>
 
-<div
-    id="employeeModal"
-    class="modal"
+<label>Member ID</label>
+
+<input
+    id="newMemberId"
+    readonly
 >
-
-    <div class="modal-box">
-
-        <div class="modal-header">
-
-            <h2>👥 Add Employee</h2>
-
-            <button
-                class="close"
-                onclick="closeEmployeeModal()"
-            >
-                ✖
-            </button>
-
-        </div>
-
-        <label>Employee Name</label>
-
-        <input
-            id="employeeName"
-            placeholder="কর্মীর নাম"
-        >
-
-        <label>Mobile</label>
-
-        <input
-            id="employeeMobile"
-            placeholder="01XXXXXXXXX"
-        >
-
-        <label>Role</label>
-
-        <select id="employeeRole">
-
-            <option value="employee">
-                Employee
-            </option>
-
-        </select>
-
-        <label>Password</label>
-
-        <input
-            id="employeePassword"
-            type="password"
-            placeholder="Login password"
-        >
-
-        <div
-            id="employeeMessage"
-            class="message"
-        ></div>
-
-        <button
-            class="save"
-            onclick="saveEmployee()"
-        >
-            💾 Add Employee
-        </button>
-
-    </div>
 
 </div>
 
+<div>
 
-<!-- =====================================================
-     PROFILE MODAL
-===================================================== -->
+<label>পূর্ণ নাম</label>
 
-<div
-    id="profileModal"
-    class="modal"
+<input
+    id="memberName"
 >
-
-    <div class="modal-box">
-
-        <div class="modal-header">
-
-            <h2>👤 Profile</h2>
-
-            <button
-                class="close"
-                onclick="closeProfileModal()"
-            >
-                ✖
-            </button>
-
-        </div>
-
-        <label>নাম</label>
-
-        <input
-            id="profileName"
-            placeholder="নাম"
-        >
-
-        <label>Mobile</label>
-
-        <input
-            id="profileMobile"
-            placeholder="01XXXXXXXXX"
-        >
-
-        <label>Photo</label>
-
-        <input
-            id="profilePhotoFile"
-            type="file"
-            accept="image/*"
-        >
-
-        <button
-            class="save"
-            onclick="saveProfile()"
-        >
-            💾 Save
-        </button>
-
-    </div>
 
 </div>
 
+<div>
 
-<!-- =====================================================
-     FUND MODAL
-===================================================== -->
+<label>পিতার নাম</label>
 
-<div
-    id="balanceModal"
-    class="modal"
+<input
+    id="fatherName"
 >
 
-    <div class="modal-box">
+</div>
 
-        <div class="modal-header">
+<div>
 
-            <h2 id="balanceTitle">
-                💰 Fund
-            </h2>
+<label>মাতার নাম</label>
 
-            <button
-                class="close"
-                onclick="closeBalanceModal()"
-            >
-                ✖
-            </button>
+<input
+    id="motherName"
+>
 
-        </div>
+</div>
 
-        <label>টাকার পরিমাণ</label>
+<div>
 
-        <input
-            id="balanceAmount"
-            type="number"
-            min="1"
-            step="0.01"
-            placeholder="টাকার পরিমাণ"
-        >
+<label>মোবাইল</label>
 
-        <label>কারণ</label>
+<input
+    id="memberMobile"
+>
 
-        <textarea
-            id="balanceDescription"
-            placeholder="কারণ"
-        ></textarea>
+</div>
 
-        <div
-            id="balanceMessage"
-            class="message"
-        ></div>
+<div>
 
-        <button
-            class="save"
-            onclick="submitBalanceChange()"
-        >
-            💾 Save
-        </button>
+<label>NID</label>
 
-    </div>
+<input
+    id="memberNid"
+>
 
+</div>
+
+<div>
+
+<label>জন্ম তারিখ</label>
+
+<input
+    id="memberDob"
+    type="date"
+>
+
+</div>
+
+<div>
+
+<label>যোগদানের তারিখ</label>
+
+<input
+    id="memberJoinDate"
+    type="date"
+>
+
+</div>
+
+<div class="full">
+
+<label>ঠিকানা</label>
+
+<textarea id="memberAddress"></textarea>
+
+</div>
+
+</div>
+
+<div
+    id="memberMessage"
+    class="message"
+></div>
+
+<button
+    class="save"
+    onclick="saveMember()"
+>
+    💾 Save Member
+</button>
+
+</div>
 </div>
 
 
@@ -1379,65 +1176,163 @@ th{
     class="modal"
 >
 
-    <div class="modal-box">
+<div class="modal-box">
 
-        <div class="modal-header">
+<div class="modal-header">
 
-            <h2>💳 Create Account</h2>
+<h2>💳 Create Account</h2>
 
-            <button
-                class="close"
-                onclick="closeAccountModal()"
-            >
-                ✖
-            </button>
-
-        </div>
-
-        <label>Member ID</label>
-
-        <input
-            id="accountMemberId"
-            placeholder="000001"
-        >
-
-        <label>Account Type</label>
-
-        <select id="accountType">
-
-            <option value="Savings">
-                💰 Savings
-            </option>
-
-            <option value="DPS">
-                📅 DPS
-            </option>
-
-            <option value="FDR">
-                📜 FDR
-            </option>
-
-            <option value="Loan">
-                💳 Loan
-            </option>
-
-        </select>
-
-        <div
-            id="accountMessage"
-            class="message"
-        ></div>
-
-        <button
-            class="save"
-            onclick="saveAccount()"
-        >
-            💾 Create Account
-        </button>
-
-    </div>
+<button
+    class="close"
+    onclick="closeModal('accountModal')"
+>
+    ✖
+</button>
 
 </div>
+
+<label>Member ID</label>
+
+<input
+    id="accountMemberId"
+    placeholder="000001"
+>
+
+<label>Account Type</label>
+
+<select id="accountType">
+
+<option value="Savings">
+Savings
+</option>
+
+<option value="DPS">
+DPS
+</option>
+
+<option value="FDR">
+FDR
+</option>
+
+<option value="Loan">
+Loan
+</option>
+
+</select>
+
+<div
+    id="accountMessage"
+    class="message"
+></div>
+
+<button
+    class="save"
+    onclick="saveAccount()"
+>
+    💾 Create Account
+</button>
+
+</div>
+</div>
+
+
+<!-- =====================================================
+     PROFILE MODAL
+===================================================== -->
+
+<div
+    id="profileModal"
+    class="modal"
+>
+
+<div class="modal-box">
+
+<div class="modal-header">
+
+<h2>👤 Edit Profile</h2>
+
+<button
+    class="close"
+    onclick="closeModal('profileModal')"
+>
+    ✖
+</button>
+
+</div>
+
+<label>নাম</label>
+
+<input id="profileName">
+
+<label>মোবাইল</label>
+
+<input id="profileMobile">
+
+<button
+    class="save"
+    onclick="saveProfile()"
+>
+    💾 Save
+</button>
+
+</div>
+</div>
+
+
+<!-- =====================================================
+     EMPLOYEE MODAL
+===================================================== -->
+
+<div
+    id="employeeModal"
+    class="modal"
+>
+
+<div class="modal-box">
+
+<div class="modal-header">
+
+<h2>👥 Add Employee</h2>
+
+<button
+    class="close"
+    onclick="closeModal('employeeModal')"
+>
+    ✖
+</button>
+
+</div>
+
+<label>Employee Name</label>
+
+<input id="employeeName">
+
+<label>Mobile</label>
+
+<input id="employeeMobile">
+
+<div
+    id="employeeMessage"
+    class="message"
+></div>
+
+<p>
+⚠️ Authentication account তৈরির জন্য
+Supabase Edge Function প্রয়োজন।
+</p>
+
+</div>
+</div>
+
+
+<!-- =====================================================
+     PRINT AREA
+===================================================== -->
+
+<div
+    id="printArea"
+    class="print-only print-area"
+></div>
 
 
 <script>
@@ -1460,10 +1355,7 @@ supabase.createClient(
 
 
 let currentUser = null;
-
-let currentFundType = "fund_added";
-
-let currentEditMemberId = null;
+let currentProfile = null;
 
 
 /* =========================================================
@@ -1489,70 +1381,34 @@ function escapeHtml(value){
 }
 
 
+function closeModal(id){
+
+    $(id).style.display = "none";
+
+}
+
+
 /* =========================================================
-   SECTION
+   ROLE PERMISSION
 ========================================================= */
 
-function showSection(id){
+function isOwner(){
 
-    document
-        .querySelectorAll(".section")
-        .forEach(section=>{
+    return currentProfile?.role === "owner";
 
-            section.classList.remove("active");
-
-        });
+}
 
 
-    const section = $(id);
+function isManager(){
 
-    if(section){
+    return currentProfile?.role === "manager";
 
-        section.classList.add("active");
-
-    }
+}
 
 
-    if(id === "membersSection"){
+function isEmployee(){
 
-        loadMembers();
-
-    }
-
-
-    if(id === "accountsSection"){
-
-        loadAccounts();
-
-    }
-
-
-    if(id === "employeesSection"){
-
-        loadEmployees();
-
-    }
-
-
-    if(id === "peopleSection"){
-
-        loadPeople();
-
-    }
-
-
-    if(id === "reportsSection"){
-
-        loadReports();
-
-    }
-
-
-    if(id === "fundSection"){
-
-        loadManagerBalance();
-
-    }
+    return currentProfile?.role === "employee";
 
 }
 
@@ -1563,21 +1419,18 @@ function showSection(id){
 
 $("loginForm").addEventListener(
     "submit",
-    async function(event){
+    async function(e){
 
-        event.preventDefault();
+        e.preventDefault();
 
+        $("loginMessage").textContent =
+            "⏳ Login হচ্ছে...";
 
         const email =
             $("email").value.trim();
 
         const password =
             $("password").value;
-
-
-        $("loginMessage").textContent =
-            "⏳ Login হচ্ছে...";
-
 
         const {data,error} =
             await db.auth.signInWithPassword({
@@ -1586,7 +1439,6 @@ $("loginForm").addEventListener(
                 password
 
             });
-
 
         if(error){
 
@@ -1597,47 +1449,36 @@ $("loginForm").addEventListener(
 
         }
 
-
         currentUser =
             data.user;
 
-
-        await checkManagerRole();
+        await loadUser();
 
     }
 );
 
 
 /* =========================================================
-   ROLE CHECK
+   LOAD USER
 ========================================================= */
 
-async function checkManagerRole(){
+async function loadUser(){
 
     if(!currentUser){
-
         return;
-
     }
-
 
     const {data,error} =
         await db
             .from("user_profiles")
-            .select(
-                "full_name,role,is_active"
-            )
-            .eq(
-                "id",
-                currentUser.id
-            )
+            .select("*")
+            .eq("id",currentUser.id)
             .maybeSingle();
-
 
     if(error){
 
         alert(
-            "Profile check failed:\n" +
+            "Profile load error:\n" +
             error.message
         );
 
@@ -1645,61 +1486,149 @@ async function checkManagerRole(){
 
     }
 
-
     if(!data){
 
         alert(
             "এই User-এর profile পাওয়া যায়নি।"
         );
 
-        await db.auth.signOut();
+        await logout();
 
         return;
 
     }
 
+    currentProfile = data;
 
     if(
-        data.role !== "manager" &&
-        data.role !== "owner"
+        !["owner","manager","employee"]
+            .includes(data.role)
     ){
 
-        alert(
-            "❌ Manager Panel-এ প্রবেশের অনুমতি নেই।"
-        );
+        alert("❌ Invalid role.");
 
-        await db.auth.signOut();
+        await logout();
 
         return;
 
     }
-
 
     if(data.is_active === false){
 
-        alert(
-            "❌ এই User বর্তমানে inactive।"
-        );
+        alert("❌ User inactive.");
 
-        await db.auth.signOut();
+        await logout();
 
         return;
 
     }
 
+    setupInterface();
 
-    $("managerTitle").textContent =
-        "👤 " +
-        (data.full_name || "Manager");
+    await loadDashboard();
+
+}
 
 
-    $("managerEmail").textContent =
+/* =========================================================
+   SETUP INTERFACE
+========================================================= */
+
+function setupInterface(){
+
+    $("loginBox").style.display =
+        "none";
+
+    $("app").style.display =
+        "block";
+
+    $("topUserName").textContent =
+        dataName();
+
+    $("roleTitle").textContent =
+        "Role: " +
+        currentProfile.role;
+
+    $("profileTitle").textContent =
+        "👤 " + dataName();
+
+    $("profileEmail").textContent =
         currentUser.email || "";
 
+    $("profileRole").textContent =
+        "Role: " +
+        currentProfile.role;
 
-    await loadProfile();
+    $("profileName").value =
+        currentProfile.full_name || "";
 
-    showDashboard();
+    $("profileMobile").value =
+        currentProfile.phone || "";
+
+
+    /* OWNER */
+
+    if(isOwner()){
+
+        $("managerMenu").style.display =
+            "block";
+
+        $("approvalMenu").style.display =
+            "none";
+
+    }
+
+
+    /* MANAGER */
+
+    if(isManager()){
+
+        $("approvalMenu").style.display =
+            "block";
+
+        document
+            .querySelectorAll(".manager-only")
+            .forEach(el=>{
+                el.style.display = "inline-block";
+            });
+
+    }
+
+
+    /* EMPLOYEE */
+
+    if(isEmployee()){
+
+        $("approvalMenu").style.display =
+            "none";
+
+        document
+            .querySelectorAll(".manager-only")
+            .forEach(el=>{
+                el.style.display = "none";
+            });
+
+    }
+
+
+    if(isOwner()){
+
+        document
+            .querySelectorAll(".manager-only")
+            .forEach(el=>{
+                el.style.display = "none";
+            });
+
+    }
+
+}
+
+
+function dataName(){
+
+    return currentProfile?.full_name ||
+        currentProfile?.role ||
+        "User";
 
 }
 
@@ -1708,345 +1637,314 @@ async function checkManagerRole(){
    DASHBOARD
 ========================================================= */
 
-function showDashboard(){
+async function loadDashboard(){
 
-    $("loginBox").style.display =
-        "none";
-
-    $("app").style.display =
-        "block";
-
-
-    showSection(
-        "profileSection"
-    );
+    $("dashboardTitle").textContent =
+        isOwner()
+        ? "👑 Owner Dashboard"
+        : isManager()
+        ? "👨‍💼 Manager Dashboard"
+        : "👨‍💻 Employee Dashboard";
 
 
-    loadMembers();
-
-    loadAccounts();
-
-    loadEmployees();
-
-    loadPeople();
-
-    loadReports();
-
-    loadManagerBalance();
-
-}
+    $("dashboardDescription").textContent =
+        isOwner()
+        ? "আপনি শুধু সম্পূর্ণ Samity-এর কার্যক্রম দেখতে পারবেন।"
+        : isManager()
+        ? "আপনি সম্পূর্ণ কার্যক্রম পরিচালনা ও অনুমোদন করতে পারবেন।"
+        : "আপনি কাজের আবেদন তৈরি করতে পারবেন।";
 
 
-/* =========================================================
-   SESSION
-========================================================= */
+    await Promise.all([
 
-async function checkSession(){
+        loadDashboardCounts(),
+        loadMembers(),
+        loadAccounts(),
+        loadEmployees()
 
-    const {data} =
-        await db.auth.getSession();
+    ]);
 
+    if(isOwner()){
 
-    if(data.session){
-
-        currentUser =
-            data.session.user;
-
-
-        await checkManagerRole();
+        await loadManagers();
 
     }
 
 }
 
 
-async function logout(){
+/* =========================================================
+   DASHBOARD COUNTS
+========================================================= */
 
-    await db.auth.signOut();
+async function loadDashboardCounts(){
+
+    const members =
+        await db
+            .from("members")
+            .select("*",{count:"exact",head:true});
+
+    const accounts =
+        await db
+            .from("accounts")
+            .select("*",{count:"exact",head:true});
+
+    const employees =
+        await db
+            .from("user_profiles")
+            .select("*",{count:"exact",head:true})
+            .eq("role","employee");
+
+    const pending =
+        await db
+            .from("approval_requests")
+            .select("*",{count:"exact",head:true})
+            .eq("status","pending");
 
 
-    currentUser = null;
+    $("dashboardMembers").textContent =
+        members.count || 0;
 
+    $("dashboardAccounts").textContent =
+        accounts.count || 0;
 
-    $("app").style.display =
-        "none";
+    $("dashboardEmployees").textContent =
+        employees.count || 0;
 
+    $("dashboardPending").textContent =
+        pending.count || 0;
 
-    $("loginBox").style.display =
-        "block";
+    $("reportMembers").textContent =
+        members.count || 0;
 
+    $("reportAccounts").textContent =
+        accounts.count || 0;
 
-    $("email").value = "";
-
-    $("password").value = "";
-
-    $("loginMessage").textContent =
-        "";
+    $("reportEmployees").textContent =
+        employees.count || 0;
 
 }
 
 
 /* =========================================================
-   MEMBER ID
+   SECTION
+========================================================= */
+
+function showSection(id){
+
+    document
+        .querySelectorAll(".section")
+        .forEach(s=>{
+            s.classList.remove("active");
+        });
+
+    const section = $(id);
+
+    if(section){
+        section.classList.add("active");
+    }
+
+    if(id === "approvalSection"){
+        loadApprovals();
+    }
+
+    if(id === "managersSection"){
+        loadManagers();
+    }
+
+    if(id === "membersSection"){
+        loadMembers();
+    }
+
+    if(id === "accountsSection"){
+        loadAccounts();
+    }
+
+    if(id === "employeesSection"){
+        loadEmployees();
+    }
+
+}
+
+
+/* =========================================================
+   MEMBERS
 ========================================================= */
 
 async function getNextMemberId(){
 
-    const {data,error} =
+    const {data} =
         await db
             .from("members")
             .select("member_id")
-            .order(
-                "member_id",
-                {
-                    ascending:false
-                }
-            )
+            .order("member_id",{ascending:false})
             .limit(1);
-
-
-    if(error){
-
-        console.error(error);
-
-        return "000001";
-
-    }
-
 
     let next = 1;
 
+    if(data?.length){
 
-    if(data && data.length){
-
-        const last =
+        const n =
             parseInt(
-                String(
-                    data[0].member_id
-                ).replace(/\D/g,""),
+                String(data[0].member_id)
+                    .replace(/\D/g,""),
                 10
             );
 
-
-        if(!isNaN(last)){
-
-            next =
-                last + 1;
-
+        if(!isNaN(n)){
+            next = n + 1;
         }
 
     }
 
-
-    return String(next)
-        .padStart(6,"0");
+    return String(next).padStart(6,"0");
 
 }
 
 
-/* =========================================================
-   MEMBER MODAL
-========================================================= */
-
 async function openMemberModal(){
 
-    currentEditMemberId =
-        null;
-
-
-    clearMemberForm();
-
+    $("memberName").value = "";
+    $("fatherName").value = "";
+    $("motherName").value = "";
+    $("memberMobile").value = "";
+    $("memberNid").value = "";
+    $("memberDob").value = "";
+    $("memberAddress").value = "";
+    $("memberMessage").textContent = "";
 
     $("newMemberId").value =
         await getNextMemberId();
 
-
-    $("memberModal")
-        .style.display =
+    $("memberModal").style.display =
         "flex";
 
 }
 
 
-function closeMemberModal(){
-
-    $("memberModal")
-        .style.display =
-        "none";
-
-}
-
-
-function clearMemberForm(){
-
-    $("newMemberId").value = "";
-
-    $("memberName").value = "";
-
-    $("fatherName").value = "";
-
-    $("memberMobile").value = "";
-
-    $("memberNid").value = "";
-
-    $("memberAddress").value = "";
-
-
-    $("memberJoinDate").value =
-        new Date()
-            .toISOString()
-            .slice(0,10);
-
-
-    $("memberStatus").value =
-        "active";
-
-
-    $("chequePages").value =
-        "0";
-
-
-    $("otherDocumentDetails")
-        .value = "";
-
-
-    $("documentFolder")
-        .value = "";
-
-
-    $("memberMessage")
-        .textContent = "";
-
-}
-
-
-/* =========================================================
-   SAVE MEMBER
-========================================================= */
-
 async function saveMember(){
 
-    const name =
-        $("memberName")
-            .value
-            .trim();
+    if(!currentUser){
+        return;
+    }
 
+    const name =
+        $("memberName").value.trim();
 
     if(!name){
 
-        $("memberMessage")
-            .textContent =
-            "❌ সদস্যের নাম দিন।";
+        $("memberMessage").textContent =
+            "❌ নাম দিন।";
+
+        return;
+
+    }
+
+    const status =
+        isEmployee()
+        ? "pending"
+        : "approved";
+
+
+    const {data,error} =
+        await db
+            .from("members")
+            .insert({
+
+                member_id:
+                    $("newMemberId").value,
+
+                full_name:
+                    name,
+
+                father_name:
+                    $("fatherName").value.trim(),
+
+                mother_name:
+                    $("motherName").value.trim(),
+
+                mobile:
+                    $("memberMobile").value.trim(),
+
+                nid:
+                    $("memberNid").value.trim(),
+
+                dob:
+                    $("memberDob").value || null,
+
+                address:
+                    $("memberAddress").value.trim(),
+
+                join_date:
+                    new Date()
+                        .toISOString()
+                        .slice(0,10),
+
+                status:
+                    "active",
+
+                created_by:
+                    currentUser.id,
+
+                approval_status:
+                    status
+
+            })
+            .select("id")
+            .single();
+
+
+    if(error){
+
+        $("memberMessage").textContent =
+            "❌ " + error.message;
 
         return;
 
     }
 
 
-    const record = {
+    if(isEmployee()){
 
-        member_id:
-            $("newMemberId").value,
+        await db
+            .from("approval_requests")
+            .insert({
 
-        full_name:
-            name,
+                request_type:
+                    "member",
 
-        father_name:
-            $("fatherName")
-                .value
-                .trim(),
+                target_id:
+                    data.id,
 
-        mobile:
-            $("memberMobile")
-                .value
-                .trim(),
+                requested_by:
+                    currentUser.id,
 
-        nid:
-            $("memberNid")
-                .value
-                .trim(),
+                status:
+                    "pending",
 
-        address:
-            $("memberAddress")
-                .value
-                .trim(),
+                request_data:{
+                    member_id:
+                        $("newMemberId").value,
 
-        join_date:
-            $("memberJoinDate")
-                .value,
+                    full_name:
+                        name
+                }
 
-        status:
-            $("memberStatus")
-                .value,
-
-        cheque_pages:
-            Number(
-                $("chequePages")
-                    .value || 0
-            ),
-
-        other_document_details:
-            $("otherDocumentDetails")
-                .value
-                .trim(),
-
-        document_folder:
-            $("documentFolder")
-                .value
-                .trim()
-
-    };
-
-
-    let result;
-
-
-    if(currentEditMemberId){
-
-        result =
-            await db
-                .from("members")
-                .update(record)
-                .eq(
-                    "id",
-                    currentEditMemberId
-                );
-
-    }else{
-
-        result =
-            await db
-                .from("members")
-                .insert(record);
+            });
 
     }
 
 
-    if(result.error){
-
-        $("memberMessage")
-            .textContent =
-            "❌ " +
-            result.error.message;
-
-        return;
-
-    }
-
-
-    $("memberMessage")
-        .textContent =
-        currentEditMemberId
-        ? "✅ সদস্য Update হয়েছে।"
-        : "✅ সদস্য যোগ হয়েছে।";
-
+    $("memberMessage").textContent =
+        isEmployee()
+        ? "✅ Member request পাঠানো হয়েছে।"
+        : "✅ Member যোগ হয়েছে।";
 
     await loadMembers();
 
-
     setTimeout(
-        closeMemberModal,
-        600
+        ()=>closeModal("memberModal"),
+        700
     );
 
 }
@@ -2061,34 +1959,23 @@ async function loadMembers(){
     const list =
         $("memberList");
 
-
     if(!list){
-
         return;
-
     }
 
-
-    list.innerHTML =
-        `
-        <tr>
-            <td colspan="6">
-                ⏳ Loading...
-            </td>
-        </tr>
-        `;
+    const search =
+        $("memberSearch")?.value
+        ?.trim() || "";
 
 
     let query =
         db
-            .from("members")
-            .select("*");
-
-
-    const search =
-        $("memberSearch")
-            .value
-            .trim();
+            .from("members_with_creator")
+            .select("*")
+            .order(
+                "member_id",
+                {ascending:true}
+            );
 
 
     if(search){
@@ -2107,15 +1994,6 @@ async function loadMembers(){
     }
 
 
-    query =
-        query.order(
-            "member_id",
-            {
-                ascending:true
-            }
-        );
-
-
     const {data,error} =
         await query;
 
@@ -2123,15 +2001,11 @@ async function loadMembers(){
     if(error){
 
         list.innerHTML =
-            `
-            <tr>
-                <td colspan="6">
-                    ❌ ${escapeHtml(
-                        error.message
-                    )}
+            `<tr>
+                <td colspan="10">
+                    ❌ ${escapeHtml(error.message)}
                 </td>
-            </tr>
-            `;
+            </tr>`;
 
         return;
 
@@ -2141,338 +2015,145 @@ async function loadMembers(){
     list.innerHTML = "";
 
 
-    if(!data || !data.length){
+    if(!data?.length){
 
         list.innerHTML =
-            `
-            <tr>
-                <td colspan="6">
-                    কোনো সদস্য পাওয়া যায়নি।
+            `<tr>
+                <td colspan="10">
+                    কোনো Member নেই।
                 </td>
-            </tr>
-            `;
+            </tr>`;
 
-    }else{
-
-        data.forEach(member=>{
-
-            const row =
-                document.createElement("tr");
-
-
-            row.innerHTML = `
-
-                <td>
-                    <b>
-                        ${escapeHtml(
-                            member.member_id
-                        )}
-                    </b>
-                </td>
-
-                <td>
-                    ${escapeHtml(
-                        member.full_name
-                    )}
-                </td>
-
-                <td>
-                    ${escapeHtml(
-                        member.mobile || ""
-                    )}
-                </td>
-
-                <td>
-                    ${escapeHtml(
-                        member.join_date || ""
-                    )}
-                </td>
-
-                <td>
-                    ${
-                        member.status === "active"
-                        ? "🟢 Active"
-                        : "🔴 Inactive"
-                    }
-                </td>
-
-                <td>
-
-                    <button
-                        class="btn-blue"
-                        onclick="viewMember('${member.id}')"
-                    >
-                        👁️
-                    </button>
-
-                    <button
-                        class="btn-warning"
-                        onclick="editMember('${member.id}')"
-                    >
-                        ✏️
-                    </button>
-
-                    <button
-                        class="btn"
-                        onclick="printMember('${member.id}')"
-                    >
-                        🖨️ Print
-                    </button>
-
-                    <button
-                        class="btn-danger"
-                        onclick="deleteMember('${member.id}')"
-                    >
-                        🗑️
-                    </button>
-
-                </td>
-
-            `;
-
-
-            list.appendChild(row);
-
-        });
+        return;
 
     }
+
+
+    data.forEach(member=>{
+
+        const status =
+            member.approval_status ||
+            "approved";
+
+
+        const tr =
+            document.createElement("tr");
+
+
+        tr.innerHTML = `
+
+<td>
+    ${escapeHtml(member.member_id)}
+</td>
+
+<td>
+    ${escapeHtml(member.full_name)}
+</td>
+
+<td>
+    ${escapeHtml(member.father_name || "")}
+</td>
+
+<td>
+    ${escapeHtml(member.mother_name || "")}
+</td>
+
+<td>
+    ${escapeHtml(member.mobile || "")}
+</td>
+
+<td>
+    ${escapeHtml(member.address || "")}
+</td>
+
+<td>
+    ${escapeHtml(member.creator_name || "—")}
+</td>
+
+<td>
+    ${escapeHtml(member.creator_role || "—")}
+</td>
+
+<td>
+    ${statusBadge(status)}
+</td>
+
+<td>
+
+<button
+    class="btn-blue"
+    onclick="printMember('${member.id}')"
+>
+    🖨️
+</button>
+
+</td>
+
+`;
+
+
+        list.appendChild(tr);
+
+    });
 
 
     $("memberCount").textContent =
-        data
-        ? data.length
-        : 0;
+        data.length;
 
 }
 
 
 /* =========================================================
-   VIEW MEMBER
+   STATUS BADGE
 ========================================================= */
 
-async function viewMember(id){
+function statusBadge(status){
 
-    const {data,error} =
-        await db
-            .from("members")
-            .select("*")
-            .eq("id",id)
-            .single();
+    if(status === "approved"){
 
-
-    if(error){
-
-        alert(
-            "❌ " +
-            error.message
-        );
-
-        return;
+        return `
+        <span class="badge badge-green">
+            Approved
+        </span>`;
 
     }
 
+    if(status === "rejected"){
 
-    alert(
+        return `
+        <span class="badge badge-red">
+            Rejected
+        </span>`;
 
-        "👤 সদস্যের তথ্য\n\n" +
+    }
 
-        "Member ID: " +
-        (data.member_id || "") +
-
-        "\nনাম: " +
-        (data.full_name || "") +
-
-        "\nপিতা/স্বামী: " +
-        (data.father_name || "") +
-
-        "\nমোবাইল: " +
-        (data.mobile || "") +
-
-        "\nNID: " +
-        (data.nid || "") +
-
-        "\nঠিকানা: " +
-        (data.address || "") +
-
-        "\nJoin Date: " +
-        (data.join_date || "") +
-
-        "\nStatus: " +
-        (data.status || "") +
-
-        "\nCheque Pages: " +
-        (data.cheque_pages || 0) +
-
-        "\nOther Document: " +
-        (data.other_document_details || "")
-
-    );
+    return `
+    <span class="badge badge-yellow">
+        Pending
+    </span>`;
 
 }
 
 
 /* =========================================================
-   EDIT MEMBER
-========================================================= */
-
-async function editMember(id){
-
-    const {data,error} =
-        await db
-            .from("members")
-            .select("*")
-            .eq("id",id)
-            .single();
-
-
-    if(error){
-
-        alert(
-            "❌ " +
-            error.message
-        );
-
-        return;
-
-    }
-
-
-    currentEditMemberId =
-        id;
-
-
-    $("newMemberId").value =
-        data.member_id || "";
-
-
-    $("memberName").value =
-        data.full_name || "";
-
-
-    $("fatherName").value =
-        data.father_name || "";
-
-
-    $("memberMobile").value =
-        data.mobile || "";
-
-
-    $("memberNid").value =
-        data.nid || "";
-
-
-    $("memberAddress").value =
-        data.address || "";
-
-
-    $("memberJoinDate").value =
-        data.join_date || "";
-
-
-    $("memberStatus").value =
-        data.status || "active";
-
-
-    $("chequePages").value =
-        data.cheque_pages || 0;
-
-
-    $("otherDocumentDetails").value =
-        data.other_document_details || "";
-
-
-    $("documentFolder").value =
-        data.document_folder || "";
-
-
-    $("memberModal")
-        .style.display =
-        "flex";
-
-}
-
-
-/* =========================================================
-   DELETE MEMBER
-========================================================= */
-
-async function deleteMember(id){
-
-    if(
-        !confirm(
-            "এই সদস্যকে নিষ্ক্রিয় করতে চান?"
-        )
-    ){
-
-        return;
-
-    }
-
-
-    const {error} =
-        await db
-            .from("members")
-            .update({
-                status:"inactive"
-            })
-            .eq(
-                "id",
-                id
-            );
-
-
-    if(error){
-
-        alert(
-            "❌ " +
-            error.message
-        );
-
-        return;
-
-    }
-
-
-    alert(
-        "✅ সদস্য নিষ্ক্রিয় করা হয়েছে।"
-    );
-
-
-    await loadMembers();
-
-}
-
-
-/* =========================================================
-   ACCOUNT NUMBER
+   ACCOUNTS
 ========================================================= */
 
 async function getNextAccountNumber(){
 
-    const {data,error} =
+    const {data} =
         await db
             .from("accounts")
             .select("account_number")
             .order(
                 "account_number",
-                {
-                    ascending:false
-                }
+                {ascending:false}
             )
             .limit(1);
 
 
-    if(error){
-
+    if(!data?.length){
         return "1000000001";
-
-    }
-
-
-    if(!data || !data.length){
-
-        return "1000000001";
-
     }
 
 
@@ -2483,45 +2164,29 @@ async function getNextAccountNumber(){
         );
 
 
-    return String(
-        last + 1
-    ).padStart(
-        10,
-        "0"
-    );
+    return String(last + 1)
+        .padStart(10,"0");
 
 }
 
 
-/* =========================================================
-   ACCOUNT
-========================================================= */
+async function openAccountModal(){
 
-function openAccountModal(){
+    $("accountMemberId").value = "";
+    $("accountMessage").textContent = "";
 
-    $("accountMemberId").value =
-        "";
-
-    $("accountMessage").textContent =
-        "";
-
-    $("accountModal")
-        .style.display =
+    $("accountModal").style.display =
         "flex";
 
 }
 
 
-function closeAccountModal(){
-
-    $("accountModal")
-        .style.display =
-        "none";
-
-}
-
-
 async function saveAccount(){
+
+    if(!currentUser){
+        return;
+    }
+
 
     const memberId =
         $("accountMemberId")
@@ -2529,14 +2194,9 @@ async function saveAccount(){
             .trim();
 
 
-    const type =
-        $("accountType").value;
-
-
     if(!/^\d{6}$/.test(memberId)){
 
-        $("accountMessage")
-            .textContent =
+        $("accountMessage").textContent =
             "❌ Member ID ৬ ডিজিট হতে হবে।";
 
         return;
@@ -2544,24 +2204,17 @@ async function saveAccount(){
     }
 
 
-    const {
-        data:member,
-        error:memberError
-    } =
+    const {data:member,error:memberError} =
         await db
             .from("members")
-            .select("member_id")
-            .eq(
-                "member_id",
-                memberId
-            )
+            .select("id,member_id")
+            .eq("member_id",memberId)
             .maybeSingle();
 
 
     if(memberError){
 
-        $("accountMessage")
-            .textContent =
+        $("accountMessage").textContent =
             "❌ " +
             memberError.message;
 
@@ -2572,9 +2225,8 @@ async function saveAccount(){
 
     if(!member){
 
-        $("accountMessage")
-            .textContent =
-            "❌ এই Member ID পাওয়া যায়নি।";
+        $("accountMessage").textContent =
+            "❌ Member পাওয়া যায়নি।";
 
         return;
 
@@ -2585,7 +2237,13 @@ async function saveAccount(){
         await getNextAccountNumber();
 
 
-    const {error} =
+    const approvalStatus =
+        isEmployee()
+        ? "pending"
+        : "approved";
+
+
+    const {data,error} =
         await db
             .from("accounts")
             .insert({
@@ -2597,21 +2255,28 @@ async function saveAccount(){
                     memberId,
 
                 account_type:
-                    type,
+                    $("accountType").value,
+
+                balance:
+                    0,
 
                 status:
                     "active",
 
-                balance:
-                    0
+                created_by:
+                    currentUser.id,
 
-            });
+                approval_status:
+                    approvalStatus
+
+            })
+            .select("id")
+            .single();
 
 
     if(error){
 
-        $("accountMessage")
-            .textContent =
+        $("accountMessage").textContent =
             "❌ " +
             error.message;
 
@@ -2620,17 +2285,51 @@ async function saveAccount(){
     }
 
 
-    $("accountMessage")
-        .textContent =
-        "✅ Account তৈরি হয়েছে: " +
-        accountNumber;
+    if(isEmployee()){
+
+        await db
+            .from("approval_requests")
+            .insert({
+
+                request_type:
+                    "account",
+
+                target_id:
+                    data.id,
+
+                requested_by:
+                    currentUser.id,
+
+                status:
+                    "pending",
+
+                request_data:{
+                    account_number:
+                        accountNumber,
+
+                    member_id:
+                        memberId,
+
+                    account_type:
+                        $("accountType").value
+                }
+
+            });
+
+    }
+
+
+    $("accountMessage").textContent =
+        isEmployee()
+        ? "✅ Account request পাঠানো হয়েছে।"
+        : "✅ Account তৈরি হয়েছে।";
 
 
     await loadAccounts();
 
 
     setTimeout(
-        closeAccountModal,
+        ()=>closeModal("accountModal"),
         700
     );
 
@@ -2646,38 +2345,29 @@ async function loadAccounts(){
     const list =
         $("accountList");
 
-
     if(!list){
-
         return;
-
     }
 
 
     const {data,error} =
         await db
-            .from("accounts")
+            .from("accounts_with_creator")
             .select("*")
             .order(
                 "account_number",
-                {
-                    ascending:true
-                }
+                {ascending:true}
             );
 
 
     if(error){
 
         list.innerHTML =
-            `
-            <tr>
-                <td colspan="5">
-                    ❌ ${escapeHtml(
-                        error.message
-                    )}
+            `<tr>
+                <td colspan="8">
+                    ❌ ${escapeHtml(error.message)}
                 </td>
-            </tr>
-            `;
+            </tr>`;
 
         return;
 
@@ -2687,16 +2377,14 @@ async function loadAccounts(){
     list.innerHTML = "";
 
 
-    if(!data || !data.length){
+    if(!data?.length){
 
         list.innerHTML =
-            `
-            <tr>
-                <td colspan="5">
+            `<tr>
+                <td colspan="8">
                     কোনো Account নেই।
                 </td>
-            </tr>
-            `;
+            </tr>`;
 
         return;
 
@@ -2705,59 +2393,67 @@ async function loadAccounts(){
 
     data.forEach(account=>{
 
-        const row =
+        const tr =
             document.createElement("tr");
 
 
-        row.innerHTML = `
+        tr.innerHTML = `
 
-            <td>
-                <b>
-                    ${escapeHtml(
-                        account.account_number
-                    )}
-                </b>
-            </td>
+<td>
+    <b>
+        ${escapeHtml(account.account_number)}
+    </b>
+</td>
 
-            <td>
-                ${escapeHtml(
-                    account.member_id
-                )}
-            </td>
+<td>
+    ${escapeHtml(account.member_id)}
+</td>
 
-            <td>
-                ${escapeHtml(
-                    account.account_type
-                )}
-            </td>
+<td>
+    ${escapeHtml(account.account_type)}
+</td>
 
-            <td>
-                ৳ ${Number(
-                    account.balance || 0
-                ).toFixed(2)}
-            </td>
+<td>
+    ৳ ${Number(
+        account.balance || 0
+    ).toFixed(2)}
+</td>
 
-            <td>
-                ${escapeHtml(
-                    account.status || ""
-                )}
-            </td>
+<td>
+    ${escapeHtml(
+        account.creator_name || "—"
+    )}
+</td>
 
-        `;
+<td>
+    ${escapeHtml(
+        account.creator_role || "—"
+    )}
+</td>
+
+<td>
+    ${statusBadge(
+        account.approval_status || "approved"
+    )}
+</td>
+
+<td>
+
+<button
+    class="btn-blue"
+    onclick="printAccount('${account.id}')"
+>
+    🖨️
+</button>
+
+</td>
+
+`;
 
 
-        list.appendChild(row);
+        list.appendChild(tr);
 
     });
-
-}
-
-
-function filterAccounts(type){
-
-    showSection(
-        "accountsSection"
-    );
 
 }
 
@@ -2766,43 +2462,13 @@ function filterAccounts(type){
    EMPLOYEES
 ========================================================= */
 
-function openEmployeeModal(){
-
-    $("employeeName").value = "";
-
-    $("employeeMobile").value = "";
-
-    $("employeePassword").value = "";
-
-    $("employeeMessage").textContent =
-        "";
-
-    $("employeeModal")
-        .style.display =
-        "flex";
-
-}
-
-
-function closeEmployeeModal(){
-
-    $("employeeModal")
-        .style.display =
-        "none";
-
-}
-
-
 async function loadEmployees(){
 
     const list =
         $("employeeList");
 
-
     if(!list){
-
         return;
-
     }
 
 
@@ -2810,32 +2476,23 @@ async function loadEmployees(){
         await db
             .from("user_profiles")
             .select(
-                "id,full_name,role,phone,is_active,created_at"
+                "id,full_name,phone,role,is_active,created_at"
             )
-            .eq(
-                "role",
-                "employee"
-            )
+            .eq("role","employee")
             .order(
                 "created_at",
-                {
-                    ascending:false
-                }
+                {ascending:false}
             );
 
 
     if(error){
 
         list.innerHTML =
-            `
-            <tr>
+            `<tr>
                 <td colspan="5">
-                    ❌ ${escapeHtml(
-                        error.message
-                    )}
+                    ❌ ${escapeHtml(error.message)}
                 </td>
-            </tr>
-            `;
+            </tr>`;
 
         return;
 
@@ -2845,16 +2502,14 @@ async function loadEmployees(){
     list.innerHTML = "";
 
 
-    if(!data || !data.length){
+    if(!data?.length){
 
         list.innerHTML =
-            `
-            <tr>
+            `<tr>
                 <td colspan="5">
                     কোনো Employee নেই।
                 </td>
-            </tr>
-            `;
+            </tr>`;
 
         return;
 
@@ -2863,51 +2518,47 @@ async function loadEmployees(){
 
     data.forEach(employee=>{
 
-        const row =
+        const tr =
             document.createElement("tr");
 
 
-        row.innerHTML = `
+        tr.innerHTML = `
 
-            <td>
-                ${escapeHtml(
-                    employee.full_name || ""
-                )}
-            </td>
+<td>
+    ${escapeHtml(employee.full_name || "")}
+</td>
 
-            <td>
-                ${escapeHtml(
-                    employee.phone || ""
-                )}
-            </td>
+<td>
+    ${escapeHtml(employee.phone || "")}
+</td>
 
-            <td>
-                Employee
-            </td>
+<td>
+    Employee
+</td>
 
-            <td>
-                ${
-                    employee.is_active
-                    ? "🟢 Active"
-                    : "🔴 Inactive"
-                }
-            </td>
+<td>
+    ${
+        employee.is_active
+        ? "🟢 Active"
+        : "🔴 Inactive"
+    }
+</td>
 
-            <td>
+<td>
 
-                <button
-                    class="btn"
-                    onclick="printUserProfile('${employee.id}')"
-                >
-                    🖨️ Print
-                </button>
+<button
+    class="btn-blue"
+    onclick="printPerson('${employee.id}')"
+>
+    🖨️
+</button>
 
-            </td>
+</td>
 
-        `;
+`;
 
 
-        list.appendChild(row);
+        list.appendChild(tr);
 
     });
 
@@ -2915,103 +2566,40 @@ async function loadEmployees(){
 
 
 /* =========================================================
-   SAVE EMPLOYEE
+   MANAGERS
 ========================================================= */
 
-async function saveEmployee(){
-
-    const name =
-        $("employeeName")
-            .value
-            .trim();
-
-
-    const phone =
-        $("employeeMobile")
-            .value
-            .trim();
-
-
-    if(!name){
-
-        $("employeeMessage")
-            .textContent =
-            "❌ Employee-এর নাম দিন।";
-
-        return;
-
-    }
-
-
-    $("employeeMessage")
-        .textContent =
-        "⚠️ Employee authentication তৈরির secure server function এখনো যুক্ত করা হয়নি।";
-
-}
-
-
-/* =========================================================
-   PEOPLE
-   Manager + Owner + Employee
-========================================================= */
-
-async function loadPeople(){
+async function loadManagers(){
 
     const list =
-        $("peopleList");
-
+        $("managerList");
 
     if(!list){
-
         return;
-
     }
-
-
-    list.innerHTML =
-        `
-        <tr>
-            <td colspan="5">
-                ⏳ Loading...
-            </td>
-        </tr>
-        `;
 
 
     const {data,error} =
         await db
             .from("user_profiles")
             .select(
-                "id,full_name,role,phone,is_active,created_at"
+                "id,full_name,phone,role,is_active,created_at"
             )
-            .in(
-                "role",
-                [
-                    "owner",
-                    "manager",
-                    "employee"
-                ]
-            )
+            .eq("role","manager")
             .order(
                 "created_at",
-                {
-                    ascending:false
-                }
+                {ascending:false}
             );
 
 
     if(error){
 
         list.innerHTML =
-            `
-            <tr>
-                <td colspan="5">
-                    ❌ ${escapeHtml(
-                        error.message
-                    )}
+            `<tr>
+                <td colspan="6">
+                    ❌ ${escapeHtml(error.message)}
                 </td>
-            </tr>
-            `;
+            </tr>`;
 
         return;
 
@@ -3021,91 +2609,198 @@ async function loadPeople(){
     list.innerHTML = "";
 
 
-    if(!data || !data.length){
+    if(!data?.length){
 
         list.innerHTML =
-            `
-            <tr>
-                <td colspan="5">
-                    কোনো Profile পাওয়া যায়নি।
+            `<tr>
+                <td colspan="6">
+                    কোনো Manager নেই।
                 </td>
-            </tr>
-            `;
+            </tr>`;
 
         return;
 
     }
 
 
-    data.forEach(person=>{
+    data.forEach(manager=>{
 
-        const row =
+        const tr =
             document.createElement("tr");
 
 
-        let roleName =
-            "Employee";
+        tr.innerHTML = `
+
+<td>
+    ${escapeHtml(manager.full_name || "")}
+</td>
+
+<td>
+    ${escapeHtml(manager.phone || "")}
+</td>
+
+<td>
+    Manager
+</td>
+
+<td>
+    ${
+        manager.is_active
+        ? "🟢 Active"
+        : "🔴 Inactive"
+    }
+</td>
+
+<td>
+    ${escapeHtml(
+        manager.created_at
+        ? new Date(
+            manager.created_at
+          ).toLocaleDateString("bn-BD")
+        : ""
+    )}
+</td>
+
+<td>
+
+<button
+    class="btn-blue"
+    onclick="printPerson('${manager.id}')"
+>
+    🖨️ A4
+</button>
+
+</td>
+
+`;
 
 
-        if(person.role === "owner"){
+        list.appendChild(tr);
 
-            roleName =
-                "Owner";
-
-        }
+    });
 
 
-        if(person.role === "manager"){
+    $("reportManagers").textContent =
+        data.length;
 
-            roleName =
-                "Manager";
-
-        }
+}
 
 
-        row.innerHTML = `
+/* =========================================================
+   APPROVALS
+========================================================= */
 
-            <td>
-                <b>
-                    ${escapeHtml(
-                        person.full_name || ""
-                    )}
-                </b>
-            </td>
+async function loadApprovals(){
 
-            <td>
-                ${escapeHtml(
-                    person.phone || ""
-                )}
-            </td>
+    const list =
+        $("approvalList");
 
-            <td>
-                ${roleName}
-            </td>
-
-            <td>
-                ${
-                    person.is_active
-                    ? "🟢 Active"
-                    : "🔴 Inactive"
-                }
-            </td>
-
-            <td>
-
-                <button
-                    class="btn"
-                    onclick="printUserProfile('${person.id}')"
-                >
-                    🖨️ Print
-                </button>
-
-            </td>
-
-        `;
+    if(!list){
+        return;
+    }
 
 
-        list.appendChild(row);
+    const {data,error} =
+        await db
+            .from("approval_requests_view")
+            .select("*")
+            .eq("status","pending")
+            .order(
+                "created_at",
+                {ascending:false}
+            );
+
+
+    if(error){
+
+        list.innerHTML =
+            `<tr>
+                <td colspan="6">
+                    ❌ ${escapeHtml(error.message)}
+                </td>
+            </tr>`;
+
+        return;
+
+    }
+
+
+    list.innerHTML = "";
+
+
+    if(!data?.length){
+
+        list.innerHTML =
+            `<tr>
+                <td colspan="6">
+                    কোনো Pending Approval নেই।
+                </td>
+            </tr>`;
+
+        return;
+
+    }
+
+
+    data.forEach(item=>{
+
+        const tr =
+            document.createElement("tr");
+
+
+        tr.innerHTML = `
+
+<td>
+    ${escapeHtml(item.request_type)}
+</td>
+
+<td>
+    ${escapeHtml(
+        item.requester_name || ""
+    )}
+</td>
+
+<td>
+    ${escapeHtml(
+        item.requester_role || ""
+    )}
+</td>
+
+<td>
+    ${item.created_at
+        ? new Date(
+            item.created_at
+          ).toLocaleString("bn-BD")
+        : ""
+    }
+</td>
+
+<td>
+    ${statusBadge(item.status)}
+</td>
+
+<td>
+
+<button
+    class="btn"
+    onclick="approveRequest('${item.id}','${item.request_type}','${item.target_id}')"
+>
+    ✅ Approve
+</button>
+
+<button
+    class="btn-danger"
+    onclick="rejectRequest('${item.id}','${item.request_type}','${item.target_id}')"
+>
+    ❌ Reject
+</button>
+
+</td>
+
+`;
+
+
+        list.appendChild(tr);
 
     });
 
@@ -3113,150 +2808,56 @@ async function loadPeople(){
 
 
 /* =========================================================
-   MANAGER BALANCE
+   APPROVE
 ========================================================= */
 
-async function loadManagerBalance(){
+async function approveRequest(
+    requestId,
+    type,
+    targetId
+){
 
-    if(!currentUser){
+    if(!isManager()){
 
-        return;
-
-    }
-
-
-    const {data,error} =
-        await db
-            .rpc(
-                "get_manager_balance",
-                {
-                    p_manager_id:
-                        currentUser.id
-                }
-            );
-
-
-    if(error){
-
-        console.error(error);
-
-        return;
-
-    }
-
-
-    let balance = 0;
-
-
-    if(
-        typeof data === "number"
-    ){
-
-        balance = data;
-
-    }
-    else if(
-        data &&
-        typeof data.balance !==
-        "undefined"
-    ){
-
-        balance =
-            Number(
-                data.balance
-            );
-
-    }
-    else if(
-        Array.isArray(data) &&
-        data.length
-    ){
-
-        balance =
-            Number(
-                data[0].balance || 0
-            );
-
-    }
-
-
-    $("managerBalance")
-        .textContent =
-        balance.toFixed(2);
-
-}
-
-
-/* =========================================================
-   FUND
-========================================================= */
-
-function openBalanceModal(type){
-
-    currentFundType =
-        type;
-
-
-    $("balanceAmount").value =
-        "";
-
-    $("balanceDescription").value =
-        "";
-
-    $("balanceMessage").textContent =
-        "";
-
-
-    $("balanceTitle")
-        .textContent =
-        type === "fund_added"
-        ? "➕ Add Fund"
-        : "➖ Reduce Fund";
-
-
-    $("balanceModal")
-        .style.display =
-        "flex";
-
-}
-
-
-function closeBalanceModal(){
-
-    $("balanceModal")
-        .style.display =
-        "none";
-
-}
-
-
-async function submitBalanceChange(){
-
-    if(!currentUser){
-
-        return;
-
-    }
-
-
-    const amount =
-        Number(
-            $("balanceAmount")
-                .value
+        alert(
+            "শুধু Manager Approval দিতে পারবে।"
         );
 
+        return;
 
-    const description =
-        $("balanceDescription")
-            .value
-            .trim();
+    }
 
 
-    if(amount <= 0){
+    const table =
+        type === "member"
+        ? "members"
+        : "accounts";
 
-        $("balanceMessage")
-            .textContent =
-            "❌ সঠিক টাকার পরিমাণ দিন।";
+
+    const {error:targetError} =
+        await db
+            .from(table)
+            .update({
+
+                approval_status:
+                    "approved",
+
+                approved_by:
+                    currentUser.id,
+
+                approved_at:
+                    new Date().toISOString()
+
+            })
+            .eq("id",targetId);
+
+
+    if(targetError){
+
+        alert(
+            "❌ " +
+            targetError.message
+        );
 
         return;
 
@@ -3265,53 +2866,143 @@ async function submitBalanceChange(){
 
     const {error} =
         await db
-            .from(
-                "manager_balance_transactions"
-            )
-            .insert({
+            .from("approval_requests")
+            .update({
 
-                manager_id:
+                status:
+                    "approved",
+
+                approved_by:
                     currentUser.id,
 
-                transaction_type:
-                    currentFundType,
+                approved_at:
+                    new Date().toISOString()
 
-                amount:
-                    currentFundType ===
-                    "fund_reduced"
-                    ? -amount
-                    : amount,
-
-                description:
-                    description
-
-            });
+            })
+            .eq("id",requestId);
 
 
     if(error){
 
-        $("balanceMessage")
-            .textContent =
+        alert(
             "❌ " +
-            error.message;
+            error.message
+        );
 
         return;
 
     }
 
 
-    $("balanceMessage")
-        .textContent =
-        "✅ Fund transaction saved";
-
-
-    await loadManagerBalance();
-
-
-    setTimeout(
-        closeBalanceModal,
-        700
+    alert(
+        "✅ Approval দেওয়া হয়েছে।"
     );
+
+
+    await loadApprovals();
+    await loadMembers();
+    await loadAccounts();
+    await loadDashboard();
+
+}
+
+
+/* =========================================================
+   REJECT
+========================================================= */
+
+async function rejectRequest(
+    requestId,
+    type,
+    targetId
+){
+
+    if(!isManager()){
+
+        alert(
+            "শুধু Manager Reject করতে পারবে।"
+        );
+
+        return;
+
+    }
+
+
+    const table =
+        type === "member"
+        ? "members"
+        : "accounts";
+
+
+    const {error:targetError} =
+        await db
+            .from(table)
+            .update({
+
+                approval_status:
+                    "rejected",
+
+                approved_by:
+                    currentUser.id,
+
+                approved_at:
+                    new Date().toISOString()
+
+            })
+            .eq("id",targetId);
+
+
+    if(targetError){
+
+        alert(
+            "❌ " +
+            targetError.message
+        );
+
+        return;
+
+    }
+
+
+    const {error} =
+        await db
+            .from("approval_requests")
+            .update({
+
+                status:
+                    "rejected",
+
+                approved_by:
+                    currentUser.id,
+
+                approved_at:
+                    new Date().toISOString()
+
+            })
+            .eq("id",requestId);
+
+
+    if(error){
+
+        alert(
+            "❌ " +
+            error.message
+        );
+
+        return;
+
+    }
+
+
+    alert(
+        "❌ Request Reject করা হয়েছে।"
+    );
+
+
+    await loadApprovals();
+    await loadMembers();
+    await loadAccounts();
+    await loadDashboard();
 
 }
 
@@ -3322,38 +3013,26 @@ async function submitBalanceChange(){
 
 function openProfileModal(){
 
-    $("profileModal")
-        .style.display =
+    $("profileName").value =
+        currentProfile.full_name || "";
+
+    $("profileMobile").value =
+        currentProfile.phone || "";
+
+    $("profileModal").style.display =
         "flex";
-
-}
-
-
-function closeProfileModal(){
-
-    $("profileModal")
-        .style.display =
-        "none";
 
 }
 
 
 async function saveProfile(){
 
-    if(!currentUser){
-
-        return;
-
-    }
-
-
     const name =
         $("profileName")
             .value
             .trim();
 
-
-    const mobile =
+    const phone =
         $("profileMobile")
             .value
             .trim();
@@ -3361,73 +3040,35 @@ async function saveProfile(){
 
     if(!name){
 
-        alert(
-            "নাম দিন।"
-        );
+        alert("নাম দিন।");
 
         return;
 
     }
-
-
-    const {
-        data:existingProfile,
-        error:roleError
-    } =
-        await db
-            .from("user_profiles")
-            .select("role")
-            .eq(
-                "id",
-                currentUser.id
-            )
-            .maybeSingle();
-
-
-    if(roleError){
-
-        alert(
-            "❌ Role load হয়নি:\n" +
-            roleError.message
-        );
-
-        return;
-
-    }
-
-
-    const role =
-        existingProfile?.role ||
-        "manager";
 
 
     const {error} =
         await db
             .from("user_profiles")
-            .upsert({
-
-                id:
-                    currentUser.id,
+            .update({
 
                 full_name:
                     name,
 
                 phone:
-                    mobile,
+                    phone
 
-                role:
-                    role,
-
-                is_active:
-                    true
-
-            });
+            })
+            .eq(
+                "id",
+                currentUser.id
+            );
 
 
     if(error){
 
         alert(
-            "❌ Profile update হয়নি:\n" +
+            "❌ " +
             error.message
         );
 
@@ -3436,55 +3077,43 @@ async function saveProfile(){
     }
 
 
-    $("managerTitle")
-        .textContent =
-        "👤 " + name;
+    currentProfile.full_name =
+        name;
+
+    currentProfile.phone =
+        phone;
 
 
-    closeProfileModal();
+    setupInterface();
 
+    closeModal("profileModal");
 
     alert(
         "✅ Profile আপডেট হয়েছে।"
     );
 
-
-    await loadPeople();
-
 }
 
 
 /* =========================================================
-   LOAD PROFILE
+   PRINT PERSON
 ========================================================= */
 
-async function loadProfile(){
-
-    if(!currentUser){
-
-        return;
-
-    }
-
+async function printPerson(id){
 
     const {data,error} =
         await db
             .from("user_profiles")
-            .select(
-                "full_name,phone"
-            )
-            .eq(
-                "id",
-                currentUser.id
-            )
-            .maybeSingle();
+            .select("*")
+            .eq("id",id)
+            .single();
 
 
     if(error){
 
-        console.error(
-            "Profile load error:",
-            error
+        alert(
+            "❌ " +
+            error.message
         );
 
         return;
@@ -3492,91 +3121,272 @@ async function loadProfile(){
     }
 
 
-    if(!data){
+    $("printArea").innerHTML = `
 
-        return;
+<h1 style="text-align:center">
+    Samity Management
+</h1>
 
-    }
+<h2 style="text-align:center">
+    ${escapeHtml(
+        data.role === "manager"
+        ? "Manager Information"
+        : "Employee Information"
+    )}
+</h2>
 
+<hr>
 
-    $("profileName").value =
-        data.full_name || "";
+<p>
+<b>নাম:</b>
+${escapeHtml(data.full_name || "")}
+</p>
 
+<p>
+<b>মোবাইল:</b>
+${escapeHtml(data.phone || "")}
+</p>
 
-    $("profileMobile").value =
-        data.phone || "";
+<p>
+<b>Role:</b>
+${escapeHtml(data.role || "")}
+</p>
 
+<p>
+<b>Status:</b>
+${data.is_active ? "Active" : "Inactive"}
+</p>
 
-    $("managerTitle")
-        .textContent =
-        "👤 " +
-        (
-            data.full_name ||
-            "Manager"
-        );
+<p>
+<b>Created At:</b>
+${data.created_at
+    ? new Date(data.created_at)
+        .toLocaleString("bn-BD")
+    : ""
+}
+</p>
+
+<br><br>
+
+<p>
+স্বাক্ষর: ______________________
+</p>
+
+`;
+
+    window.print();
 
 }
 
 
 /* =========================================================
-   REPORTS
+   PRINT MEMBER
 ========================================================= */
 
-async function loadReports(){
+async function printMember(id){
 
-    try{
-
-        const members =
-            await db
-                .from("members")
-                .select("*",{
-                    count:"exact",
-                    head:true
-                });
+    const {data,error} =
+        await db
+            .from("members_with_creator")
+            .select("*")
+            .eq("id",id)
+            .single();
 
 
-        const accounts =
-            await db
-                .from("accounts")
-                .select("*",{
-                    count:"exact",
-                    head:true
-                });
+    if(error){
 
+        alert(
+            "❌ " +
+            error.message
+        );
 
-        const employees =
-            await db
-                .from("user_profiles")
-                .select("*",{
-                    count:"exact",
-                    head:true
-                })
-                .eq(
-                    "role",
-                    "employee"
-                );
-
-
-        $("reportMembers")
-            .textContent =
-            members.count || 0;
-
-
-        $("reportAccounts")
-            .textContent =
-            accounts.count || 0;
-
-
-        $("reportEmployees")
-            .textContent =
-            employees.count || 0;
+        return;
 
     }
-    catch(error){
 
-        console.error(error);
+
+    $("printArea").innerHTML = `
+
+<h1 style="text-align:center">
+    Samity Management
+</h1>
+
+<h2 style="text-align:center">
+    সদস্যের সম্পূর্ণ তথ্য
+</h2>
+
+<hr>
+
+<p>
+<b>Member ID:</b>
+${escapeHtml(data.member_id)}
+</p>
+
+<p>
+<b>নাম:</b>
+${escapeHtml(data.full_name)}
+</p>
+
+<p>
+<b>পিতার নাম:</b>
+${escapeHtml(data.father_name || "")}
+</p>
+
+<p>
+<b>মাতার নাম:</b>
+${escapeHtml(data.mother_name || "")}
+</p>
+
+<p>
+<b>মোবাইল:</b>
+${escapeHtml(data.mobile || "")}
+</p>
+
+<p>
+<b>NID:</b>
+${escapeHtml(data.nid || "")}
+</p>
+
+<p>
+<b>জন্ম তারিখ:</b>
+${escapeHtml(data.dob || "")}
+</p>
+
+<p>
+<b>ঠিকানা:</b>
+${escapeHtml(data.address || "")}
+</p>
+
+<p>
+<b>যোগদানের তারিখ:</b>
+${escapeHtml(data.join_date || "")}
+</p>
+
+<p>
+<b>Created By:</b>
+${escapeHtml(data.creator_name || "")}
+</p>
+
+<p>
+<b>Created By Role:</b>
+${escapeHtml(data.creator_role || "")}
+</p>
+
+<p>
+<b>Status:</b>
+${escapeHtml(data.approval_status || "")}
+</p>
+
+<br><br>
+
+<p>
+স্বাক্ষর: ______________________
+</p>
+
+`;
+
+    window.print();
+
+}
+
+
+/* =========================================================
+   PRINT ACCOUNT
+========================================================= */
+
+async function printAccount(id){
+
+    const {data,error} =
+        await db
+            .from("accounts_with_creator")
+            .select("*")
+            .eq("id",id)
+            .single();
+
+
+    if(error){
+
+        alert(
+            "❌ " +
+            error.message
+        );
+
+        return;
 
     }
+
+
+    $("printArea").innerHTML = `
+
+<h1 style="text-align:center">
+    Samity Management
+</h1>
+
+<h2 style="text-align:center">
+    Account Information
+</h2>
+
+<hr>
+
+<p>
+<b>Account Number:</b>
+${escapeHtml(data.account_number)}
+</p>
+
+<p>
+<b>Member ID:</b>
+${escapeHtml(data.member_id)}
+</p>
+
+<p>
+<b>Account Type:</b>
+${escapeHtml(data.account_type)}
+</p>
+
+<p>
+<b>Balance:</b>
+৳ ${Number(data.balance || 0).toFixed(2)}
+</p>
+
+<p>
+<b>Created By:</b>
+${escapeHtml(data.creator_name || "")}
+</p>
+
+<p>
+<b>Creator Role:</b>
+${escapeHtml(data.creator_role || "")}
+</p>
+
+<p>
+<b>Status:</b>
+${escapeHtml(data.approval_status || "")}
+</p>
+
+<br><br>
+
+<p>
+স্বাক্ষর: ______________________
+</p>
+
+`;
+
+    window.print();
+
+}
+
+
+/* =========================================================
+   PRINT CURRENT USER
+========================================================= */
+
+function printCurrentUser(){
+
+    if(!currentProfile){
+        return;
+    }
+
+    printPerson(currentUser.id);
 
 }
 
@@ -3592,7 +3402,6 @@ function saveSettings(){
             .value
             .trim();
 
-
     if(!name){
 
         alert(
@@ -3603,12 +3412,10 @@ function saveSettings(){
 
     }
 
-
     localStorage.setItem(
         "samity_name",
         name
     );
-
 
     alert(
         "✅ Settings saved"
@@ -3618,674 +3425,44 @@ function saveSettings(){
 
 
 /* =========================================================
-   PRINT SYSTEM
+   LOGOUT
 ========================================================= */
 
-function openPrintWindow(content){
+async function logout(){
 
-    const printWindow =
-        window.open(
-            "",
-            "_blank",
-            "width=900,height=1000"
-        );
+    await db.auth.signOut();
 
+    currentUser = null;
+    currentProfile = null;
 
-    if(!printWindow){
+    $("app").style.display =
+        "none";
 
-        alert(
-            "❌ Print window খুলতে পারেনি। Browser popup allow করুন।"
-        );
+    $("loginBox").style.display =
+        "block";
 
-        return;
-
-    }
-
-
-    printWindow.document.open();
-
-
-    printWindow.document.write(`
-
-<!DOCTYPE html>
-
-<html lang="bn">
-
-<head>
-
-<meta charset="UTF-8">
-
-<title>Samity Profile Print</title>
-
-<style>
-
-@page{
-
-    size:A4;
-
-    margin:15mm;
-
-}
-
-*{
-
-    box-sizing:border-box;
-
-}
-
-body{
-
-    margin:0;
-
-    font-family:
-        Arial,
-        "Noto Sans Bengali",
-        sans-serif;
-
-    color:#111;
-
-    background:#fff;
-
-}
-
-.print-page{
-
-    width:100%;
-
-    max-width:180mm;
-
-    margin:auto;
-
-}
-
-.header{
-
-    text-align:center;
-
-    border-bottom:3px solid #075e54;
-
-    padding-bottom:12px;
-
-    margin-bottom:20px;
-
-}
-
-.header h1{
-
-    margin:0;
-
-    color:#075e54;
-
-    font-size:25px;
-
-}
-
-.header h2{
-
-    margin:6px 0;
-
-    font-size:20px;
-
-}
-
-.header p{
-
-    margin:0;
-
-    color:#666;
-
-}
-
-.info-table{
-
-    width:100%;
-
-    border-collapse:collapse;
-
-}
-
-.info-table th,
-.info-table td{
-
-    border:1px solid #999;
-
-    padding:10px;
-
-    text-align:left;
-
-    vertical-align:top;
-
-}
-
-.info-table th{
-
-    width:32%;
-
-    background:#f1f3f5;
-
-}
-
-.signature{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    margin-top:75px;
-
-}
-
-.signature div{
-
-    width:180px;
-
-    text-align:center;
-
-    border-top:1px solid #333;
-
-    padding-top:7px;
-
-}
-
-.footer{
-
-    margin-top:25px;
-
-    text-align:center;
-
-    font-size:11px;
-
-    color:#777;
-
-}
-
-</style>
-
-</head>
-
-<body>
-
-<div class="print-page">
-
-${content}
-
-</div>
-
-<script>
-
-window.onload=function(){
-
-    setTimeout(
-        function(){
-            window.print();
-        },
-        300
-    );
-
-};
-
-<\/script>
-
-</body>
-
-</html>
-
-    `);
-
-
-    printWindow.document.close();
+    $("password").value = "";
 
 }
 
 
 /* =========================================================
-   PRINT MEMBER
+   SESSION
 ========================================================= */
 
-async function printMember(id){
+async function checkSession(){
 
-    const {data,error} =
-        await db
-            .from("members")
-            .select("*")
-            .eq(
-                "id",
-                id
-            )
-            .single();
+    const {data} =
+        await db.auth.getSession();
 
+    if(data.session){
 
-    if(error){
+        currentUser =
+            data.session.user;
 
-        alert(
-            "❌ Member information পাওয়া যায়নি:\n" +
-            error.message
-        );
-
-        return;
+        await loadUser();
 
     }
-
-
-    const samityName =
-        localStorage.getItem(
-            "samity_name"
-        ) ||
-        "Samity Management";
-
-
-    const html = `
-
-<div class="header">
-
-    <h1>
-        ${escapeHtml(
-            samityName
-        )}
-    </h1>
-
-    <h2>
-        👤 সদস্যের সম্পূর্ণ তথ্য
-    </h2>
-
-    <p>
-        Member Profile
-    </p>
-
-</div>
-
-
-<table class="info-table">
-
-<tr>
-
-    <th>Member ID</th>
-
-    <td>
-        ${escapeHtml(
-            data.member_id || ""
-        )}
-    </td>
-
-</tr>
-
-
-<tr>
-
-    <th>নাম</th>
-
-    <td>
-        ${escapeHtml(
-            data.full_name || ""
-        )}
-    </td>
-
-</tr>
-
-
-<tr>
-
-    <th>পিতা / স্বামীর নাম</th>
-
-    <td>
-        ${escapeHtml(
-            data.father_name || ""
-        )}
-    </td>
-
-</tr>
-
-
-<tr>
-
-    <th>মোবাইল</th>
-
-    <td>
-        ${escapeHtml(
-            data.mobile || ""
-        )}
-    </td>
-
-</tr>
-
-
-<tr>
-
-    <th>NID</th>
-
-    <td>
-        ${escapeHtml(
-            data.nid || ""
-        )}
-    </td>
-
-</tr>
-
-
-<tr>
-
-    <th>ঠিকানা</th>
-
-    <td>
-        ${escapeHtml(
-            data.address || ""
-        )}
-    </td>
-
-</tr>
-
-
-<tr>
-
-    <th>যোগদানের তারিখ</th>
-
-    <td>
-        ${escapeHtml(
-            data.join_date || ""
-        )}
-    </td>
-
-</tr>
-
-
-<tr>
-
-    <th>Status</th>
-
-    <td>
-        ${
-            data.status === "active"
-            ? "🟢 Active"
-            : "🔴 Inactive"
-        }
-    </td>
-
-</tr>
-
-
-<tr>
-
-    <th>চেকের পাতা সংখ্যা</th>
-
-    <td>
-        ${escapeHtml(
-            data.cheque_pages ?? 0
-        )}
-    </td>
-
-</tr>
-
-
-<tr>
-
-    <th>অন্যান্য ডকুমেন্ট</th>
-
-    <td>
-        ${escapeHtml(
-            data.other_document_details || ""
-        )}
-    </td>
-
-</tr>
-
-
-<tr>
-
-    <th>ডকুমেন্ট ফোল্ডার</th>
-
-    <td>
-        ${escapeHtml(
-            data.document_folder || ""
-        )}
-    </td>
-
-</tr>
-
-</table>
-
-
-<div class="signature">
-
-    <div>
-        সদস্যের স্বাক্ষর
-    </div>
-
-    <div>
-        অনুমোদনকারী
-    </div>
-
-</div>
-
-
-<div class="footer">
-
-    Printed from Samity Management System
-
-</div>
-
-`;
-
-
-    openPrintWindow(html);
-
-}
-
-
-/* =========================================================
-   PRINT USER
-   Owner / Manager / Employee
-========================================================= */
-
-async function printUserProfile(id){
-
-    const {data,error} =
-        await db
-            .from("user_profiles")
-            .select("*")
-            .eq(
-                "id",
-                id
-            )
-            .single();
-
-
-    if(error){
-
-        alert(
-            "❌ Profile information পাওয়া যায়নি:\n" +
-            error.message
-        );
-
-        return;
-
-    }
-
-
-    const samityName =
-        localStorage.getItem(
-            "samity_name"
-        ) ||
-        "Samity Management";
-
-
-    let roleText =
-        "Employee";
-
-
-    if(data.role === "owner"){
-
-        roleText =
-            "Owner";
-
-    }
-
-
-    if(data.role === "manager"){
-
-        roleText =
-            "Manager";
-
-    }
-
-
-    const html = `
-
-<div class="header">
-
-    <h1>
-        ${escapeHtml(
-            samityName
-        )}
-    </h1>
-
-    <h2>
-        👤 ${escapeHtml(
-            roleText
-        )} Profile
-    </h2>
-
-    <p>
-        সম্পূর্ণ Profile Information
-    </p>
-
-</div>
-
-
-<table class="info-table">
-
-<tr>
-
-    <th>নাম</th>
-
-    <td>
-        ${escapeHtml(
-            data.full_name || ""
-        )}
-    </td>
-
-</tr>
-
-
-<tr>
-
-    <th>মোবাইল</th>
-
-    <td>
-        ${escapeHtml(
-            data.phone || ""
-        )}
-    </td>
-
-</tr>
-
-
-<tr>
-
-    <th>Role</th>
-
-    <td>
-        ${escapeHtml(
-            roleText
-        )}
-    </td>
-
-</tr>
-
-
-<tr>
-
-    <th>Status</th>
-
-    <td>
-        ${
-            data.is_active
-            ? "🟢 Active"
-            : "🔴 Inactive"
-        }
-    </td>
-
-</tr>
-
-
-<tr>
-
-    <th>Profile ID</th>
-
-    <td>
-        ${escapeHtml(
-            data.id || ""
-        )}
-    </td>
-
-</tr>
-
-
-<tr>
-
-    <th>Created At</th>
-
-    <td>
-        ${
-            data.created_at
-            ? escapeHtml(
-                new Date(
-                    data.created_at
-                ).toLocaleString(
-                    "bn-BD"
-                )
-            )
-            : ""
-        }
-    </td>
-
-</tr>
-
-</table>
-
-
-<div class="signature">
-
-    <div>
-        স্বাক্ষর
-    </div>
-
-    <div>
-        অনুমোদনকারী
-    </div>
-
-</div>
-
-
-<div class="footer">
-
-    Printed from Samity Management System
-
-</div>
-
-`;
-
-
-    openPrintWindow(html);
-
-}
-
-
-/* =========================================================
-   CURRENT PROFILE PRINT
-========================================================= */
-
-function printCurrentProfile(){
-
-    if(!currentUser){
-
-        return;
-
-    }
-
-
-    printUserProfile(
-        currentUser.id
-    );
 
 }
 
@@ -4296,15 +3473,13 @@ function printCurrentProfile(){
 
 window.addEventListener(
     "click",
-    function(event){
+    function(e){
 
         document
             .querySelectorAll(".modal")
             .forEach(modal=>{
 
-                if(
-                    event.target === modal
-                ){
+                if(e.target === modal){
 
                     modal.style.display =
                         "none";
@@ -4323,24 +3498,9 @@ window.addEventListener(
 
 document.addEventListener(
     "DOMContentLoaded",
-    async function(){
+    function(){
 
-        const session =
-            await db.auth.getSession();
-
-
-        if(
-            session.data &&
-            session.data.session
-        ){
-
-            currentUser =
-                session.data.session.user;
-
-
-            await checkManagerRole();
-
-        }
+        checkSession();
 
     }
 );
@@ -4348,5 +3508,4 @@ document.addEventListener(
 </script>
 
 </body>
-
 </html>

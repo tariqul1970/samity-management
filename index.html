@@ -2666,21 +2666,13 @@ async function saveProfile(){
     }
 
 
-    const {error} =
-        await db
-            .from("user_profiles")
-            .upsert({
-
-                full_name:
-                    name,
-
-                phone:
-                    mobile
-            })
-            .eq(
-                "id",
-                currentUser.id
-            );
+    const { error } = await db
+    .from("user_profiles")
+    .upsert({
+        id: currentUser.id,
+        full_name: name,
+        phone: mobile
+    });
 
 
     if(error){

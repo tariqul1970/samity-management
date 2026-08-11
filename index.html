@@ -3,12 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Samity Management - Manager Panel</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-*{box-sizing:border-box}
+*{
+    box-sizing:border-box;
+}
 
 body{
     margin:0;
@@ -268,11 +271,8 @@ th{
     font-weight:bold;
 }
 
-.mobile-menu{
-    display:none;
-}
-
 @media(max-width:800px){
+
     .sidebar{
         width:200px;
     }
@@ -283,6 +283,7 @@ th{
 }
 
 @media(max-width:600px){
+
     .layout{
         display:block;
     }
@@ -312,6 +313,7 @@ th{
 <body>
 
 <!-- LOGIN -->
+
 <div id="loginBox" class="login-box">
 
     <h2>🏦 Samity Management</h2>
@@ -319,6 +321,7 @@ th{
     <form id="loginForm">
 
         <label>Email</label>
+
         <input
             type="email"
             id="email"
@@ -327,6 +330,7 @@ th{
         >
 
         <label>Password</label>
+
         <input
             type="password"
             id="password"
@@ -349,6 +353,7 @@ th{
 
 
 <!-- APPLICATION -->
+
 <div id="app" style="display:none">
 
     <div class="topbar">
@@ -368,6 +373,7 @@ th{
     <div class="layout">
 
         <!-- SIDEBAR -->
+
         <aside class="sidebar">
 
             <button onclick="showSection('profileSection')">
@@ -414,10 +420,12 @@ th{
 
 
         <!-- CONTENT -->
+
         <main class="content">
 
 
             <!-- PROFILE -->
+
             <section
                 id="profileSection"
                 class="section active"
@@ -430,7 +438,7 @@ th{
                         <img
                             id="miniPhoto"
                             src="https://placehold.co/100x100"
-                            alt="Manager"
+                            alt="Profile"
                         >
 
                         <div>
@@ -458,6 +466,7 @@ th{
 
 
             <!-- FUND -->
+
             <section
                 id="fundSection"
                 class="section"
@@ -470,30 +479,39 @@ th{
                     <div class="grid">
 
                         <div class="stat">
+
                             <h3>বর্তমান Balance</h3>
+
                             <strong>
                                 ৳ <span id="managerBalance">0.00</span>
                             </strong>
+
                         </div>
 
                         <div class="stat">
+
                             <h3>➕ Add Fund</h3>
+
                             <button
                                 class="btn"
                                 onclick="openBalanceModal('fund_added')"
                             >
                                 Add Fund
                             </button>
+
                         </div>
 
                         <div class="stat">
+
                             <h3>➖ Reduce Fund</h3>
+
                             <button
                                 class="btn-danger"
                                 onclick="openBalanceModal('fund_reduced')"
                             >
                                 Reduce Fund
                             </button>
+
                         </div>
 
                     </div>
@@ -504,6 +522,7 @@ th{
 
 
             <!-- EMPLOYEES -->
+
             <section
                 id="employeesSection"
                 class="section"
@@ -525,12 +544,14 @@ th{
                         <table>
 
                             <thead>
+
                                 <tr>
                                     <th>Name</th>
                                     <th>Phone</th>
                                     <th>Role</th>
                                     <th>Status</th>
                                 </tr>
+
                             </thead>
 
                             <tbody id="employeeList"></tbody>
@@ -545,6 +566,7 @@ th{
 
 
             <!-- MEMBERS -->
+
             <section
                 id="membersSection"
                 class="section"
@@ -584,6 +606,7 @@ th{
                         <table>
 
                             <thead>
+
                                 <tr>
                                     <th>Member ID</th>
                                     <th>নাম</th>
@@ -592,6 +615,7 @@ th{
                                     <th>Status</th>
                                     <th>Action</th>
                                 </tr>
+
                             </thead>
 
                             <tbody id="memberList"></tbody>
@@ -606,6 +630,7 @@ th{
 
 
             <!-- ACCOUNTS -->
+
             <section
                 id="accountsSection"
                 class="section"
@@ -673,6 +698,7 @@ th{
                         <table>
 
                             <thead>
+
                                 <tr>
                                     <th>Account Number</th>
                                     <th>Member ID</th>
@@ -680,6 +706,7 @@ th{
                                     <th>Balance</th>
                                     <th>Status</th>
                                 </tr>
+
                             </thead>
 
                             <tbody id="accountList"></tbody>
@@ -694,6 +721,7 @@ th{
 
 
             <!-- TRANSACTIONS -->
+
             <section
                 id="transactionsSection"
                 class="section"
@@ -719,6 +747,7 @@ th{
 
 
             <!-- APPROVAL -->
+
             <section
                 id="approvalSection"
                 class="section"
@@ -743,6 +772,7 @@ th{
 
 
             <!-- REPORTS -->
+
             <section
                 id="reportsSection"
                 class="section"
@@ -777,6 +807,7 @@ th{
 
 
             <!-- RECEIPTS -->
+
             <section
                 id="receiptsSection"
                 class="section"
@@ -797,6 +828,7 @@ th{
 
 
             <!-- SETTINGS -->
+
             <section
                 id="settingsSection"
                 class="section"
@@ -833,6 +865,7 @@ th{
 
 
 <!-- MEMBER MODAL -->
+
 <div
     id="memberModal"
     class="modal"
@@ -857,10 +890,7 @@ th{
 
             <div>
                 <label>Member ID</label>
-                <input
-                    id="newMemberId"
-                    readonly
-                >
+                <input id="newMemberId" readonly>
             </div>
 
             <div>
@@ -904,40 +934,53 @@ th{
 
             <div>
                 <label>Status</label>
+
                 <select id="memberStatus">
                     <option value="active">Active</option>
                     <option value="inactive">Inactive</option>
                 </select>
+
             </div>
 
             <div>
                 <label>চেকের পাতা সংখ্যা</label>
+
                 <input
                     id="chequePages"
                     type="number"
                     min="0"
                     value="0"
                 >
+
             </div>
 
             <div class="full">
+
                 <label>অন্যান্য ডকুমেন্ট</label>
+
                 <input
                     id="otherDocumentDetails"
                 >
+
             </div>
 
             <div class="full">
+
                 <label>ডকুমেন্ট ফোল্ডার</label>
+
                 <input
                     id="documentFolder"
                     placeholder="D:\Samity Documents\000001"
                 >
+
             </div>
 
         </div>
 
-        <div id="memberMessage" class="message"></div>
+        <div
+            id="memberMessage"
+            class="message"
+        ></div>
 
         <button
             class="save"
@@ -953,6 +996,7 @@ th{
 
 
 <!-- EMPLOYEE MODAL -->
+
 <div
     id="employeeModal"
     class="modal"
@@ -1005,7 +1049,10 @@ th{
             placeholder="Login password"
         >
 
-        <div id="employeeMessage" class="message"></div>
+        <div
+            id="employeeMessage"
+            class="message"
+        ></div>
 
         <button
             class="save"
@@ -1020,6 +1067,7 @@ th{
 
 
 <!-- PROFILE MODAL -->
+
 <div
     id="profileModal"
     class="modal"
@@ -1029,7 +1077,7 @@ th{
 
         <div class="modal-header">
 
-            <h2>👤 Manager Profile</h2>
+            <h2>👤 Profile</h2>
 
             <button
                 class="close"
@@ -1040,11 +1088,11 @@ th{
 
         </div>
 
-        <label>Manager-এর নাম</label>
+        <label>নিজের নাম</label>
 
         <input
             id="profileName"
-            placeholder="Manager-এর নাম"
+            placeholder="নিজের পূর্ণ নাম"
         >
 
         <label>Mobile</label>
@@ -1075,6 +1123,7 @@ th{
 
 
 <!-- FUND MODAL -->
+
 <div
     id="balanceModal"
     class="modal"
@@ -1114,7 +1163,10 @@ th{
             placeholder="কারণ"
         ></textarea>
 
-        <div id="balanceMessage" class="message"></div>
+        <div
+            id="balanceMessage"
+            class="message"
+        ></div>
 
         <button
             class="save"
@@ -1129,6 +1181,7 @@ th{
 
 
 <!-- ACCOUNT MODAL -->
+
 <div
     id="accountModal"
     class="modal"
@@ -1178,7 +1231,10 @@ th{
 
         </select>
 
-        <div id="accountMessage" class="message"></div>
+        <div
+            id="accountMessage"
+            class="message"
+        ></div>
 
         <button
             class="save"
@@ -1199,24 +1255,29 @@ th{
    ========================================================= */
 
 const SUPABASE_URL =
-"https://tcdilhooslygsvdcqkte.supabase.co";
+    "https://tcdilhooslygsvdcqkte.supabase.co";
 
 const SUPABASE_KEY =
-"sb_publishable_JelXduaAwElDbU0JABTFgg_yLXzPyNx";
+    "sb_publishable_JelXduaAwElDbU0JABTFgg_yLXzPyNx";
 
 const db =
-supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-);
+    supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
 
 let currentUser = null;
-let currentFundType = "fund_added";
-let currentEditMemberId = null;
+
+let currentFundType =
+    "fund_added";
+
+let currentEditMemberId =
+    null;
 
 
 /* =========================================================
-   HELPERS
+   HELPER
    ========================================================= */
 
 function $(id){
@@ -1243,35 +1304,65 @@ function showSection(id){
 
     document
         .querySelectorAll(".section")
-        .forEach(section=>{
+        .forEach(section => {
+
             section.classList.remove("active");
+
         });
 
-    const section = $(id);
+
+    const section =
+        $(id);
+
 
     if(section){
+
         section.classList.add("active");
+
     }
+
 
     if(id === "membersSection"){
+
         loadMembers();
+
     }
+
 
     if(id === "accountsSection"){
+
         loadAccounts();
+
     }
+
 
     if(id === "employeesSection"){
+
         loadEmployees();
+
     }
+
 
     if(id === "reportsSection"){
+
         loadReports();
+
     }
 
+
     if(id === "fundSection"){
+
         loadManagerBalance();
+
     }
+
+
+    if(id === "profileSection"){
+
+        loadProfile();
+
+    }
+
 }
 
 
@@ -1285,30 +1376,45 @@ $("loginForm").addEventListener(
 
         event.preventDefault();
 
+
         const email =
-            $("email").value.trim();
+            $("email")
+                .value
+                .trim();
+
 
         const password =
-            $("password").value;
+            $("password")
+                .value;
+
 
         $("loginMessage").textContent =
             "⏳ Login হচ্ছে...";
 
-        const {data,error} =
+
+        const { data, error } =
             await db.auth.signInWithPassword({
+
                 email,
                 password
+
             });
+
 
         if(error){
 
             $("loginMessage").textContent =
-                "❌ " + error.message;
+                "❌ " +
+                error.message;
 
             return;
+
         }
 
-        currentUser = data.user;
+
+        currentUser =
+            data.user;
+
 
         await checkManagerRole();
 
@@ -1323,15 +1429,24 @@ $("loginForm").addEventListener(
 async function checkManagerRole(){
 
     if(!currentUser){
+
         return;
+
     }
 
-    const {data,error} =
+
+    const { data, error } =
         await db
             .from("user_profiles")
-            .select("full_name,role,is_active")
-            .eq("id",currentUser.id)
+            .select(
+                "full_name,role,is_active"
+            )
+            .eq(
+                "id",
+                currentUser.id
+            )
             .maybeSingle();
+
 
     if(error){
 
@@ -1341,7 +1456,9 @@ async function checkManagerRole(){
         );
 
         return;
+
     }
+
 
     if(!data){
 
@@ -1351,8 +1468,17 @@ async function checkManagerRole(){
 
         await db.auth.signOut();
 
+        currentUser = null;
+
         return;
+
     }
+
+
+    /*
+       শুধুমাত্র manager এবং owner
+       Manager Panel-এ ঢুকতে পারবে।
+    */
 
     if(
         data.role !== "manager" &&
@@ -1365,8 +1491,12 @@ async function checkManagerRole(){
 
         await db.auth.signOut();
 
+        currentUser = null;
+
         return;
+
     }
+
 
     if(data.is_active === false){
 
@@ -1376,15 +1506,31 @@ async function checkManagerRole(){
 
         await db.auth.signOut();
 
+        currentUser = null;
+
         return;
+
     }
+
 
     $("managerTitle").textContent =
         "👤 " +
-        (data.full_name || "Manager");
+        (
+            data.full_name ||
+            (
+                data.role === "owner"
+                ? "Owner"
+                : "Manager"
+            )
+        );
+
 
     $("managerEmail").textContent =
         currentUser.email || "";
+
+
+    await loadProfile();
+
 
     showDashboard();
 
@@ -1397,17 +1543,25 @@ async function checkManagerRole(){
 
 function showDashboard(){
 
-    $("loginBox").style.display = "none";
+    $("loginBox").style.display =
+        "none";
 
-    $("app").style.display = "block";
 
-    showSection("profileSection");
+    $("app").style.display =
+        "block";
+
+
+    showSection(
+        "profileSection"
+    );
+
 
     loadMembers();
     loadAccounts();
     loadEmployees();
     loadReports();
     loadManagerBalance();
+
 }
 
 
@@ -1417,33 +1571,55 @@ function showDashboard(){
 
 async function checkSession(){
 
-    const {data} =
+    const { data } =
         await db.auth.getSession();
+
 
     if(data.session){
 
         currentUser =
             data.session.user;
 
+
         await checkManagerRole();
 
     }
+
 }
 
+
+/* =========================================================
+   LOGOUT
+   ========================================================= */
 
 async function logout(){
 
     await db.auth.signOut();
 
-    currentUser = null;
 
-    $("app").style.display = "none";
+    currentUser =
+        null;
 
-    $("loginBox").style.display = "block";
 
-    $("email").value = "";
-    $("password").value = "";
-    $("loginMessage").textContent = "";
+    $("app").style.display =
+        "none";
+
+
+    $("loginBox").style.display =
+        "block";
+
+
+    $("email").value =
+        "";
+
+
+    $("password").value =
+        "";
+
+
+    $("loginMessage").textContent =
+        "";
+
 }
 
 
@@ -1453,47 +1629,67 @@ async function logout(){
 
 async function getNextMemberId(){
 
-    const {data,error} =
+    const { data, error } =
         await db
             .from("members")
             .select("member_id")
-            .order("member_id",{
-                ascending:false
-            })
+            .order(
+                "member_id",
+                {
+                    ascending:false
+                }
+            )
             .limit(1);
+
 
     if(error){
 
         console.error(error);
 
         return "000001";
+
     }
 
+
     let next = 1;
+
 
     if(data && data.length){
 
         const last =
             parseInt(
-                String(data[0].member_id)
-                    .replace(/\D/g,""),
+                String(
+                    data[0].member_id
+                ).replace(
+                    /\D/g,
+                    ""
+                ),
                 10
             );
 
+
         if(!isNaN(last)){
-            next = last + 1;
+
+            next =
+                last + 1;
+
         }
+
     }
+
 
     if(next > 999999){
 
         throw new Error(
             "Member ID limit শেষ।"
         );
+
     }
+
 
     return String(next)
         .padStart(6,"0");
+
 }
 
 
@@ -1503,46 +1699,79 @@ async function getNextMemberId(){
 
 async function openMemberModal(){
 
-    currentEditMemberId = null;
+    currentEditMemberId =
+        null;
+
 
     clearMemberForm();
+
 
     $("newMemberId").value =
         await getNextMemberId();
 
+
     $("memberModal")
-        .style.display = "flex";
+        .style.display =
+        "flex";
+
 }
 
 
 function closeMemberModal(){
 
     $("memberModal")
-        .style.display = "none";
+        .style.display =
+        "none";
+
 }
 
 
 function clearMemberForm(){
 
-    $("newMemberId").value = "";
-    $("memberName").value = "";
-    $("fatherName").value = "";
-    $("memberMobile").value = "";
-    $("memberNid").value = "";
-    $("memberAddress").value = "";
+    $("newMemberId").value =
+        "";
+
+    $("memberName").value =
+        "";
+
+    $("fatherName").value =
+        "";
+
+    $("memberMobile").value =
+        "";
+
+    $("memberNid").value =
+        "";
+
+    $("memberAddress").value =
+        "";
+
 
     $("memberJoinDate").value =
         new Date()
             .toISOString()
             .slice(0,10);
 
+
     $("memberStatus").value =
         "active";
 
-    $("chequePages").value = "0";
-    $("otherDocumentDetails").value = "";
-    $("documentFolder").value = "";
-    $("memberMessage").textContent = "";
+
+    $("chequePages").value =
+        "0";
+
+
+    $("otherDocumentDetails").value =
+        "";
+
+
+    $("documentFolder").value =
+        "";
+
+
+    $("memberMessage").textContent =
+        "";
+
 }
 
 
@@ -1553,7 +1782,10 @@ function clearMemberForm(){
 async function saveMember(){
 
     const name =
-        $("memberName").value.trim();
+        $("memberName")
+            .value
+            .trim();
+
 
     if(!name){
 
@@ -1561,7 +1793,9 @@ async function saveMember(){
             "❌ সদস্যের নাম দিন।";
 
         return;
+
     }
+
 
     const record = {
 
@@ -1572,39 +1806,54 @@ async function saveMember(){
             name,
 
         father_name:
-            $("fatherName").value.trim(),
+            $("fatherName")
+                .value
+                .trim(),
 
         mobile:
-            $("memberMobile").value.trim(),
+            $("memberMobile")
+                .value
+                .trim(),
 
         nid:
-            $("memberNid").value.trim(),
+            $("memberNid")
+                .value
+                .trim(),
 
         address:
-            $("memberAddress").value.trim(),
+            $("memberAddress")
+                .value
+                .trim(),
 
         join_date:
-            $("memberJoinDate").value,
+            $("memberJoinDate")
+                .value,
 
         status:
-            $("memberStatus").value,
+            $("memberStatus")
+                .value,
 
         cheque_pages:
             Number(
-                $("chequePages").value || 0
+                $("chequePages")
+                    .value || 0
             ),
 
         other_document_details:
             $("otherDocumentDetails")
-                .value.trim(),
+                .value
+                .trim(),
 
         document_folder:
             $("documentFolder")
-                .value.trim()
+                .value
+                .trim()
+
     };
 
 
     let result;
+
 
     if(currentEditMemberId){
 
@@ -1617,7 +1866,8 @@ async function saveMember(){
                     currentEditMemberId
                 );
 
-    }else{
+    }
+    else{
 
         result =
             await db
@@ -1634,6 +1884,7 @@ async function saveMember(){
             result.error.message;
 
         return;
+
     }
 
 
@@ -1642,12 +1893,15 @@ async function saveMember(){
         ? "✅ সদস্য Update হয়েছে।"
         : "✅ সদস্য যোগ হয়েছে।";
 
+
     await loadMembers();
+
 
     setTimeout(
         closeMemberModal,
         500
     );
+
 }
 
 
@@ -1660,16 +1914,22 @@ async function loadMembers(){
     const list =
         $("memberList");
 
+
     if(!list){
+
         return;
+
     }
 
+
     list.innerHTML =
-        `<tr>
+        `
+        <tr>
             <td colspan="6">
                 ⏳ Loading...
             </td>
-        </tr>`;
+        </tr>
+        `;
 
 
     let query =
@@ -1696,6 +1956,7 @@ async function loadMembers(){
                 search +
                 "%"
             );
+
     }
 
 
@@ -1708,44 +1969,56 @@ async function loadMembers(){
         );
 
 
-    const {data,error} =
+    const { data, error } =
         await query;
 
 
     if(error){
 
         list.innerHTML =
-            `<tr>
+            `
+            <tr>
                 <td colspan="6">
-                    ❌ ${escapeHtml(error.message)}
+                    ❌ ${escapeHtml(
+                        error.message
+                    )}
                 </td>
-            </tr>`;
+            </tr>
+            `;
 
         return;
+
     }
 
 
-    list.innerHTML = "";
+    list.innerHTML =
+        "";
 
 
     if(!data || !data.length){
 
         list.innerHTML =
-            `<tr>
+            `
+            <tr>
                 <td colspan="6">
                     কোনো সদস্য পাওয়া যায়নি।
                 </td>
-            </tr>`;
+            </tr>
+            `;
 
-    }else{
+    }
+    else{
 
-        data.forEach(member=>{
+        data.forEach(member => {
 
             const row =
-                document.createElement("tr");
+                document.createElement(
+                    "tr"
+                );
 
-            row.innerHTML = `
 
+            row.innerHTML =
+                `
                 <td>
                     <b>
                         ${escapeHtml(
@@ -1804,16 +2077,21 @@ async function loadMembers(){
                     </button>
 
                 </td>
-            `;
+                `;
+
 
             list.appendChild(row);
 
         });
+
     }
 
 
     $("memberCount").textContent =
-        data ? data.length : 0;
+        data
+        ? data.length
+        : 0;
+
 }
 
 
@@ -1823,12 +2101,16 @@ async function loadMembers(){
 
 async function viewMember(id){
 
-    const {data,error} =
+    const { data, error } =
         await db
             .from("members")
             .select("*")
-            .eq("id",id)
+            .eq(
+                "id",
+                id
+            )
             .single();
+
 
     if(error){
 
@@ -1838,35 +2120,62 @@ async function viewMember(id){
         );
 
         return;
+
     }
+
 
     alert(
         "👤 সদস্যের তথ্য\n\n" +
 
         "Member ID: " +
-        (data.member_id || "") +
+        (
+            data.member_id ||
+            ""
+        ) +
 
         "\nনাম: " +
-        (data.full_name || "") +
+        (
+            data.full_name ||
+            ""
+        ) +
 
         "\nপিতা/স্বামী: " +
-        (data.father_name || "") +
+        (
+            data.father_name ||
+            ""
+        ) +
 
         "\nমোবাইল: " +
-        (data.mobile || "") +
+        (
+            data.mobile ||
+            ""
+        ) +
 
         "\nNID: " +
-        (data.nid || "") +
+        (
+            data.nid ||
+            ""
+        ) +
 
         "\nঠিকানা: " +
-        (data.address || "") +
+        (
+            data.address ||
+            ""
+        ) +
 
         "\nJoin Date: " +
-        (data.join_date || "") +
+        (
+            data.join_date ||
+            ""
+        ) +
 
         "\nStatus: " +
-        (data.status || "")
+        (
+            data.status ||
+            ""
+        )
     );
+
 }
 
 
@@ -1876,12 +2185,16 @@ async function viewMember(id){
 
 async function editMember(id){
 
-    const {data,error} =
+    const { data, error } =
         await db
             .from("members")
             .select("*")
-            .eq("id",id)
+            .eq(
+                "id",
+                id
+            )
             .single();
+
 
     if(error){
 
@@ -1891,47 +2204,61 @@ async function editMember(id){
         );
 
         return;
+
     }
 
 
-    currentEditMemberId = id;
+    currentEditMemberId =
+        id;
 
 
     $("newMemberId").value =
         data.member_id || "";
 
+
     $("memberName").value =
         data.full_name || "";
+
 
     $("fatherName").value =
         data.father_name || "";
 
+
     $("memberMobile").value =
         data.mobile || "";
+
 
     $("memberNid").value =
         data.nid || "";
 
+
     $("memberAddress").value =
         data.address || "";
+
 
     $("memberJoinDate").value =
         data.join_date || "";
 
+
     $("memberStatus").value =
         data.status || "active";
+
 
     $("chequePages").value =
         data.cheque_pages || 0;
 
+
     $("otherDocumentDetails").value =
         data.other_document_details || "";
+
 
     $("documentFolder").value =
         data.document_folder || "";
 
+
     $("memberModal").style.display =
         "flex";
+
 }
 
 
@@ -1947,16 +2274,23 @@ async function deleteMember(id){
             "সদস্যের Account ও Transaction ইতিহাস মুছে যাবে না।"
         )
     ){
+
         return;
+
     }
+
 
     const { error } =
         await db
             .from("members")
             .update({
-                status: "inactive"
+                status:"inactive"
             })
-            .eq("id", id);
+            .eq(
+                "id",
+                id
+            );
+
 
     if(error){
 
@@ -1966,14 +2300,19 @@ async function deleteMember(id){
         );
 
         return;
+
     }
+
 
     alert(
         "✅ সদস্য নিষ্ক্রিয় করা হয়েছে।"
     );
 
+
     await loadMembers();
+
 }
+
 
 /* =========================================================
    ACCOUNT NUMBER
@@ -1981,7 +2320,7 @@ async function deleteMember(id){
 
 async function getNextAccountNumber(){
 
-    const {data,error} =
+    const { data, error } =
         await db
             .from("accounts")
             .select("account_number")
@@ -1993,17 +2332,20 @@ async function getNextAccountNumber(){
             )
             .limit(1);
 
+
     if(error){
 
         console.error(error);
 
         return "1000000001";
+
     }
 
 
     if(!data || !data.length){
 
         return "1000000001";
+
     }
 
 
@@ -2016,6 +2358,7 @@ async function getNextAccountNumber(){
 
     return String(last + 1)
         .padStart(10,"0");
+
 }
 
 
@@ -2025,18 +2368,26 @@ async function getNextAccountNumber(){
 
 function openAccountModal(){
 
-    $("accountMemberId").value = "";
-    $("accountMessage").textContent = "";
+    $("accountMemberId").value =
+        "";
+
+    $("accountMessage").textContent =
+        "";
+
 
     $("accountModal")
-        .style.display = "flex";
+        .style.display =
+        "flex";
+
 }
 
 
 function closeAccountModal(){
 
     $("accountModal")
-        .style.display = "none";
+        .style.display =
+        "none";
+
 }
 
 
@@ -2051,8 +2402,10 @@ async function saveAccount(){
             .value
             .trim();
 
+
     const type =
-        $("accountType").value;
+        $("accountType")
+            .value;
 
 
     if(!/^\d{6}$/.test(memberId)){
@@ -2061,10 +2414,14 @@ async function saveAccount(){
             "❌ Member ID ৬ ডিজিট হতে হবে।";
 
         return;
+
     }
 
 
-    const {data:member,error:memberError} =
+    const {
+        data:member,
+        error:memberError
+    } =
         await db
             .from("members")
             .select("member_id")
@@ -2082,6 +2439,7 @@ async function saveAccount(){
             memberError.message;
 
         return;
+
     }
 
 
@@ -2091,6 +2449,7 @@ async function saveAccount(){
             "❌ এই Member ID পাওয়া যায়নি।";
 
         return;
+
     }
 
 
@@ -2098,7 +2457,7 @@ async function saveAccount(){
         await getNextAccountNumber();
 
 
-    const {error} =
+    const { error } =
         await db
             .from("accounts")
             .insert({
@@ -2117,6 +2476,7 @@ async function saveAccount(){
 
                 balance:
                     0
+
             });
 
 
@@ -2127,6 +2487,7 @@ async function saveAccount(){
             error.message;
 
         return;
+
     }
 
 
@@ -2137,10 +2498,12 @@ async function saveAccount(){
 
     await loadAccounts();
 
+
     setTimeout(
         closeAccountModal,
         700
     );
+
 }
 
 
@@ -2153,12 +2516,15 @@ async function loadAccounts(){
     const list =
         $("accountList");
 
+
     if(!list){
+
         return;
+
     }
 
 
-    const {data,error} =
+    const { data, error } =
         await db
             .from("accounts")
             .select("*")
@@ -2173,39 +2539,51 @@ async function loadAccounts(){
     if(error){
 
         list.innerHTML =
-            `<tr>
+            `
+            <tr>
                 <td colspan="5">
-                    ❌ ${escapeHtml(error.message)}
+                    ❌ ${escapeHtml(
+                        error.message
+                    )}
                 </td>
-            </tr>`;
+            </tr>
+            `;
 
         return;
+
     }
 
 
-    list.innerHTML = "";
+    list.innerHTML =
+        "";
 
 
     if(!data || !data.length){
 
         list.innerHTML =
-            `<tr>
+            `
+            <tr>
                 <td colspan="5">
                     কোনো Account নেই।
                 </td>
-            </tr>`;
+            </tr>
+            `;
 
         return;
+
     }
 
 
-    data.forEach(account=>{
+    data.forEach(account => {
 
         const row =
-            document.createElement("tr");
+            document.createElement(
+                "tr"
+            );
 
-        row.innerHTML = `
 
+        row.innerHTML =
+            `
             <td>
                 <b>
                     ${escapeHtml(
@@ -2227,9 +2605,11 @@ async function loadAccounts(){
             </td>
 
             <td>
-                ৳ ${Number(
-                    account.balance || 0
-                ).toFixed(2)}
+                ৳ ${
+                    Number(
+                        account.balance || 0
+                    ).toFixed(2)
+                }
             </td>
 
             <td>
@@ -2237,21 +2617,28 @@ async function loadAccounts(){
                     account.status || ""
                 )}
             </td>
-        `;
+            `;
+
 
         list.appendChild(row);
+
     });
+
 }
 
 
 function filterAccounts(type){
 
-    showSection("accountsSection");
+    showSection(
+        "accountsSection"
+    );
+
 
     alert(
         type +
         " Account দেখানোর filter পরের ধাপে যুক্ত হবে।"
     );
+
 }
 
 
@@ -2261,20 +2648,32 @@ function filterAccounts(type){
 
 function openEmployeeModal(){
 
-    $("employeeName").value = "";
-    $("employeeMobile").value = "";
-    $("employeePassword").value = "";
-    $("employeeMessage").textContent = "";
+    $("employeeName").value =
+        "";
+
+    $("employeeMobile").value =
+        "";
+
+    $("employeePassword").value =
+        "";
+
+    $("employeeMessage").textContent =
+        "";
+
 
     $("employeeModal")
-        .style.display = "flex";
+        .style.display =
+        "flex";
+
 }
 
 
 function closeEmployeeModal(){
 
     $("employeeModal")
-        .style.display = "none";
+        .style.display =
+        "none";
+
 }
 
 
@@ -2283,12 +2682,15 @@ async function loadEmployees(){
     const list =
         $("employeeList");
 
+
     if(!list){
+
         return;
+
     }
 
 
-    const {data,error} =
+    const { data, error } =
         await db
             .from("user_profiles")
             .select(
@@ -2309,41 +2711,51 @@ async function loadEmployees(){
     if(error){
 
         list.innerHTML =
-            `<tr>
+            `
+            <tr>
                 <td colspan="4">
                     ❌ ${escapeHtml(
                         error.message
                     )}
                 </td>
-            </tr>`;
+            </tr>
+            `;
 
         return;
+
     }
 
 
-    list.innerHTML = "";
+    list.innerHTML =
+        "";
 
 
     if(!data || !data.length){
 
         list.innerHTML =
-            `<tr>
+            `
+            <tr>
                 <td colspan="4">
                     কোনো Employee নেই।
                 </td>
-            </tr>`;
+            </tr>
+            `;
 
         return;
+
     }
 
 
-    data.forEach(employee=>{
+    data.forEach(employee => {
 
         const row =
-            document.createElement("tr");
+            document.createElement(
+                "tr"
+            );
 
-        row.innerHTML = `
 
+        row.innerHTML =
+            `
             <td>
                 ${escapeHtml(
                     employee.full_name
@@ -2367,23 +2779,15 @@ async function loadEmployees(){
                     : "🔴 Inactive"
                 }
             </td>
-        `;
+            `;
+
 
         list.appendChild(row);
+
     });
+
 }
 
-
-/*
-   Employee authentication user তৈরি করতে
-   Supabase Admin API প্রয়োজন।
-
-   Publishable key দিয়ে সরাসরি Admin User
-   তৈরি করা নিরাপদ নয়।
-
-   তাই Employee-এর profile/database অংশ
-   এখানে প্রস্তুত রাখা হয়েছে।
-*/
 
 async function saveEmployee(){
 
@@ -2391,6 +2795,7 @@ async function saveEmployee(){
         $("employeeName")
             .value
             .trim();
+
 
     const phone =
         $("employeeMobile")
@@ -2404,17 +2809,9 @@ async function saveEmployee(){
             "❌ Employee-এর নাম দিন।";
 
         return;
+
     }
 
-
-    /*
-      এখানে Manager Panel থেকে employee
-      profile তৈরি করা হবে।
-
-      Authentication account তৈরি করতে
-      পরের ধাপে secure Edge Function ব্যবহার
-      করতে হবে।
-    */
 
     $("employeeMessage").textContent =
         "⚠️ Employee authentication তৈরির secure server function এখনো যুক্ত করা হয়নি।";
@@ -2429,18 +2826,20 @@ async function saveEmployee(){
 async function loadManagerBalance(){
 
     if(!currentUser){
+
         return;
+
     }
 
-    const {data,error} =
-        await db
-            .rpc(
-                "get_manager_balance",
-                {
-                    p_manager_id:
-                        currentUser.id
-                }
-            );
+
+    const { data, error } =
+        await db.rpc(
+            "get_manager_balance",
+            {
+                p_manager_id:
+                    currentUser.id
+            }
+        );
 
 
     if(error){
@@ -2448,6 +2847,7 @@ async function loadManagerBalance(){
         console.error(error);
 
         return;
+
     }
 
 
@@ -2458,17 +2858,22 @@ async function loadManagerBalance(){
         typeof data === "number"
     ){
 
-        balance = data;
+        balance =
+            data;
 
-    }else if(
+    }
+    else if(
         data &&
         typeof data.balance !== "undefined"
     ){
 
         balance =
-            Number(data.balance);
+            Number(
+                data.balance
+            );
 
-    }else if(
+    }
+    else if(
         Array.isArray(data) &&
         data.length
     ){
@@ -2477,11 +2882,13 @@ async function loadManagerBalance(){
             Number(
                 data[0].balance || 0
             );
+
     }
 
 
     $("managerBalance").textContent =
         balance.toFixed(2);
+
 }
 
 
@@ -2491,26 +2898,41 @@ async function loadManagerBalance(){
 
 function openBalanceModal(type){
 
-    currentFundType = type;
+    currentFundType =
+        type;
 
-    $("balanceAmount").value = "";
-    $("balanceDescription").value = "";
-    $("balanceMessage").textContent = "";
+
+    $("balanceAmount").value =
+        "";
+
+
+    $("balanceDescription").value =
+        "";
+
+
+    $("balanceMessage").textContent =
+        "";
+
 
     $("balanceTitle").textContent =
         type === "fund_added"
         ? "➕ Add Fund"
         : "➖ Reduce Fund";
 
+
     $("balanceModal")
-        .style.display = "flex";
+        .style.display =
+        "flex";
+
 }
 
 
 function closeBalanceModal(){
 
     $("balanceModal")
-        .style.display = "none";
+        .style.display =
+        "none";
+
 }
 
 
@@ -2519,13 +2941,16 @@ async function submitBalanceChange(){
     if(!currentUser){
 
         return;
+
     }
 
 
     const amount =
         Number(
-            $("balanceAmount").value
+            $("balanceAmount")
+                .value
         );
+
 
     const description =
         $("balanceDescription")
@@ -2539,14 +2964,11 @@ async function submitBalanceChange(){
             "❌ সঠিক টাকার পরিমাণ দিন।";
 
         return;
+
     }
 
 
-    /*
-      Manager-এর fund transaction
-    */
-
-    const {error} =
+    const { error } =
         await db
             .from(
                 "manager_balance_transactions"
@@ -2560,7 +2982,6 @@ async function submitBalanceChange(){
                     currentFundType,
 
                 amount:
-
                     currentFundType ===
                     "fund_reduced"
                     ? -amount
@@ -2568,55 +2989,33 @@ async function submitBalanceChange(){
 
                 description:
                     description
+
             });
 
 
     if(error){
 
-        /*
-          যদি table না থাকে,
-          fallback হিসেবে fund_transactions
-          চেষ্টা করা হবে।
-        */
+        $("balanceMessage").textContent =
+            "❌ " +
+            error.message;
 
-        const fallback =
-            await db
-                .from(
-                    "fund_transactions"
-                )
-                .insert({
+        return;
 
-                    transaction_type:
-                        currentFundType,
-
-                    amount:
-                        amount,
-
-                    description:
-                        description
-                });
-
-
-        if(fallback.error){
-
-            $("balanceMessage").textContent =
-                "❌ " +
-                error.message;
-
-            return;
-        }
     }
 
 
     $("balanceMessage").textContent =
         "✅ Fund transaction saved";
 
+
     await loadManagerBalance();
+
 
     setTimeout(
         closeBalanceModal,
         700
     );
+
 }
 
 
@@ -2624,24 +3023,55 @@ async function submitBalanceChange(){
    PROFILE
    ========================================================= */
 
+/*
+   IMPORTANT:
+
+   এখানে UPSERT নেই।
+
+   role কখনো update করা হবে না।
+
+   শুধু:
+   full_name
+   phone
+
+   update হবে।
+
+   তাই:
+   owner -> owner থাকবে
+   manager -> manager থাকবে
+   employee -> employee থাকবে
+*/
+
 function openProfileModal(){
 
+    loadProfile();
+
     $("profileModal")
-        .style.display = "flex";
+        .style.display =
+        "flex";
+
 }
 
 
 function closeProfileModal(){
 
     $("profileModal")
-        .style.display = "none";
+        .style.display =
+        "none";
+
 }
 
 
 async function saveProfile(){
 
     if(!currentUser){
+
+        alert(
+            "❌ User login করা নেই।"
+        );
+
         return;
+
     }
 
 
@@ -2649,6 +3079,7 @@ async function saveProfile(){
         $("profileName")
             .value
             .trim();
+
 
     const mobile =
         $("profileMobile")
@@ -2659,43 +3090,36 @@ async function saveProfile(){
     if(!name){
 
         alert(
-            "Manager-এর নাম দিন।"
+            "নিজের নাম দিন।"
         );
 
         return;
+
     }
 
 
-   const { data: existingProfile, error: roleError } = await db
-    .from("user_profiles")
-    .select("role")
-    .eq("id", currentUser.id)
-    .maybeSingle();
+    /*
+       এখানে UPDATE ব্যবহার করা হচ্ছে।
 
-if (roleError) {
-    alert(
-        "❌ Role load হয়নি:\n" +
-        roleError.message
-    );
-    return;
-}
+       role column-এ কোনো হাত দেওয়া হচ্ছে না।
+    */
 
-const { error } = await db
-    .from("user_profiles")
-    .upsert({
-        id: currentUser.id,
-        full_name: name,
-        phone: mobile,
-        role: existingProfile?.role || "manager"
-    });
+    const { error } =
+        await db
+            .from("user_profiles")
+            .update({
 
-if (error) {
-    alert(
-        "❌ Profile update হয়নি:\n" +
-        error.message
-    );
-    return;
-}
+                full_name:
+                    name,
+
+                phone:
+                    mobile
+
+            })
+            .eq(
+                "id",
+                currentUser.id
+            );
 
 
     if(error){
@@ -2705,59 +3129,113 @@ if (error) {
             error.message
         );
 
+        console.error(
+            "Profile update error:",
+            error
+        );
+
         return;
+
     }
 
 
     $("managerTitle").textContent =
-        "👤 " + name;
+        "👤 " +
+        name;
 
 
     closeProfileModal();
 
+
     alert(
         "✅ Profile আপডেট হয়েছে।"
     );
+
+
+    await loadProfile();
+
 }
-async function loadProfile() {
 
-    if (!currentUser) {
+
+/* =========================================================
+   LOAD PROFILE
+   ========================================================= */
+
+async function loadProfile(){
+
+    if(!currentUser){
+
         return;
+
     }
 
-    const { data, error } = await db
-        .from("user_profiles")
-        .select("full_name, phone")
-        .eq("id", currentUser.id)
-        .maybeSingle();
 
-    if (error) {
-        console.error("Profile load error:", error);
+    const { data, error } =
+        await db
+            .from("user_profiles")
+            .select(
+                "full_name,phone,role"
+            )
+            .eq(
+                "id",
+                currentUser.id
+            )
+            .maybeSingle();
+
+
+    if(error){
+
+        console.error(
+            "Profile load error:",
+            error
+        );
+
         return;
+
     }
 
-    if (!data) {
+
+    if(!data){
+
         return;
+
     }
 
-    if ($("profileName")) {
-        $("profileName").value = data.full_name || "";
+
+    $("profileName").value =
+        data.full_name || "";
+
+
+    $("profileMobile").value =
+        data.phone || "";
+
+
+    let displayName =
+        data.full_name;
+
+
+    if(!displayName){
+
+        displayName =
+            data.role === "owner"
+            ? "Owner"
+            : data.role === "manager"
+            ? "Manager"
+            : "User";
+
     }
 
-    if ($("profileMobile")) {
-        $("profileMobile").value = data.phone || "";
-    }
 
-    if ($("managerTitle")) {
-        $("managerTitle").textContent =
-            "👤 " + (data.full_name || "Manager");
-    }
+    $("managerTitle").textContent =
+        "👤 " +
+        displayName;
 
-    if ($("ownerTitle")) {
-        $("ownerTitle").textContent =
-            "👤 " + (data.full_name || "Owner");
-    }
+
+    $("managerEmail").textContent =
+        currentUser.email || "";
+
 }
+
 
 /* =========================================================
    REPORTS
@@ -2801,17 +3279,22 @@ async function loadReports(){
         $("reportMembers").textContent =
             members.count || 0;
 
+
         $("reportAccounts").textContent =
             accounts.count || 0;
+
 
         $("reportEmployees").textContent =
             employees.count || 0;
 
 
-    }catch(error){
+    }
+    catch(error){
 
         console.error(error);
+
     }
+
 }
 
 
@@ -2826,6 +3309,7 @@ function saveSettings(){
             .value
             .trim();
 
+
     if(!name){
 
         alert(
@@ -2833,16 +3317,20 @@ function saveSettings(){
         );
 
         return;
+
     }
+
 
     localStorage.setItem(
         "samity_name",
         name
     );
 
+
     alert(
         "✅ Settings saved"
     );
+
 }
 
 
@@ -2856,57 +3344,22 @@ window.addEventListener(
 
         document
             .querySelectorAll(".modal")
-            .forEach(modal=>{
+            .forEach(modal => {
 
-                if(event.target === modal){
+                if(
+                    event.target ===
+                    modal
+                ){
 
                     modal.style.display =
                         "none";
+
                 }
+
             });
+
     }
 );
-
-
-/* =========================================================
-   LOAD PROFILE
-   ========================================================= */
-
-async function loadProfile(){
-
-    if(!currentUser){
-        return;
-    }
-
-
-    const {data} =
-        await db
-            .from("user_profiles")
-            .select(
-                "full_name,phone"
-            )
-            .eq(
-                "id",
-                currentUser.id
-            )
-            .maybeSingle();
-
-
-    if(!data){
-        return;
-    }
-
-
-    $("profileName").value =
-        data.full_name || "";
-
-    $("profileMobile").value =
-        data.phone || "";
-
-    $("managerTitle").textContent =
-        "👤 " +
-        (data.full_name || "Manager");
-}
 
 
 /* =========================================================
@@ -2917,20 +3370,21 @@ document.addEventListener(
     "DOMContentLoaded",
     async function(){
 
-        const session =
+        const { data } =
             await db.auth.getSession();
 
+
         if(
-            session.data &&
-            session.data.session
+            data &&
+            data.session
         ){
 
-           currentUser =
-session.data.session.user;
+            currentUser =
+                data.session.user;
 
-await loadProfile();
 
-await checkManagerRole();
+            await checkManagerRole();
+
         }
 
     }

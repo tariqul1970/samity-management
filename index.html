@@ -302,6 +302,13 @@ th{
         font-size:17px;
     }
 }
+
+/* FINAL VISIBILITY FIX */
+#app { display: none; }
+#loginScreen { display: flex; }
+#app .topbar { display: flex !important; }
+#app .container { display: block !important; }
+
 </style>
 </head>
 
@@ -1083,11 +1090,11 @@ function showDashboard() {
         loginBox.style.display = "none";
     }
 
-    document.querySelectorAll(
-        ".topbar, .container"
-    ).forEach(el => {
-        el.style.display = "";
-    });
+    const topbar = document.querySelector(".topbar");
+    const mainContainer = document.querySelector(".container");
+
+    if (topbar) topbar.style.display = "flex";
+    if (mainContainer) mainContainer.style.display = "block";
 
     loadMembers();
     loadProfile();
@@ -2052,5 +2059,138 @@ document.addEventListener(
     }
 );
 </script>
+
+<script>
+/* =========================================================
+   SAMITY MANAGEMENT - SAFE NEW FRONTEND LAYER
+   Full Member Profile / Staff Profile / Loan Grantor
+   ========================================================= */
+
+async function smLoadFullMember(memberId) {
+  const { data, error } = await supabase
+    .from("members")
+    .select("*")
+    .eq("id", memberId)
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+function smVal(id) {
+  const el = document.getElementById(id);
+  return el ? el.value.trim() : "";
+}
+
+function smSet(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.value = value ?? "";
+}
+
+function smMemberProfileFields() {
+  return `
+  <div class="grid">
+    <div><label>সদস্যের নাম</label><input id="sm_full_name"></div>
+    <div><label>পিতা</label><input id="sm_father_name"></div>
+    <div><label>মাতা</label><input id="sm_mother_name"></div>
+    <div><label>জন্মতারিখ</label><input id="sm_date_of_birth" type="date"></div>
+    <div><label>লিঙ্গ</label><select id="sm_gender"><option value="">নির্বাচন</option><option>পুরুষ</option><option>মহিলা</option><option>অন্যান্য</option></select></div>
+    <div><label>NID</label><input id="sm_nid"></div>
+    <div><label>মোবাইল</label><input id="sm_mobile"></div>
+    <div><label>Email</label><input id="sm_email" type="email"></div>
+    <div><label>পেশা</label><input id="sm_occupation"></div>
+    <div><label>গ্রাম/মহল্লা</label><input id="sm_village"></div>
+    <div><label>ডাকঘর</label><input id="sm_post_office"></div>
+    <div><label>পোস্ট কোড</label><input id="sm_post_code"></div>
+    <div><label>ইউনিয়ন/পৌরসভা</label><input id="sm_union_name"></div>
+    <div><label>ওয়ার্ড</label><input id="sm_ward_no"></div>
+    <div><label>উপজেলা</label><input id="sm_upazila"></div>
+    <div><label>জেলা</label><input id="sm_district"></div>
+    <div><label>বিভাগ</label><input id="sm_division"></div>
+    <div style="grid-column:1/-1"><label>বিস্তারিত ঠিকানা</label><textarea id="sm_address"></textarea></div>
+  </div>
+
+  <h3>নমিনি</h3>
+  <div class="grid">
+    <div><label>নমিনির নাম</label><input id="sm_nominee_name"></div>
+    <div><label>সম্পর্ক</label><input id="sm_nominee_relation"></div>
+    <div><label>মোবাইল</label><input id="sm_nominee_mobile"></div>
+    <div><label>NID</label><input id="sm_nominee_nid"></div>
+    <div style="grid-column:1/-1"><label>ঠিকানা</label><textarea id="sm_nominee_address"></textarea></div>
+  </div>`;
+}
+
+async function smSaveMemberProfile(memberId) {
+  const payload = {
+    full_name: smVal("sm_full_name"),
+    father_name: smVal("sm_father_name"),
+    mother_name: smVal("sm_mother_name"),
+    date_of_birth: smVal("sm_date_of_birth") || null,
+    gender: smVal("sm_gender"),
+    nid: smVal("sm_nid"),
+    mobile: smVal("sm_mobile"),
+    email: smVal("sm_email"),
+    occupation: smVal("sm_occupation"),
+    village: smVal("sm_village"),
+    post_office: smVal("sm_post_office"),
+    post_code: smVal("sm_post_code"),
+    union_name: smVal("sm_union_name"),
+    ward_no: smVal("sm_ward_no"),
+    upazila: smVal("sm_upazila"),
+    district: smVal("sm_district"),
+    division: smVal("sm_division"),
+    address: smVal("sm_address"),
+    nominee_name: smVal("sm_nominee_name"),
+    nominee_relation: smVal("sm_nominee_relation"),
+    nominee_mobile: smVal("sm_nominee_mobile"),
+    nominee_nid: smVal("sm_nominee_nid"),
+    nominee_address: smVal("sm_nominee_address")
+  };
+
+  const { error } = await supabase.from("members").update(payload).eq("id", memberId);
+  if (error) {
+    alert("Member save error: " + error.message);
+    return false;
+  }
+  alert("সদস্যের পূর্ণ তথ্য সংরক্ষণ হয়েছে।");
+  return true;
+}
+
+async function smOpenMemberProfile(memberId) {
+  const m = await smLoadFullMember(memberId);
+
+  const box = document.createElement("div");
+  box.id = "smProfileOverlay";
+  box.style.cssText =
+    "position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:99999;overflow:auto;padding:30px;";
+  box.innerHTML = `
+    <div style="max-width:1000px;margin:auto;background:#fff;border-radius:14px;padding:25px;">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <h2>সদস্যের পূর্ণ Profile</h2>
+        <button onclick="document.getElementById('smProfileOverlay').remove()">✕</button>
+      </div>
+      <p><b>Member ID:</b> ${m.member_id || m.member_no || ""}</p>
+      ${smMemberProfileFields()}
+      <div style="margin-top:20px;display:flex;gap:10px">
+        <button onclick="smSaveMemberProfile('${m.id}')">Save</button>
+        <button onclick="document.getElementById('smProfileOverlay').remove()">Close</button>
+      </div>
+    </div>`;
+  document.body.appendChild(box);
+
+  const map = {
+    sm_full_name:m.full_name, sm_father_name:m.father_name, sm_mother_name:m.mother_name,
+    sm_date_of_birth:m.date_of_birth, sm_gender:m.gender, sm_nid:m.nid,
+    sm_mobile:m.mobile, sm_email:m.email, sm_occupation:m.occupation,
+    sm_village:m.village, sm_post_office:m.post_office, sm_post_code:m.post_code,
+    sm_union_name:m.union_name, sm_ward_no:m.ward_no, sm_upazila:m.upazila,
+    sm_district:m.district, sm_division:m.division, sm_address:m.address,
+    sm_nominee_name:m.nominee_name, sm_nominee_relation:m.nominee_relation,
+    sm_nominee_mobile:m.nominee_mobile, sm_nominee_nid:m.nominee_nid,
+    sm_nominee_address:m.nominee_address
+  };
+  Object.entries(map).forEach(([k,v]) => smSet(k,v));
+}
+</script>
+
 </body>
 </html>

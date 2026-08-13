@@ -2445,6 +2445,1532 @@ window.addEventListener("click",e=>{
 });
 
 </script>
+ <script>
+/* =========================================================
+   SAMITY MANAGEMENT - MANAGER / COMMITTEE CONTROL
+   + COMPLETE PRINT SYSTEM
+   + MEMBER PRINT
+   + ALL MEMBER PRINT
+   + SEARCH PRINT
+   + REPORT PRINT
+   ========================================================= */
+
+(function(){
+
+"use strict";
+
+/* =========================================================
+   ROLE
+========================================================= */
+
+function roleName(){
+
+    return String(
+        window.currentProfile &&
+        window.currentProfile.role
+        || ""
+    ).trim().toLowerCase();
+
+}
+
+function isManager(){
+
+    return [
+        "manager",
+        "admin",
+        "administrator",
+        "ম্যানেজার"
+    ].includes(roleName());
+
+}
+
+function isCommittee(){
+
+    return [
+        "committee",
+        "management_committee",
+        "committee_member",
+        "পরিচালনা কমিটি",
+        "কমিটি"
+    ].includes(roleName());
+
+}
+
+function managerOnly(){
+
+    if(isManager()) return true;
+
+    alert(
+        "⛔ অনুমতি নেই!\n\n"+
+        "পরিচালনা কমিটি শুধু তথ্য দেখতে এবং Print করতে পারবে।\n"+
+        "Account, Balance, Transaction, Member ও অন্যান্য পরিবর্তনের কাজ শুধুমাত্র Manager করতে পারবেন।"
+    );
+
+    return false;
+
+}
+
+
+/* =========================================================
+   PRINT CSS
+========================================================= */
+
+const printStyle=document.createElement("style");
+
+printStyle.textContent=`
+
+#printArea{
+
+    background:#fff;
+    color:#111;
+    padding:25px;
+    font-family:
+      Arial,
+      "Noto Sans Bengali",
+      sans-serif;
+
+}
+
+#printArea .print-header{
+
+    text-align:center;
+    border-bottom:2px solid #075985;
+    padding-bottom:14px;
+    margin-bottom:18px;
+
+}
+
+#printArea .print-logo{
+
+    width:70px;
+    height:70px;
+    margin:auto;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#075985;
+    color:#fff;
+    font-size:38px;
+
+}
+
+#printArea h1{
+
+    color:#075985;
+    margin:8px 0 3px;
+    font-size:23px;
+
+}
+
+#printArea h2{
+
+    text-align:center;
+    color:#17364b;
+    font-size:18px;
+    margin:12px 0 18px;
+
+}
+
+#printArea .print-meta{
+
+    color:#64748b;
+    font-size:11px;
+    line-height:1.7;
+
+}
+
+#printArea table{
+
+    width:100%;
+    border-collapse:collapse;
+    margin-top:10px;
+
+}
+
+#printArea th,
+#printArea td{
+
+    border:1px solid #cbd5e1;
+    padding:7px 8px;
+    font-size:10px;
+    text-align:left;
+
+}
+
+#printArea th{
+
+    background:#eef5f9;
+    color:#17364b;
+    font-weight:bold;
+
+}
+
+#printArea .member-info{
+
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    border:1px solid #cbd5e1;
+    margin-top:10px;
+
+}
+
+#printArea .info-item{
+
+    padding:9px;
+    border-bottom:1px solid #e2e8f0;
+    border-right:1px solid #e2e8f0;
+    font-size:11px;
+
+}
+
+#printArea .info-item b{
+
+    display:block;
+    color:#475569;
+    margin-bottom:3px;
+
+}
+
+#printArea .print-footer{
+
+    margin-top:25px;
+    padding-top:10px;
+    border-top:1px solid #cbd5e1;
+    display:flex;
+    justify-content:space-between;
+    font-size:9px;
+    color:#64748b;
+
+}
+
+.print-button{
+
+    border:0;
+    background:#075985;
+    color:#fff;
+    padding:8px 11px;
+    border-radius:7px;
+    cursor:pointer;
+    font-weight:bold;
+    margin-left:5px;
+
+}
+
+.committee-hidden{
+
+    display:none !important;
+
+}
+
+@media print{
+
+    body *{
+
+        visibility:hidden !important;
+
+    }
+
+    #printArea,
+    #printArea *{
+
+        visibility:visible !important;
+
+    }
+
+    #printArea{
+
+        position:absolute;
+        left:0;
+        top:0;
+        width:100%;
+
+    }
+
+    @page{
+
+        size:A4;
+        margin:12mm;
+
+    }
+
+}
+
+`;
+
+document.head.appendChild(printStyle);
+
+
+/* =========================================================
+   SAFE HTML
+========================================================= */
+
+function safe(v){
+
+    if(typeof window.esc==="function"){
+
+        return window.esc(v);
+
+    }
+
+    return String(v ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+}
+
+
+/* =========================================================
+   SAMITY SETTINGS
+========================================================= */
+
+function getSettings(){
+
+    try{
+
+        return JSON.parse(
+            localStorage.getItem("samity_settings") || "{}"
+        );
+
+    }catch(e){
+
+        return {};
+
+    }
+
+}
+
+
+/* =========================================================
+   PRINT AREA
+========================================================= */
+
+function createPrintArea(title,body){
+
+    const old=document.getElementById("printArea");
+
+    if(old) old.remove();
+
+    const s=getSettings();
+
+    const samityName=
+        s.name ||
+        "সমবায় সমিতি";
+
+    const address=
+        s.address ||
+        "";
+
+    const mobile=
+        s.mobile ||
+        "";
+
+    const reg=
+        s.reg ||
+        "";
+
+    const now=
+        new Date().toLocaleString(
+            "bn-BD"
+        );
+
+    const div=document.createElement("div");
+
+    div.id="printArea";
+
+    div.innerHTML=`
+
+        <div class="print-header">
+
+            <div class="print-logo">
+                🏛️
+            </div>
+
+            <h1>
+                ${safe(samityName)}
+            </h1>
+
+            ${
+                reg
+                ? `<div class="print-meta">
+                     নিবন্ধন নং: ${safe(reg)}
+                   </div>`
+                : ""
+            }
+
+            ${
+                address
+                ? `<div class="print-meta">
+                     ${safe(address)}
+                   </div>`
+                : ""
+            }
+
+            ${
+                mobile
+                ? `<div class="print-meta">
+                     মোবাইল: ${safe(mobile)}
+                   </div>`
+                : ""
+            }
+
+        </div>
+
+        <h2>
+            ${safe(title)}
+        </h2>
+
+        ${body}
+
+        <div class="print-footer">
+
+            <span>
+                Print Date:
+                ${safe(now)}
+            </span>
+
+            <span>
+                সমবায় সমিতি ব্যবস্থাপনা
+            </span>
+
+        </div>
+
+    `;
+
+    document.body.appendChild(div);
+
+    setTimeout(function(){
+
+        window.print();
+
+    },100);
+
+}
+
+
+/* =========================================================
+   REMOVE PRINT AREA
+========================================================= */
+
+window.addEventListener(
+    "afterprint",
+    function(){
+
+        const el=
+            document.getElementById(
+                "printArea"
+            );
+
+        if(el) el.remove();
+
+    }
+);
+
+
+/* =========================================================
+   MEMBER PRINT
+========================================================= */
+
+let printMemberData=null;
+
+
+/* ---------------------------------------------------------
+   VIEW MEMBER OVERRIDE
+--------------------------------------------------------- */
+
+const originalViewMember=
+    window.viewMember;
+
+window.viewMember=async function(id){
+
+    if(typeof originalViewMember==="function"){
+
+        await originalViewMember(id);
+
+    }
+
+    try{
+
+        const result=
+            await window.db
+                .from("members")
+                .select("*")
+                .eq("id",id)
+                .single();
+
+        if(result.data){
+
+            printMemberData=result.data;
+
+            addMemberPrintButton();
+
+        }
+
+    }catch(e){
+
+        console.error(e);
+
+    }
+
+};
+
+
+/* =========================================================
+   MEMBER MODAL PRINT BUTTON
+========================================================= */
+
+function addMemberPrintButton(){
+
+    const modal=
+        document.getElementById(
+            "memberViewModal"
+        );
+
+    if(!modal) return;
+
+    const header=
+        modal.querySelector(
+            ".modal-header"
+        );
+
+    if(!header) return;
+
+    if(
+        header.querySelector(
+            "#memberPrintButton"
+        )
+    ) return;
+
+    const button=
+        document.createElement("button");
+
+    button.id=
+        "memberPrintButton";
+
+    button.className=
+        "print-button";
+
+    button.innerHTML=
+        "🖨️ Print";
+
+    button.onclick=
+        function(){
+
+            printCurrentMember();
+
+        };
+
+    const close=
+        header.querySelector(
+            ".close"
+        );
+
+    if(close){
+
+        header.insertBefore(
+            button,
+            close
+        );
+
+    }else{
+
+        header.appendChild(
+            button
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   PRINT ONE MEMBER
+========================================================= */
+
+window.printCurrentMember=function(){
+
+    if(!printMemberData){
+
+        alert(
+            "সদস্যের তথ্য পাওয়া যায়নি।"
+        );
+
+        return;
+
+    }
+
+    const m=printMemberData;
+
+    const fields=[
+
+        ["Member ID",m.member_id],
+        ["নাম",m.full_name],
+        ["পিতা/স্বামী",m.father_name],
+        ["মাতা",m.mother_name],
+        ["জন্মতারিখ",m.date_of_birth],
+        ["লিঙ্গ",m.gender],
+        ["মোবাইল",m.mobile],
+        ["NID",m.nid],
+        ["পেশা",m.occupation],
+        ["গ্রাম",m.village],
+        ["ডাকঘর",m.post_office],
+        ["ইউনিয়ন/পৌরসভা",m.union_name],
+        ["ওয়ার্ড",m.ward_no],
+        ["উপজেলা",m.upazila],
+        ["জেলা",m.district],
+        ["বিভাগ",m.division],
+        ["যোগদানের তারিখ",m.join_date],
+        ["Status",m.status],
+        ["Nominee",m.nominee_name],
+        ["Nominee Relation",m.nominee_relation],
+        ["Nominee Mobile",m.nominee_mobile],
+        ["Nominee NID",m.nominee_nid],
+        ["ঠিকানা",m.address],
+        ["Nominee Address",m.nominee_address]
+
+    ];
+
+    const html=
+        `<div class="member-info">`+
+        fields.map(function(x){
+
+            return `
+                <div class="info-item">
+                    <b>${safe(x[0])}</b>
+                    ${safe(x[1])}
+                </div>
+            `;
+
+        }).join("")+
+        `</div>`;
+
+    createPrintArea(
+        "সদস্যের সম্পূর্ণ তথ্য",
+        html
+    );
+
+};
+
+
+/* =========================================================
+   PRINT MEMBER BY ID
+========================================================= */
+
+window.printMemberById=async function(id){
+
+    try{
+
+        const {data,error}=
+            await window.db
+                .from("members")
+                .select("*")
+                .eq("id",id)
+                .single();
+
+        if(error){
+
+            alert(error.message);
+
+            return;
+
+        }
+
+        printMemberData=data;
+
+        printCurrentMember();
+
+    }catch(e){
+
+        alert(e.message);
+
+    }
+
+};
+
+
+/* =========================================================
+   MEMBER LIST PRINT
+========================================================= */
+
+window.printAllMembers=async function(){
+
+    try{
+
+        const {data,error}=
+            await window.db
+                .from("members")
+                .select("*")
+                .order(
+                    "created_at",
+                    {ascending:false}
+                )
+                .limit(5000);
+
+        if(error){
+
+            alert(
+                "সদস্য তালিকা নেওয়া যায়নি:\n"+
+                error.message
+            );
+
+            return;
+
+        }
+
+        if(!data || !data.length){
+
+            alert(
+                "কোনো সদস্য পাওয়া যায়নি।"
+            );
+
+            return;
+
+        }
+
+        const rows=
+            data.map(function(m,i){
+
+                return `
+                    <tr>
+
+                        <td>${i+1}</td>
+
+                        <td>
+                            ${safe(m.member_id)}
+                        </td>
+
+                        <td>
+                            ${safe(m.full_name)}
+                        </td>
+
+                        <td>
+                            ${safe(m.mobile)}
+                        </td>
+
+                        <td>
+                            ${safe(m.nid)}
+                        </td>
+
+                        <td>
+                            ${safe(m.join_date)}
+                        </td>
+
+                        <td>
+                            ${safe(m.status)}
+                        </td>
+
+                    </tr>
+                `;
+
+            }).join("");
+
+        createPrintArea(
+            "সকল সদস্যের তালিকা",
+            `
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>ক্রমিক</th>
+                            <th>Member ID</th>
+                            <th>নাম</th>
+                            <th>মোবাইল</th>
+                            <th>NID</th>
+                            <th>যোগদানের তারিখ</th>
+                            <th>Status</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        ${rows}
+
+                    </tbody>
+
+                </table>
+
+            `
+        );
+
+    }catch(e){
+
+        alert(e.message);
+
+    }
+
+};
+
+
+/* =========================================================
+   SEARCH RESULT PRINT
+========================================================= */
+
+window.printMemberSearch=async function(){
+
+    const input=
+        document.getElementById(
+            "memberSearch"
+        );
+
+    const q=
+        input
+        ? input.value.trim()
+        : "";
+
+    if(!q){
+
+        return printAllMembers();
+
+    }
+
+    try{
+
+        const {data,error}=
+            await window.db
+                .from("members")
+                .select("*")
+                .or(
+                    "member_id.ilike.%"+
+                    q+
+                    "%,full_name.ilike.%"+
+                    q+
+                    "%,mobile.ilike.%"+
+                    q+
+                    "%,nid.ilike.%"+
+                    q+
+                    "%"
+                )
+                .order(
+                    "created_at",
+                    {ascending:false}
+                )
+                .limit(5000);
+
+        if(error){
+
+            alert(error.message);
+
+            return;
+
+        }
+
+        if(!data || !data.length){
+
+            alert(
+                "Search অনুযায়ী কোনো সদস্য পাওয়া যায়নি।"
+            );
+
+            return;
+
+        }
+
+        const rows=
+            data.map(function(m,i){
+
+                return `
+                    <tr>
+
+                        <td>${i+1}</td>
+                        <td>${safe(m.member_id)}</td>
+                        <td>${safe(m.full_name)}</td>
+                        <td>${safe(m.mobile)}</td>
+                        <td>${safe(m.nid)}</td>
+                        <td>${safe(m.join_date)}</td>
+                        <td>${safe(m.status)}</td>
+
+                    </tr>
+                `;
+
+            }).join("");
+
+        createPrintArea(
+            "Search করা সদস্যদের তালিকা",
+            `
+
+                <div class="print-meta">
+                    Search:
+                    <b>${safe(q)}</b>
+                </div>
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>ক্রমিক</th>
+                            <th>Member ID</th>
+                            <th>নাম</th>
+                            <th>মোবাইল</th>
+                            <th>NID</th>
+                            <th>যোগদানের তারিখ</th>
+                            <th>Status</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+                        ${rows}
+                    </tbody>
+
+                </table>
+
+            `
+        );
+
+    }catch(e){
+
+        alert(e.message);
+
+    }
+
+};
+
+
+/* =========================================================
+   ADD MEMBER PRINT BUTTONS
+========================================================= */
+
+function addMemberPrintControls(){
+
+    const section=
+        document.getElementById(
+            "members"
+        );
+
+    if(!section) return;
+
+    const toolbar=
+        section.querySelector(
+            ".toolbar"
+        );
+
+    if(
+        toolbar &&
+        !toolbar.querySelector(
+            "#allMembersPrintBtn"
+        )
+    ){
+
+        const b1=
+            document.createElement(
+                "button"
+            );
+
+        b1.id=
+            "allMembersPrintBtn";
+
+        b1.className=
+            "secondary";
+
+        b1.innerHTML=
+            "🖨️ সকল সদস্য Print";
+
+        b1.onclick=
+            window.printAllMembers;
+
+        toolbar.appendChild(b1);
+
+
+        const b2=
+            document.createElement(
+                "button"
+            );
+
+        b2.id=
+            "searchMembersPrintBtn";
+
+        b2.className=
+            "secondary";
+
+        b2.innerHTML=
+            "🖨️ Search Result Print";
+
+        b2.onclick=
+            window.printMemberSearch;
+
+        toolbar.appendChild(b2);
+
+    }
+
+}
+
+
+/* =========================================================
+   ADD PRINT BUTTON TO MEMBER ROWS
+========================================================= */
+
+function addRowPrintButtons(){
+
+    const list=
+        document.getElementById(
+            "memberList"
+        );
+
+    if(!list) return;
+
+    list.querySelectorAll(
+        "tr"
+    ).forEach(function(row){
+
+        if(
+            row.querySelector(
+                ".member-row-print"
+            )
+        ) return;
+
+        const buttons=
+            row.querySelectorAll(
+                "button"
+            );
+
+        if(!buttons.length) return;
+
+        const viewButton=
+            buttons[0];
+
+        const onclick=
+            viewButton.getAttribute(
+                "onclick"
+            ) || "";
+
+        const match=
+            onclick.match(
+                /viewMember\(['"]([^'"]+)['"]\)/
+            );
+
+        if(!match) return;
+
+        const id=match[1];
+
+        const printButton=
+            document.createElement(
+                "button"
+            );
+
+        printButton.className=
+            "secondary member-row-print";
+
+        printButton.innerHTML=
+            "🖨️";
+
+        printButton.title=
+            "এই সদস্য Print";
+
+        printButton.onclick=
+            function(){
+
+                printMemberById(id);
+
+            };
+
+        viewButton.parentNode.appendChild(
+            printButton
+        );
+
+    });
+
+}
+
+
+/* =========================================================
+   MANAGER / COMMITTEE UI
+========================================================= */
+
+function applyRoleUI(){
+
+    if(!window.currentProfile)
+        return;
+
+    document.body.classList.remove(
+        "manager-mode",
+        "committee-mode"
+    );
+
+    if(isManager()){
+
+        document.body.classList.add(
+            "manager-mode"
+        );
+
+    }
+
+    if(isCommittee()){
+
+        document.body.classList.add(
+            "committee-mode"
+        );
+
+        hideCommitteeActions();
+
+    }
+
+}
+
+
+/* ---------------------------------------------------------
+   Hide write buttons for Committee
+--------------------------------------------------------- */
+
+function hideCommitteeActions(){
+
+    if(!isCommittee())
+        return;
+
+    const blockedFunctions=[
+
+        "openMemberModal",
+        "saveMember",
+        "deactivateMember",
+
+        "openTransactionModal",
+        "saveTransaction",
+
+        "openShareModal",
+
+        "saveGeneric",
+
+        "saveSettings",
+
+        "saveEmployee",
+
+        "deleteEmployee",
+
+        "saveCommittee",
+
+        "deleteCommittee",
+
+        "saveMeeting",
+
+        "deleteMeeting",
+
+        "saveApproval",
+
+        "approve",
+
+        "reject",
+
+        "saveLoan",
+
+        "deleteLoan",
+
+        "saveDps",
+
+        "deleteDps",
+
+        "saveFdr",
+
+        "deleteFdr",
+
+        "saveAccount",
+
+        "deleteAccount",
+
+        "saveCash",
+
+        "saveIncome",
+
+        "saveExpense"
+
+    ];
+
+    document
+        .querySelectorAll(
+            "button"
+        )
+        .forEach(function(btn){
+
+            const click=
+                btn.getAttribute(
+                    "onclick"
+                ) || "";
+
+            const blocked=
+                blockedFunctions.some(
+                    function(fn){
+
+                        return click.includes(
+                            fn+"("
+                        );
+
+                    }
+                );
+
+            if(blocked){
+
+                btn.classList.add(
+                    "committee-hidden"
+                );
+
+            }
+
+        });
+
+}
+
+
+/* =========================================================
+   PROTECT MANAGER-ONLY FUNCTIONS
+========================================================= */
+
+function protectFunction(
+    name
+){
+
+    const original=
+        window[name];
+
+    if(
+        typeof original !==
+        "function"
+    ) return;
+
+    if(
+        original.__roleProtected
+    ) return;
+
+    const protectedFunction=
+        function(){
+
+            if(!managerOnly())
+                return;
+
+            return original.apply(
+                this,
+                arguments
+            );
+
+        };
+
+    protectedFunction.__roleProtected=true;
+
+    window[name]=
+        protectedFunction;
+
+}
+
+
+/* Manager-only actions */
+
+[
+    "openMemberModal",
+    "saveMember",
+    "deactivateMember",
+
+    "openTransactionModal",
+    "saveTransaction",
+
+    "openShareModal",
+
+    "saveGeneric",
+
+    "saveSettings",
+
+    "saveEmployee",
+    "deleteEmployee",
+
+    "saveCommittee",
+    "deleteCommittee",
+
+    "saveMeeting",
+    "deleteMeeting",
+
+    "saveApproval",
+    "approve",
+    "reject",
+
+    "saveLoan",
+    "deleteLoan",
+
+    "saveDps",
+    "deleteDps",
+
+    "saveFdr",
+    "deleteFdr",
+
+    "saveAccount",
+    "deleteAccount",
+
+    "saveCash",
+    "saveIncome",
+    "saveExpense"
+
+].forEach(
+    protectFunction
+);
+
+
+/* =========================================================
+   REPORT PRINT
+========================================================= */
+
+window.printCurrentReport=function(){
+
+    const report=
+        document.getElementById(
+            "reportOutput"
+        );
+
+    if(!report){
+
+        alert(
+            "Report পাওয়া যায়নি।"
+        );
+
+        return;
+
+    }
+
+    createPrintArea(
+        "হিসাব / রিপোর্ট",
+        report.innerHTML
+    );
+
+};
+
+
+/* =========================================================
+   PRINT CURRENT SECTION
+========================================================= */
+
+window.printCurrentSection=function(){
+
+    const active=
+        document.querySelector(
+            ".section.active"
+        );
+
+    if(!active){
+
+        alert(
+            "কোনো Section খোলা নেই।"
+        );
+
+        return;
+
+    }
+
+    const clone=
+        active.cloneNode(true);
+
+    clone.querySelectorAll(
+        "button,input,select,textarea"
+    ).forEach(
+        function(el){
+            el.remove();
+        }
+    );
+
+    const title=
+        active.querySelector(
+            ".page-title h1"
+        );
+
+    createPrintArea(
+        title
+        ? title.textContent
+        : "রিপোর্ট",
+        clone.innerHTML
+    );
+
+};
+
+
+/* =========================================================
+   REPORT BUTTON
+========================================================= */
+
+function addReportPrintButton(){
+
+    const reports=
+        document.getElementById(
+            "reports"
+        );
+
+    if(!reports) return;
+
+    const title=
+        reports.querySelector(
+            ".page-title"
+        );
+
+    if(
+        title &&
+        !document.getElementById(
+            "reportPrintButton"
+        )
+    ){
+
+        const button=
+            document.createElement(
+                "button"
+            );
+
+        button.id=
+            "reportPrintButton";
+
+        button.className=
+            "secondary";
+
+        button.innerHTML=
+            "🖨️ রিপোর্ট Print";
+
+        button.onclick=
+            window.printCurrentReport;
+
+        title.appendChild(
+            button
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   GLOBAL PRINT BUTTON
+========================================================= */
+
+function addGlobalPrintButton(){
+
+    const topbar=
+        document.querySelector(
+            ".topbar"
+        );
+
+    if(
+        !topbar ||
+        document.getElementById(
+            "globalPrintButton"
+        )
+    ) return;
+
+    const button=
+        document.createElement(
+            "button"
+        );
+
+    button.id=
+        "globalPrintButton";
+
+    button.className=
+        "secondary";
+
+    button.innerHTML=
+        "🖨️";
+
+    button.title=
+        "বর্তমান পৃষ্ঠা Print";
+
+    button.onclick=
+        window.printCurrentSection;
+
+    const user=
+        topbar.querySelector(
+            ".user"
+        );
+
+    if(user)
+        user.insertBefore(
+            button,
+            user.firstChild
+        );
+
+}
+
+
+/* =========================================================
+   WATCH DOM
+========================================================= */
+
+function refreshControls(){
+
+    addMemberPrintControls();
+
+    addRowPrintButtons();
+
+    addReportPrintButton();
+
+    addGlobalPrintButton();
+
+    applyRoleUI();
+
+}
+
+
+/* =========================================================
+   OBSERVER
+========================================================= */
+
+const observer=
+    new MutationObserver(
+        function(){
+
+            refreshControls();
+
+        }
+    );
+
+observer.observe(
+    document.body,
+    {
+        childList:true,
+        subtree:true
+    }
+);
+
+
+/* =========================================================
+   INITIAL
+========================================================= */
+
+setTimeout(
+    refreshControls,
+    500
+);
+
+setTimeout(
+    refreshControls,
+    1500
+);
+
+setTimeout(
+    refreshControls,
+    3000
+);
+
+
+/* =========================================================
+   ROLE CHANGE / LOGIN REFRESH
+========================================================= */
+
+setInterval(
+    function(){
+
+        if(
+            window.currentProfile
+        ){
+
+            applyRoleUI();
+
+        }
+
+    },
+    2000
+);
+
+
+})();
+</script>
 
 </body>
 </html>

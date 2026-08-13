@@ -303,11 +303,13 @@ th{
     }
 }
 
-/* FINAL VISIBILITY FIX */
-#app { display: none; }
-#loginScreen { display: flex; }
-#app .topbar { display: flex !important; }
-#app .container { display: block !important; }
+/* FINAL VISIBILITY FIX — LOGIN ONLY BEFORE AUTH */
+body:not(.logged-in) #mainContainer,
+body:not(.logged-in) #topbar { display:none !important; }
+body.logged-in #mainContainer { display:block !important; }
+body.logged-in #topbar { display:flex !important; }
+body:not(.logged-in) #loginBox { display:block !important; }
+body.logged-in #loginBox { display:none !important; }
 
 
 /* ===== ROLE / CUSTOMER SEARCH ===== */
@@ -318,6 +320,31 @@ th{
 .customer-table{width:100%;border-collapse:collapse;margin-top:12px}
 .customer-table th,.customer-table td{border:1px solid #ddd;padding:8px;text-align:left}
 .customer-table th{background:#f3f4f6}
+
+
+/* Clean pre-login page */
+body:not(.logged-in){
+  min-height:100vh;
+  background:linear-gradient(135deg,#eef4fb 0%,#f8fafc 55%,#edf3fb 100%);
+}
+body:not(.logged-in) #loginBox{
+  width:min(92vw,420px);
+  margin:10vh auto 0;
+  padding:32px;
+  border-radius:18px;
+  background:#fff;
+  box-shadow:0 18px 50px rgba(15,35,65,.12);
+  border:1px solid #e7edf5;
+}
+body:not(.logged-in) #loginBox h2{
+  color:#0b2b55;
+  font-size:24px;
+}
+body:not(.logged-in) #loginBox .login-button{
+  background:#1769e0;
+  height:46px;
+  font-weight:700;
+}
 
 </style>
 
@@ -1298,17 +1325,13 @@ async function loginUser(email, password) {
 
 
 function showDashboard() {
+    document.body.classList.add("logged-in");
 
-    const loginBox =
-        document.querySelector(".login-box");
+    const loginBox = document.getElementById("loginBox");
+    if (loginBox) loginBox.style.display = "none";
 
-    if (loginBox) {
-        loginBox.style.display = "none";
-    }
-
-    const topbar = document.querySelector(".topbar");
-    const mainContainer = document.querySelector(".container");
-
+    const topbar = document.getElementById("topbar");
+    const mainContainer = document.getElementById("mainContainer");
     if (topbar) topbar.style.display = "flex";
     if (mainContainer) mainContainer.style.display = "block";
 
@@ -1319,43 +1342,28 @@ function showDashboard() {
 
 
 async function logout() {
-
     try {
-
-        if (supabaseClient) {
-            await supabaseClient.auth.signOut();
-        }
-
+        if (supabaseClient) await supabaseClient.auth.signOut();
     } catch (error) {
         console.error(error);
     }
 
     currentUser = null;
+    currentProfile = null;
+    currentRole = null;
+    document.body.classList.remove("logged-in");
 
-    document.querySelectorAll(
-        ".topbar, .container"
-    ).forEach(el => {
-        el.style.display = "none";
-    });
+    const topbar = document.getElementById("topbar");
+    const mainContainer = document.getElementById("mainContainer");
+    const loginBox = document.getElementById("loginBox");
 
-    const loginBox =
-        document.querySelector(".login-box");
+    if (topbar) topbar.style.display = "none";
+    if (mainContainer) mainContainer.style.display = "none";
+    if (loginBox) loginBox.style.display = "block";
 
-    if (loginBox) {
-        loginBox.style.display = "block";
-    }
-
-    if ($("email")) {
-        $("email").value = "";
-    }
-
-    if ($("password")) {
-        $("password").value = "";
-    }
-
-    if ($("loginMessage")) {
-        $("loginMessage").textContent = "";
-    }
+    if ($("email")) $("email").value = "";
+    if ($("password")) $("password").value = "";
+    if ($("loginMessage")) $("loginMessage").textContent = "";
 }
 
 
@@ -2382,13 +2390,11 @@ document.addEventListener(
                 showDashboard();
 
             } else {
-
-                document.querySelectorAll(
-                    ".topbar, .container"
-                ).forEach(el => {
-                    el.style.display = "none";
-                });
-
+                document.body.classList.remove("logged-in");
+                const topbar = document.getElementById("topbar");
+                const mainContainer = document.getElementById("mainContainer");
+                if (topbar) topbar.style.display = "none";
+                if (mainContainer) mainContainer.style.display = "none";
             }
 
 
@@ -2824,5 +2830,24 @@ loadProfile = async function(){
 
 </script>
 
+
+<script>
+/* =========================================================
+   FINAL LOGIN VISIBILITY GUARD
+   Login page is the ONLY page visible before authentication.
+   ========================================================= */
+(function(){
+  function applyLoggedOut(){
+    document.body.classList.remove("logged-in");
+    const login=document.getElementById("loginBox");
+    const top=document.getElementById("topbar");
+    const main=document.getElementById("mainContainer");
+    if(login) login.style.display="block";
+    if(top) top.style.display="none";
+    if(main) main.style.display="none";
+  }
+  window.smShowLoginOnly=applyLoggedOut;
+})();
+</script>
 </body>
 </html>

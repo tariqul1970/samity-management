@@ -2470,12 +2470,27 @@ window.addEventListener("click",e=>{
    COMMITTEE = VIEW ONLY
 ========================================================= */
 
+/* =========================================================
+   FIXED ROLE CONTROL
+   MANAGER = FULL CONTROL
+   OWNER = VIEW + PRINT ONLY
+   COMMITTEE = VIEW + PRINT ONLY
+========================================================= */
+
+/* =========================================================
+   FIXED ROLE CONTROL
+   MANAGER = FULL CONTROL
+   OWNER = VIEW + PRINT ONLY
+   COMMITTEE = VIEW + PRINT ONLY
+========================================================= */
+
 function roleName(){
 
     return String(
-        window.currentProfile &&
-        window.currentProfile.role
-        || ""
+        typeof currentProfile !== "undefined" &&
+        currentProfile
+            ? currentProfile.role
+            : ""
     )
     .trim()
     .toLowerCase();
@@ -2483,9 +2498,19 @@ function roleName(){
 }
 
 
-/* =========================================================
-   OWNER
-========================================================= */
+function isManager(){
+
+    const role = roleName();
+
+    return [
+        "manager",
+        "ম্যানেজার",
+        "admin",
+        "administrator"
+    ].includes(role);
+
+}
+
 
 function isOwner(){
 
@@ -2500,26 +2525,6 @@ function isOwner(){
 
 }
 
-
-/* =========================================================
-   MANAGER
-========================================================= */
-
-function isManager(){
-
-    const role = roleName();
-
-    return [
-        "manager",
-        "ম্যানেজার"
-    ].includes(role);
-
-}
-
-
-/* =========================================================
-   COMMITTEE / OWNER VIEW ONLY
-========================================================= */
 
 function isCommittee(){
 
@@ -2540,15 +2545,9 @@ function isCommittee(){
 }
 
 
-/* =========================================================
-   MANAGER ONLY
-========================================================= */
-
 function managerOnly(){
 
-    /*
-      শুধু Manager পরিবর্তন করতে পারবে
-    */
+    /* Manager সব কাজ করতে পারবে */
 
     if(isManager()){
 
@@ -2557,16 +2556,13 @@ function managerOnly(){
     }
 
 
-    /*
-      Owner / Committee শুধু দেখতে পারবে
-    */
+    /* Owner / Committee শুধু দেখতে ও Print করতে পারবে */
 
     alert(
-        "⛔ অনুমতি নেই!\n\n" +
-        "Owner / পরিচালনা কমিটি শুধু তথ্য দেখতে এবং Print করতে পারবে।\n" +
-        "Account, Balance, Transaction, Member ও অন্যান্য পরিবর্তনের কাজ শুধুমাত্র Manager করতে পারবেন।"
+        "⛔ অনুমতি নেই!\n\n"+
+        "Owner / পরিচালনা কমিটি শুধু তথ্য দেখতে এবং Print করতে পারবে।\n"+
+        "Member, Account, Balance, Transaction ও অন্যান্য পরিবর্তনের কাজ শুধুমাত্র Manager করতে পারবেন।"
     );
-
 
     return false;
 

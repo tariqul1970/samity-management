@@ -1677,75 +1677,342 @@ async function openMemberModal(){
 
 async function saveMember(){
 
-  const name=$("memberName").value.trim();
+    // =====================================================
+    // MEMBER NAME
+    // =====================================================
 
-  if(!name){
-    alert("সদস্যের নাম দিন।");
-    return;
-  }
+    const name =
+        $("memberName")
+            .value
+            .trim();
 
-  const payload={
 
-    member_id:$("memberId").value,
+    if(!name){
 
-    full_name:name,
+        alert(
+            "সদস্যের নাম দিন।"
+        );
 
-    father_name:$("fatherName").value.trim(),
+        return;
 
-    mother_name:$("motherName").value.trim(),
+    }
 
-    date_of_birth:$("dob").value||null,
 
-    gender:$("gender").value,
+    // =====================================================
+    // MEMBER ID
+    // =====================================================
 
-    mobile:$("mobile").value.trim(),
+    const memberId =
+        $("memberId")
+            .value
+            .trim();
 
-    nid:$("nid").value.trim(),
 
-    occupation:$("occupation").value.trim(),
+    if(!memberId){
 
-    village:$("village").value.trim(),
+        alert(
+            "Member ID পাওয়া যায়নি।"
+        );
 
-    post_office:$("postOffice").value.trim(),
+        return;
 
-    union_name:$("unionName").value.trim(),
+    }
 
-    ward_no:$("ward").value.trim(),
 
-    upazila:$("upazila").value.trim(),
+    // =====================================================
+    // MEMBER DATA
+    // =====================================================
 
-    district:$("district").value.trim(),
+    const payload = {
 
-    division:$("division").value.trim(),
+        member_id:
+            memberId,
 
-    address:$("address").value.trim(),
+        full_name:
+            name,
 
-    nominee_name:$("nomineeName").value.trim(),
+        father_name:
+            $("fatherName")
+                .value
+                .trim(),
 
-    nominee_relation:$("nomineeRelation").value.trim(),
+        mother_name:
+            $("motherName")
+                .value
+                .trim(),
 
-    nominee_mobile:$("nomineeMobile").value.trim(),
+        date_of_birth:
+            $("dob").value || null,
 
-    nominee_nid:$("nomineeNid").value.trim(),
+        gender:
+            $("gender").value,
 
-    nominee_address:$("nomineeAddress").value.trim(),
+        mobile:
+            $("mobile")
+                .value
+                .trim(),
 
-    join_date:$("joinDate").value||today(),
+        nid:
+            $("nid")
+                .value
+                .trim(),
 
-    status:"active"
+        occupation:
+            $("occupation")
+                .value
+                .trim(),
 
-  };
+        village:
+            $("village")
+                .value
+                .trim(),
 
-  const {error}=await db
-    .from("members")
-    .insert([payload]);
+        post_office:
+            $("postOffice")
+                .value
+                .trim(),
 
-  if(error){
+        union_name:
+            $("unionName")
+                .value
+                .trim(),
 
-    alert("❌ Member Save Error:\n"+error.message);
+        ward_no:
+            $("ward")
+                .value
+                .trim(),
 
-    return;
-  }
+        upazila:
+            $("upazila")
+                .value
+                .trim(),
+
+        district:
+            $("district")
+                .value
+                .trim(),
+
+        division:
+            $("division")
+                .value
+                .trim(),
+
+        address:
+            $("address")
+                .value
+                .trim(),
+
+        nominee_name:
+            $("nomineeName")
+                .value
+                .trim(),
+
+        nominee_relation:
+            $("nomineeRelation")
+                .value
+                .trim(),
+
+        nominee_mobile:
+            $("nomineeMobile")
+                .value
+                .trim(),
+
+        nominee_nid:
+            $("nomineeNid")
+                .value
+                .trim(),
+
+        nominee_address:
+            $("nomineeAddress")
+                .value
+                .trim(),
+
+        join_date:
+            $("joinDate").value ||
+            today(),
+
+        status:
+            "active"
+
+    };
+
+
+    // =====================================================
+    // SAVE MEMBER
+    // =====================================================
+
+    try{
+
+
+        const {
+            data: member,
+            error: memberError
+
+        } = await db
+
+            .from("members")
+
+            .insert([
+                payload
+            ])
+
+            .select()
+
+            .single();
+
+
+        if(memberError){
+
+            alert(
+
+                "❌ Member Save Error:\n\n" +
+                memberError.message
+
+            );
+
+            return;
+
+        }
+
+
+        // =================================================
+        // CREATE SAVINGS ACCOUNT
+        // =================================================
+
+        const {
+
+            data: accountData,
+
+            error: accountError
+
+        } = await db.rpc(
+
+            "create_savings_account",
+
+            {
+
+                p_member_id:
+                    member.member_id
+
+            }
+
+        );
+
+
+        // =================================================
+        // ACCOUNT ERROR
+        // =================================================
+
+        if(accountError){
+
+            /*
+              Member তৈরি হয়েছে,
+              কিন্তু Account তৈরি হয়নি।
+            */
+
+            alert(
+
+                "⚠️ Member তৈরি হয়েছে,\n" +
+
+                "কিন্তু Savings Account তৈরি হয়নি।\n\n" +
+
+                accountError.message
+
+            );
+
+
+            closeModal(
+                "memberModal"
+            );
+
+
+            await loadMembers();
+
+            await loadDashboard();
+
+            return;
+
+        }
+
+
+        // =================================================
+        // RESULT
+        // =================================================
+
+        const result =
+
+            typeof accountData ===
+            "string"
+
+                ? JSON.parse(
+                    accountData
+                )
+
+                : accountData;
+
+
+        // =================================================
+        // SUCCESS MESSAGE
+        // =================================================
+
+        alert(
+
+            "✅ সদস্য সফলভাবে তৈরি হয়েছে।\n\n" +
+
+            "Member ID: " +
+            member.member_id +
+
+            "\nনাম: " +
+            member.full_name +
+
+            "\n\n💰 Savings Account তৈরি হয়েছে।" +
+
+            "\nAccount Number: " +
+            result.account_number +
+
+            "\nOpening Balance: ৳0"
+
+        );
+
+
+        // =================================================
+        // CLOSE MODAL
+        // =================================================
+
+        closeModal(
+            "memberModal"
+        );
+
+
+        // =================================================
+        // REFRESH
+        // =================================================
+
+        await loadMembers();
+
+        await loadDashboard();
+
+
+    }
+
+    catch(error){
+
+        console.error(
+            "Member Save Error:",
+            error
+        );
+
+
+        alert(
+
+            "❌ Unexpected Error:\n\n" +
+            error.message
+
+        );
+
+    }
+
+}
 
   alert("✅ নতুন সদস্য সংরক্ষণ হয়েছে।");
 
@@ -2004,67 +2271,325 @@ function openTransactionModal(type){
 }
 
 
-async function saveTransaction(){
+async function saveTransaction() {
 
-  const type=$("transactionType").value;
+    const type =
+        $("transactionType")?.value;
 
-  const memberCode=
-    $("transactionMember").value.trim();
+    const memberCode =
+        $("transactionMember")
+            ?.value
+            ?.trim();
 
-  const accountNumber=
-    $("transactionAccount").value.trim();
+    const accountNumber =
+        $("transactionAccount")
+            ?.value
+            ?.trim();
 
-  const amount=
-    Number($("transactionAmount").value||0);
+    const amount =
+        Number(
+            $("transactionAmount")
+                ?.value || 0
+        );
 
-  if(!memberCode||!amount){
+    const paymentMethod =
+        $("paymentMethod")
+            ?.value || "cash";
 
-    alert("Member ID এবং Amount দিন।");
-
-    return;
-  }
-
-
-  /*
-    NOTE:
-    এখানে transaction table আপনার Supabase-এ
-    থাকতে হবে। নিচের structure ব্যবহার করা হয়েছে।
-  */
-
-  const payload={
-
-    transaction_type:type,
-
-    member_id:memberCode,
-
-    account_number:accountNumber,
-
-    amount,
-
-    payment_method:$("paymentMethod").value,
-
-    note:$("transactionNote").value.trim(),
-
-    created_by:currentUser?.id||null
-
-  };
+    const note =
+        $("transactionNote")
+            ?.value
+            ?.trim() || null;
 
 
-  const {error}=await db
-    .from("samity_transactions")
-    .insert([payload]);
+    // =====================================================
+    // VALIDATION
+    // =====================================================
+
+    if (!memberCode) {
+
+        alert(
+            "Member ID দিন।"
+        );
+
+        return;
+    }
 
 
-  if(error){
+    if (!accountNumber) {
 
-    alert(
-      "Transaction save হয়নি।\n\n"+
-      error.message+
-      "\n\nSupabase-এ samity_transactions table তৈরি আছে কিনা দেখুন।"
+        alert(
+            "Account Number দিন।"
+        );
+
+        return;
+    }
+
+
+    if (!amount || amount <= 0) {
+
+        alert(
+            "সঠিক Amount দিন।"
+        );
+
+        return;
+    }
+
+
+    if (
+        type !== "deposit" &&
+        type !== "withdraw"
+    ) {
+
+        alert(
+            "Transaction Type সঠিক নয়।"
+        );
+
+        return;
+    }
+
+
+    // =====================================================
+    // DISABLE BUTTON
+    // =====================================================
+
+    const buttons =
+        document.querySelectorAll(
+            "#transactionModal button"
+        );
+
+    buttons.forEach(
+        button => {
+            button.disabled = true;
+        }
     );
 
-    return;
-  }
+
+    try {
+
+        // =================================================
+        // FIND MEMBER
+        // =================================================
+
+        const {
+            data: member,
+            error: memberError
+        } = await db
+
+            .from("members")
+
+            .select(
+                "id,member_id,full_name,status"
+            )
+
+            .eq(
+                "member_id",
+                memberCode
+            )
+
+            .maybeSingle();
+
+
+        if (memberError) {
+
+            throw new Error(
+                "Member যাচাই করা যায়নি: " +
+                memberError.message
+            );
+
+        }
+
+
+        if (!member) {
+
+            throw new Error(
+                "এই Member ID পাওয়া যায়নি: " +
+                memberCode
+            );
+
+        }
+
+
+        // =================================================
+        // MEMBER STATUS
+        // =================================================
+
+        if (
+            member.status &&
+            member.status !== "active"
+        ) {
+
+            throw new Error(
+                "এই সদস্য বর্তমানে Active নয়।"
+            );
+
+        }
+
+
+        // =================================================
+        // SAVE TRANSACTION
+        // =================================================
+
+        const {
+            data,
+            error
+        } = await db.rpc(
+
+            "save_savings_transaction",
+
+            {
+
+                p_transaction_type:
+                    type,
+
+                p_member_id:
+                    memberCode,
+
+                p_account_number:
+                    accountNumber,
+
+                p_amount:
+                    amount,
+
+                p_payment_method:
+                    paymentMethod,
+
+                p_note:
+                    note,
+
+                p_created_by:
+                    window.currentUser?.id ||
+                    null
+
+            }
+
+        );
+
+
+        if (error) {
+
+            throw new Error(
+                error.message
+            );
+
+        }
+
+
+        // =================================================
+        // RESULT
+        // =================================================
+
+        const result =
+            typeof data === "string"
+                ? JSON.parse(data)
+                : data;
+
+
+        // =================================================
+        // SUCCESS
+        // =================================================
+
+        alert(
+
+            "✅ Transaction সফল হয়েছে।\n\n" +
+
+            "সদস্য: " +
+            (
+                member.full_name ||
+                memberCode
+            ) +
+
+            "\nAccount: " +
+            accountNumber +
+
+            "\nAmount: ৳" +
+            Number(amount)
+                .toLocaleString(
+                    "bn-BD"
+                ) +
+
+            "\nনতুন Balance: ৳" +
+            Number(
+                result.new_balance || 0
+            )
+            .toLocaleString(
+                "bn-BD"
+            )
+
+        );
+
+
+        // =================================================
+        // CLOSE MODAL
+        // =================================================
+
+        if (
+            typeof closeModal ===
+            "function"
+        ) {
+
+            closeModal(
+                "transactionModal"
+            );
+
+        }
+
+
+        // =================================================
+        // REFRESH DATA
+        // =================================================
+
+        if (
+            typeof loadDashboard ===
+            "function"
+        ) {
+
+            await loadDashboard();
+
+        }
+
+
+        if (
+            typeof loadSavings ===
+            "function"
+        ) {
+
+            await loadSavings();
+
+        }
+
+
+    } catch (error) {
+
+        console.error(
+            "Savings Transaction Error:",
+            error
+        );
+
+
+        alert(
+
+            "❌ Transaction সফল হয়নি।\n\n" +
+            error.message
+
+        );
+
+
+    } finally {
+
+        // =================================================
+        // ENABLE BUTTON
+        // =================================================
+
+        buttons.forEach(
+            button => {
+                button.disabled = false;
+            }
+        );
+
+    }
+
+}
 
 
   alert("✅ Transaction সংরক্ষণ হয়েছে।");

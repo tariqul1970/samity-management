@@ -2463,48 +2463,110 @@ window.addEventListener("click",e=>{
    ROLE
 ========================================================= */
 
+/* =========================================================
+   ROLE CONTROL
+   OWNER = VIEW ONLY
+   MANAGER = FULL CONTROL
+   COMMITTEE = VIEW ONLY
+========================================================= */
+
 function roleName(){
 
     return String(
         window.currentProfile &&
         window.currentProfile.role
         || ""
-    ).trim().toLowerCase();
+    )
+    .trim()
+    .toLowerCase();
 
 }
+
+
+/* =========================================================
+   OWNER
+========================================================= */
+
+function isOwner(){
+
+    const role = roleName();
+
+    return [
+        "owner",
+        "ওনার",
+        "মালিক",
+        "সভাপতি"
+    ].includes(role);
+
+}
+
+
+/* =========================================================
+   MANAGER
+========================================================= */
 
 function isManager(){
 
+    const role = roleName();
+
     return [
         "manager",
-        "admin",
-        "administrator",
         "ম্যানেজার"
-    ].includes(roleName());
+    ].includes(role);
 
 }
 
+
+/* =========================================================
+   COMMITTEE / OWNER VIEW ONLY
+========================================================= */
+
 function isCommittee(){
+
+    const role = roleName();
 
     return [
         "committee",
         "management_committee",
         "committee_member",
         "পরিচালনা কমিটি",
-        "কমিটি"
-    ].includes(roleName());
+        "কমিটি",
+        "owner",
+        "ওনার",
+        "মালিক",
+        "সভাপতি"
+    ].includes(role);
 
 }
 
+
+/* =========================================================
+   MANAGER ONLY
+========================================================= */
+
 function managerOnly(){
 
-    if(isManager()) return true;
+    /*
+      শুধু Manager পরিবর্তন করতে পারবে
+    */
+
+    if(isManager()){
+
+        return true;
+
+    }
+
+
+    /*
+      Owner / Committee শুধু দেখতে পারবে
+    */
 
     alert(
-        "⛔ অনুমতি নেই!\n\n"+
-        "পরিচালনা কমিটি শুধু তথ্য দেখতে এবং Print করতে পারবে।\n"+
+        "⛔ অনুমতি নেই!\n\n" +
+        "Owner / পরিচালনা কমিটি শুধু তথ্য দেখতে এবং Print করতে পারবে।\n" +
         "Account, Balance, Transaction, Member ও অন্যান্য পরিবর্তনের কাজ শুধুমাত্র Manager করতে পারবেন।"
     );
+
 
     return false;
 

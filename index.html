@@ -5,722 +5,1751 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>সমবায় সমিতি ব্যবস্থাপনা</title>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
-html,body{
-  margin:0;
-  padding:0;
-  min-height:100%;
-  font-family:Arial,"Noto Sans Bengali",sans-serif;
-  background:#f4f7fa;
-}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;font-family:Arial,"Noto Sans Bengali",sans-serif;background:#f4f7fa;color:#172033}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
 
-#loader{
-  min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:linear-gradient(135deg,#063b5c,#0876a8);
-  color:white;
-  text-align:center;
+/* LOGIN */
+#loginPage{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#063b5c,#0876a8)}
+.login-card{width:min(94%,420px);background:#fff;border-radius:20px;padding:32px;box-shadow:0 20px 60px #0004}
+.login-logo{text-align:center;font-size:48px}
+.login-card h1{text-align:center;margin:8px 0;color:#073b5c;font-size:24px}
+.login-card p{text-align:center;color:#718096;font-size:12px}
+.form-group{margin:12px 0}
+.form-group label{display:block;font-weight:700;font-size:12px;margin-bottom:6px}
+.form-group input,.form-group select,.form-group textarea{
+ width:100%;padding:11px;border:1px solid #d7e0e8;border-radius:8px;background:#fff;outline:none
 }
+.primary{border:0;background:#075985;color:#fff;padding:11px 17px;border-radius:8px;font-weight:700}
+.danger{border:0;background:#dc2626;color:#fff;padding:9px 13px;border-radius:8px}
+.success{border:0;background:#16a34a;color:#fff;padding:9px 13px;border-radius:8px}
+.secondary{border:0;background:#edf2f7;color:#334155;padding:9px 13px;border-radius:8px}
 
-.loader-box{
-  background:#ffffff18;
-  padding:35px;
-  border-radius:18px;
-  min-width:280px;
+/* APP */
+#app{display:none}
+.sidebar{
+ position:fixed;left:0;top:0;bottom:0;width:255px;background:linear-gradient(180deg,#064e6f,#063b5c);
+ color:#fff;z-index:1000;overflow-y:auto;padding:15px 11px
 }
-
-.loader-icon{
-  font-size:45px;
-  margin-bottom:15px;
+.brand{display:flex;gap:10px;align-items:center;padding:9px 9px 20px;border-bottom:1px solid #ffffff20}
+.brand-icon{width:44px;height:44px;border-radius:12px;background:#ffffff18;display:grid;place-items:center;font-size:23px}
+.brand b{font-size:16px}.brand small{display:block;color:#b9d7e5;font-size:9px;margin-top:3px}
+.menu-title{font-size:9px;color:#a9c7d7;font-weight:800;padding:15px 9px 5px}
+.menu-btn{
+ width:100%;border:0;background:transparent;color:#e8f3f8;text-align:left;
+ padding:10px 11px;border-radius:8px;margin:1px 0;font-size:12px;font-weight:600
 }
+.menu-btn:hover,.menu-btn.active{background:#087fc0;color:#fff}
+.menu-btn span{display:inline-block;width:27px;font-size:16px}
 
-.loader-title{
-  font-size:20px;
-  font-weight:bold;
+.topbar{
+ position:fixed;left:255px;right:0;top:0;height:70px;background:#fff;
+ border-bottom:1px solid #e3e9ef;display:flex;align-items:center;padding:0 22px;z-index:900
 }
+.search{width:min(500px,50%);display:flex;gap:7px}
+.search input{width:100%;padding:10px 14px;border:1px solid #e0e7ef;border-radius:22px;background:#f7fafc}
+.user{margin-left:auto;display:flex;align-items:center;gap:10px}
+.user-avatar{width:38px;height:38px;border-radius:50%;background:#e8f2fb;display:grid;place-items:center}
+.user-name{font-size:12px;font-weight:700}.user-role{font-size:9px;color:#8190a0}
 
-.loader-text{
-  margin-top:10px;
-  font-size:12px;
-  opacity:.85;
+.main{margin-left:255px;padding:92px 24px 35px}
+.section{display:none}.section.active{display:block}
+.page-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.page-title h1{margin:0;color:#123c55;font-size:23px}
+.page-title p{margin:5px 0 0;color:#7a8796;font-size:11px}
+
+/* DASHBOARD */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+.stat{
+ background:#fff;border:1px solid #e3e9ef;border-left:4px solid #075985;border-radius:12px;
+ padding:16px;box-shadow:0 4px 18px #123c5508;min-height:105px
 }
+.stat:nth-child(2){border-left-color:#16a34a}
+.stat:nth-child(3){border-left-color:#7c3aed}
+.stat:nth-child(4){border-left-color:#ea8a00}
+.stat:nth-child(5){border-left-color:#0891b2}
+.stat:nth-child(6){border-left-color:#8b5cf6}
+.stat:nth-child(7){border-left-color:#dc2626}
+.stat:nth-child(8){border-left-color:#334155}
+.stat-icon{font-size:22px}.stat small{display:block;color:#78879a;font-size:10px;margin-top:7px}
+.stat strong{display:block;font-size:22px;color:#17364b;margin-top:4px}
 
-.loader-error{
-  color:#fecaca;
-  margin-top:15px;
-  font-size:12px;
-  white-space:pre-wrap;
+.grid-2{display:grid;grid-template-columns:1.4fr 1fr;gap:17px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:17px}
+.card{background:#fff;border:1px solid #e3e9ef;border-radius:12px;padding:18px;margin-bottom:17px;box-shadow:0 4px 18px #123c5508}
+.card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
+.card-header h2{font-size:15px;color:#17364b;margin:0}
+.card-header small{font-size:9px;color:#8b97a6}
+
+.quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.quick{
+ border:1px solid #e4eaf0;background:#fff;border-radius:10px;padding:14px 5px;
+ text-align:center;color:#334155;font-size:10px;font-weight:700
+}
+.quick:hover{background:#f0f8fc;color:#075985}
+.quick div{font-size:23px;margin-bottom:6px}
+
+.money{padding:15px;border-radius:9px;background:#eef8f2}
+.money.red{background:#fff0f0}.money.blue{background:#edf6ff}.money.yellow{background:#fff8e8}
+.money span{display:block;color:#64748b;font-size:10px}.money strong{display:block;font-size:23px;margin-top:5px}
+
+.row{
+ display:flex;justify-content:space-between;border-bottom:1px solid #edf1f5;
+ padding:9px 0;font-size:11px;color:#66758a
+}
+.row b{color:#20384e}
+
+.notice{padding:12px;border-radius:9px;margin:8px 0;font-size:11px}
+.notice strong{display:block;margin-bottom:4px}.notice.blue{background:#edf6ff}.notice.green{background:#ecfaf2}.notice.yellow{background:#fff8e8}.notice.red{background:#fff0f0}
+
+/* MODULE */
+.module-card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px;margin-bottom:18px}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.toolbar input,.toolbar select{padding:10px;border:1px solid #dbe3eb;border-radius:8px}
+.table-wrap{overflow:auto}
+table{width:100%;border-collapse:collapse;min-width:700px}
+th,td{padding:10px;border-bottom:1px solid #e7edf3;text-align:left;font-size:11px}
+th{background:#f5f8fb;color:#64748b}
+td{color:#334155}
+.badge{padding:4px 8px;border-radius:12px;font-size:9px;font-weight:700}
+.badge.green{background:#dcfce7;color:#166534}.badge.red{background:#fee2e2;color:#991b1b}
+.badge.yellow{background:#fef3c7;color:#92400e}.badge.blue{background:#dbeafe;color:#1e40af}
+
+.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.form-grid .full{grid-column:1/-1}
+.modal{
+ display:none;position:fixed;inset:0;background:#0008;z-index:2000;
+ padding:20px;overflow:auto
+}
+.modal-box{background:#fff;width:min(850px,100%);margin:20px auto;border-radius:14px;padding:24px}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
+.modal-header h2{margin:0;font-size:18px;color:#123c55}
+.close{border:0;background:#fee2e2;color:#991b1b;border-radius:7px;padding:7px 10px}
+
+.empty{padding:25px;text-align:center;color:#8b97a6;background:#f8fafc;border-radius:8px}
+.amount-in{color:#079455;font-weight:800}.amount-out{color:#dc2626;font-weight:800}
+
+/* MOBILE */
+@media(max-width:1100px){
+ .stats{grid-template-columns:repeat(3,1fr)}
+ .grid-2,.grid-3{grid-template-columns:1fr}
+}
+@media(max-width:800px){
+ .sidebar{width:0;padding:0;overflow:hidden}
+ .topbar{left:0}
+ .main{margin-left:0;padding:85px 12px 25px}
+ .stats{grid-template-columns:repeat(2,1fr)}
+ .quick-grid{grid-template-columns:repeat(2,1fr)}
+ .search{width:50%}
+}
+@media(max-width:520px){
+ .stats{grid-template-columns:1fr}
+ .form-grid{grid-template-columns:1fr}
+ .form-grid .full{grid-column:auto}
+ .user-name,.user-role{display:none}
+ .search{width:55%}
 }
 </style>
 </head>
 
 <body>
 
-<div id="loader">
-  <div class="loader-box">
-    <div class="loader-icon">🏛️</div>
-    <div class="loader-title">সমবায় সমিতি</div>
-    <div class="loader-text" id="loaderText">
-      সিস্টেম প্রস্তুত হচ্ছে...
-    </div>
-    <div class="loader-error" id="loaderError"></div>
+<!-- ================= LOGIN ================= -->
+<div id="loginPage">
+  <div class="login-card">
+    <div class="login-logo">🏛️</div>
+    <h1>সমবায় সমিতি</h1>
+    <p>Co-operative Society Management System</p>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <label>ই-মেইল</label>
+        <input id="loginEmail" type="email" required placeholder="আপনার Email">
+      </div>
+
+      <div class="form-group">
+        <label>পাসওয়ার্ড</label>
+        <input id="loginPassword" type="password" required placeholder="Password">
+      </div>
+
+      <button class="primary" style="width:100%;margin-top:8px">
+        🔐 Login
+      </button>
+
+      <div id="loginMessage" style="font-size:11px;margin-top:12px;text-align:center"></div>
+    </form>
   </div>
 </div>
 
 
+<!-- ================= APP ================= -->
+<div id="app">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+
+  <div class="brand">
+    <div class="brand-icon">🏛️</div>
+    <div>
+      <b>সমবায় সমিতি</b>
+      <small>Management System</small>
+    </div>
+  </div>
+
+  <div class="menu-title">প্রধান</div>
+
+  <button class="menu-btn active" onclick="openSection('dashboard')">
+    <span>🏠</span> ড্যাশবোর্ড
+  </button>
+
+  <div class="menu-title">সদস্য ও মূলধন</div>
+
+  <button class="menu-btn" onclick="openSection('members')">
+    <span>👥</span> সদস্য ব্যবস্থাপনা
+  </button>
+
+  <button class="menu-btn" onclick="openSection('shares')">
+    <span>📑</span> শেয়ার ব্যবস্থাপনা
+  </button>
+
+  <div class="menu-title">সঞ্চয় ও আমানত</div>
+
+  <button class="menu-btn" onclick="openSection('savings')">
+    <span>💰</span> সঞ্চয় / আমানত
+  </button>
+
+  <button class="menu-btn" onclick="openSection('dps')">
+    <span>📅</span> DPS
+  </button>
+
+  <button class="menu-btn" onclick="openSection('fdr')">
+    <span>📜</span> FDR
+  </button>
+
+  <div class="menu-title">ঋণ</div>
+
+  <button class="menu-btn" onclick="openSection('loans')">
+    <span>💳</span> ঋণ ব্যবস্থাপনা
+  </button>
+
+  <button class="menu-btn" onclick="openSection('guarantors')">
+    <span>🤝</span> জামিনদার
+  </button>
+
+  <button class="menu-btn" onclick="openSection('collections')">
+    <span>📥</span> কিস্তি আদায়
+  </button>
+
+  <div class="menu-title">হিসাব</div>
+
+  <button class="menu-btn" onclick="openSection('cash')">
+    <span>🏦</span> Cash & Bank
+  </button>
+
+  <button class="menu-btn" onclick="openSection('incomeExpense')">
+    <span>💸</span> আয় - ব্যয়
+  </button>
+
+  <div class="menu-title">প্রশাসন</div>
+
+  <button class="menu-btn" onclick="openSection('employees')">
+    <span>👨‍💼</span> কর্মকর্তা / কর্মচারী
+  </button>
+
+  <button class="menu-btn" onclick="openSection('committee')">
+    <span>👔</span> পরিচালনা কমিটি
+  </button>
+
+  <button class="menu-btn" onclick="openSection('meetings')">
+    <span>📋</span> সভা ও সিদ্ধান্ত
+  </button>
+
+  <button class="menu-btn" onclick="openSection('approval')">
+    <span>✅</span> অনুমোদন
+  </button>
+
+  <div class="menu-title">রিপোর্ট ও নিয়ন্ত্রণ</div>
+
+  <button class="menu-btn" onclick="openSection('reports')">
+    <span>📊</span> রিপোর্ট
+  </button>
+
+  <button class="menu-btn" onclick="openSection('receipts')">
+    <span>🧾</span> রসিদ / সনদ
+  </button>
+
+  <button class="menu-btn" onclick="openSection('audit')">
+    <span>📝</span> Audit Log
+  </button>
+
+  <button class="menu-btn" onclick="openSection('settings')">
+    <span>⚙️</span> সেটিংস
+  </button>
+
+</aside>
+
+
+<!-- TOPBAR -->
+<header class="topbar">
+
+  <div class="search">
+    <input id="globalSearch"
+           placeholder="সদস্য ID / নাম / মোবাইল / NID"
+           onkeydown="if(event.key==='Enter')searchMember()">
+    <button class="primary" onclick="searchMember()">🔍</button>
+  </div>
+
+  <div class="user">
+    <div>
+      <div class="user-name" id="userName">User</div>
+      <div class="user-role" id="userRole">ROLE</div>
+    </div>
+    <div class="user-avatar">👤</div>
+    <button class="danger" onclick="logout()">Logout</button>
+  </div>
+
+</header>
+
+
+<main class="main">
+
+<!-- ================= DASHBOARD ================= -->
+<section id="dashboard" class="section active">
+
+  <div class="page-title">
+    <div>
+      <h1>সমবায় সমিতির ড্যাশবোর্ড</h1>
+      <p id="todayText"></p>
+    </div>
+
+    <button class="primary" onclick="openMemberModal()">
+      ＋ নতুন সদস্য
+    </button>
+  </div>
+
+
+  <div class="stats">
+
+    <div class="stat">
+      <div class="stat-icon">👥</div>
+      <small>মোট সদস্য</small>
+      <strong id="statMembers">0</strong>
+    </div>
+
+    <div class="stat">
+      <div class="stat-icon">👤</div>
+      <small>সক্রিয় সদস্য</small>
+      <strong id="statActiveMembers">0</strong>
+    </div>
+
+    <div class="stat">
+      <div class="stat-icon">📑</div>
+      <small>শেয়ার মূলধন</small>
+      <strong id="statShares">৳ 0</strong>
+    </div>
+
+    <div class="stat">
+      <div class="stat-icon">💰</div>
+      <small>মোট সঞ্চয়</small>
+      <strong id="statSavings">৳ 0</strong>
+    </div>
+
+    <div class="stat">
+      <div class="stat-icon">📅</div>
+      <small>DPS</small>
+      <strong id="statDps">৳ 0</strong>
+    </div>
+
+    <div class="stat">
+      <div class="stat-icon">📜</div>
+      <small>FDR</small>
+      <strong id="statFdr">৳ 0</strong>
+    </div>
+
+    <div class="stat">
+      <div class="stat-icon">💳</div>
+      <small>মোট ঋণ</small>
+      <strong id="statLoan">৳ 0</strong>
+    </div>
+
+    <div class="stat">
+      <div class="stat-icon">🏦</div>
+      <small>হাতে নগদ</small>
+      <strong id="statCash">৳ 0</strong>
+    </div>
+
+  </div>
+
+
+  <div class="card">
+
+    <div class="card-header">
+      <div>
+        <h2>⚡ দ্রুত কাজ</h2>
+        <small>প্রতিদিনের প্রয়োজনীয় কাজ</small>
+      </div>
+    </div>
+
+    <div class="quick-grid">
+
+      <button class="quick" onclick="openMemberModal()">
+        <div>👥</div>নতুন সদস্য
+      </button>
+
+      <button class="quick" onclick="openTransactionModal('deposit')">
+        <div>💰</div>সঞ্চয় জমা
+      </button>
+
+      <button class="quick" onclick="openTransactionModal('withdraw')">
+        <div>💸</div>উত্তোলন
+      </button>
+
+      <button class="quick" onclick="openSection('shares')">
+        <div>📑</div>শেয়ার
+      </button>
+
+      <button class="quick" onclick="openSection('dps')">
+        <div>📅</div>DPS
+      </button>
+
+      <button class="quick" onclick="openSection('fdr')">
+        <div>📜</div>FDR
+      </button>
+
+      <button class="quick" onclick="openSection('loans')">
+        <div>💳</div>ঋণ
+      </button>
+
+      <button class="quick" onclick="openSection('reports')">
+        <div>📊</div>রিপোর্ট
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <div class="grid-3">
+
+    <div class="card">
+      <div class="card-header">
+        <h2>📥 আজকের আদায়</h2>
+      </div>
+
+      <div class="money">
+        <span>আজ মোট আদায়</span>
+        <strong id="todayCollection">৳ 0</strong>
+      </div>
+
+      <div class="row">
+        <span>সঞ্চয়</span><b id="todaySavings">৳ 0</b>
+      </div>
+
+      <div class="row">
+        <span>DPS</span><b id="todayDps">৳ 0</b>
+      </div>
+
+      <div class="row">
+        <span>ঋণ কিস্তি</span><b id="todayLoan">৳ 0</b>
+      </div>
+    </div>
+
+
+    <div class="card">
+      <div class="card-header">
+        <h2>⚠️ বকেয়া</h2>
+      </div>
+
+      <div class="money red">
+        <span>বকেয়া ঋণ</span>
+        <strong id="overdueLoan">৳ 0</strong>
+      </div>
+
+      <div class="row">
+        <span>আজকের কিস্তি</span><b id="dueToday">0</b>
+      </div>
+
+      <div class="row">
+        <span>DPS বকেয়া</span><b id="dpsDue">0</b>
+      </div>
+    </div>
+
+
+    <div class="card">
+      <div class="card-header">
+        <h2>✅ Pending</h2>
+      </div>
+
+      <div class="row">
+        <span>সদস্য</span><b id="pendingMembers">0</b>
+      </div>
+
+      <div class="row">
+        <span>অ্যাকাউন্ট</span><b id="pendingAccounts">0</b>
+      </div>
+
+      <div class="row">
+        <span>ঋণ</span><b id="pendingLoans">0</b>
+      </div>
+    </div>
+
+  </div>
+
+
+  <div class="grid-2">
+
+    <div class="card">
+
+      <div class="card-header">
+        <div>
+          <h2>🧾 সাম্প্রতিক লেনদেন</h2>
+          <small>সর্বশেষ কার্যক্রম</small>
+        </div>
+      </div>
+
+      <div id="recentTransactions">
+        <div class="empty">এখনো কোনো লেনদেন পাওয়া যায়নি।</div>
+      </div>
+
+    </div>
+
+
+    <div class="card">
+
+      <div class="card-header">
+        <h2>📢 গুরুত্বপূর্ণ তথ্য</h2>
+      </div>
+
+      <div class="notice blue">
+        <strong>সমিতির সাধারণ সভা</strong>
+        সভার তারিখ ও সিদ্ধান্ত Meetings Module-এ সংরক্ষণ করুন।
+      </div>
+
+      <div class="notice yellow">
+        <strong>ঋণ বকেয়া</strong>
+        নিয়মিত Overdue Loan রিপোর্ট পরীক্ষা করুন।
+      </div>
+
+      <div class="notice green">
+        <strong>দৈনিক হিসাব</strong>
+        দিন শেষে Cash ও Bank হিসাব মিলিয়ে নিন।
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ================= MEMBERS ================= -->
+<section id="members" class="section">
+
+  <div class="page-title">
+    <div>
+      <h1>👥 সদস্য ব্যবস্থাপনা</h1>
+      <p>সমিতির সকল সদস্যের তথ্য</p>
+    </div>
+    <button class="primary" onclick="openMemberModal()">＋ নতুন সদস্য</button>
+  </div>
+
+  <div class="module-card">
+
+    <div class="toolbar">
+      <input id="memberSearch" placeholder="নাম / Member ID / মোবাইল / NID">
+      <button class="primary" onclick="loadMembers()">🔍 Search</button>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Member ID</th>
+            <th>নাম</th>
+            <th>মোবাইল</th>
+            <th>NID</th>
+            <th>যোগদানের তারিখ</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="memberList"></tbody>
+      </table>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ================= SHARES ================= -->
+<section id="shares" class="section">
+
+  <div class="page-title">
+    <div>
+      <h1>📑 শেয়ার ব্যবস্থাপনা</h1>
+      <p>শেয়ার মূলধন, ক্রয়, ফেরত ও সনদ</p>
+    </div>
+    <button class="primary" onclick="openShareModal()">＋ শেয়ার যোগ</button>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><small>মোট শেয়ার</small><strong id="shareCount">0</strong></div>
+    <div class="stat"><small>শেয়ার মূলধন</small><strong id="shareTotal">৳ 0</strong></div>
+    <div class="stat"><small>আজকের শেয়ার</small><strong id="todayShare">৳ 0</strong></div>
+    <div class="stat"><small>সদস্য শেয়ার</small><strong id="memberShareCount">0</strong></div>
+  </div>
+
+  <div class="module-card">
+    <div class="toolbar">
+      <input id="shareSearch" placeholder="Member ID / নাম">
+      <button class="primary" onclick="loadShares()">🔍 Search</button>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+        <tr>
+          <th>Date</th>
+          <th>Member ID</th>
+          <th>Type</th>
+          <th>Shares</th>
+          <th>Amount</th>
+          <th>Status</th>
+        </tr>
+        </thead>
+        <tbody id="shareList"></tbody>
+      </table>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ================= SAVINGS ================= -->
+<section id="savings" class="section">
+
+  <div class="page-title">
+    <div>
+      <h1>💰 সঞ্চয় / আমানত</h1>
+      <p>সঞ্চয় অ্যাকাউন্ট, জমা, উত্তোলন ও Statement</p>
+    </div>
+
+    <button class="primary" onclick="openTransactionModal('deposit')">
+      ＋ জমা
+    </button>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><small>মোট সঞ্চয়</small><strong id="savingsTotal">৳ 0</strong></div>
+    <div class="stat"><small>আজকের জমা</small><strong id="savingsToday">৳ 0</strong></div>
+    <div class="stat"><small>আজকের উত্তোলন</small><strong id="withdrawToday">৳ 0</strong></div>
+    <div class="stat"><small>অ্যাকাউন্ট</small><strong id="savingsAccounts">0</strong></div>
+  </div>
+
+  <div class="module-card">
+
+    <div class="toolbar">
+      <input id="savingsSearch" placeholder="Account / Member ID">
+      <button class="primary" onclick="loadSavings()">🔍 Search</button>
+      <button class="success" onclick="openTransactionModal('deposit')">＋ Deposit</button>
+      <button class="danger" onclick="openTransactionModal('withdraw')">− Withdrawal</button>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+        <tr>
+          <th>Date</th>
+          <th>Member</th>
+          <th>Account</th>
+          <th>Type</th>
+          <th>Amount</th>
+          <th>Balance</th>
+          <th>Status</th>
+        </tr>
+        </thead>
+        <tbody id="savingsList"></tbody>
+      </table>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ================= DPS ================= -->
+<section id="dps" class="section">
+
+  <div class="page-title">
+    <div>
+      <h1>📅 DPS ব্যবস্থাপনা</h1>
+      <p>কিস্তি, বকেয়া ও মেয়াদপূর্তি</p>
+    </div>
+
+    <button class="primary" onclick="openGenericModal('DPS Account')">
+      ＋ নতুন DPS
+    </button>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><small>DPS Balance</small><strong id="dpsTotal">৳ 0</strong></div>
+    <div class="stat"><small>আজকের কিস্তি</small><strong id="dpsToday">৳ 0</strong></div>
+    <div class="stat"><small>বকেয়া</small><strong id="dpsOverdue">৳ 0</strong></div>
+    <div class="stat"><small>মেয়াদপূর্তি</small><strong id="dpsMaturity">0</strong></div>
+  </div>
+
+  <div class="module-card">
+    <div class="toolbar">
+      <input placeholder="Member ID / DPS Account">
+      <button class="primary">🔍 Search</button>
+      <button class="success" onclick="openGenericModal('DPS Installment')">＋ কিস্তি</button>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+        <tr>
+          <th>Member</th>
+          <th>Account</th>
+          <th>Installment</th>
+          <th>Paid</th>
+          <th>Due</th>
+          <th>Maturity</th>
+          <th>Status</th>
+        </tr>
+        </thead>
+        <tbody id="dpsList">
+          <tr><td colspan="7"><div class="empty">DPS data এখনো সংযুক্ত হয়নি।</div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ================= FDR ================= -->
+<section id="fdr" class="section">
+
+  <div class="page-title">
+    <div>
+      <h1>📜 FDR ব্যবস্থাপনা</h1>
+      <p>FDR খোলা, সুদ, মেয়াদ ও Renewal</p>
+    </div>
+
+    <button class="primary" onclick="openGenericModal('FDR Account')">
+      ＋ নতুন FDR
+    </button>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><small>FDR Balance</small><strong id="fdrTotal">৳ 0</strong></div>
+    <div class="stat"><small>মোট FDR</small><strong id="fdrCount">0</strong></div>
+    <div class="stat"><small>মেয়াদপূর্তি</small><strong id="fdrDue">0</strong></div>
+    <div class="stat"><small>সুদ</small><strong id="fdrInterest">৳ 0</strong></div>
+  </div>
+
+  <div class="module-card">
+    <div class="table-wrap">
+      <table>
+        <thead>
+        <tr>
+          <th>Member</th>
+          <th>FDR No.</th>
+          <th>Principal</th>
+          <th>Rate</th>
+          <th>Start</th>
+          <th>Maturity</th>
+          <th>Status</th>
+        </tr>
+        </thead>
+        <tbody id="fdrList">
+          <tr><td colspan="7"><div class="empty">FDR data এখনো সংযুক্ত হয়নি।</div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ================= LOANS ================= -->
+<section id="loans" class="section">
+
+  <div class="page-title">
+    <div>
+      <h1>💳 ঋণ ব্যবস্থাপনা</h1>
+      <p>আবেদন, অনুমোদন, বিতরণ, কিস্তি ও বকেয়া</p>
+    </div>
+
+    <button class="primary" onclick="openGenericModal('Loan Application')">
+      ＋ ঋণ আবেদন
+    </button>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><small>মোট ঋণ</small><strong id="loanTotal">৳ 0</strong></div>
+    <div class="stat"><small>বকেয়া ঋণ</small><strong id="loanOutstanding">৳ 0</strong></div>
+    <div class="stat"><small>আজকের আদায়</small><strong id="loanCollection">৳ 0</strong></div>
+    <div class="stat"><small>Pending</small><strong id="loanPending">0</strong></div>
+  </div>
+
+  <div class="module-card">
+
+    <div class="toolbar">
+      <input id="loanSearch" placeholder="Member ID / Loan No.">
+      <button class="primary" onclick="loadLoans()">🔍 Search</button>
+      <button class="success" onclick="openGenericModal('Loan Collection')">＋ কিস্তি আদায়</button>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+        <tr>
+          <th>Loan No.</th>
+          <th>Member</th>
+          <th>Amount</th>
+          <th>Paid</th>
+          <th>Outstanding</th>
+          <th>Next Due</th>
+          <th>Status</th>
+        </tr>
+        </thead>
+        <tbody id="loanList">
+          <tr><td colspan="7"><div class="empty">Loan data এখনো সংযুক্ত হয়নি।</div></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ================= GUARANTOR ================= -->
+<section id="guarantors" class="section">
+
+  <div class="page-title">
+    <div>
+      <h1>🤝 জামিনদার</h1>
+      <p>ঋণের Guarantor তথ্য</p>
+    </div>
+
+    <button class="primary" onclick="openGenericModal('Guarantor')">
+      ＋ জামিনদার
+    </button>
+  </div>
+
+  <div class="module-card">
+    <div class="table-wrap">
+      <table>
+        <thead>
+        <tr>
+          <th>Loan</th>
+          <th>Member</th>
+          <th>নাম</th>
+          <th>NID</th>
+          <th>মোবাইল</th>
+          <th>সম্পর্ক</th>
+        </tr>
+        </thead>
+        <tbody id="guarantorList">
+          <tr><td colspan="6"><div class="empty">জামিনদার তথ্য নেই।</div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ================= COLLECTION ================= -->
+<section id="collections" class="section">
+
+  <div class="page-title">
+    <div>
+      <h1>📥 দৈনিক আদায়</h1>
+      <p>Employee-wise ও Member-wise Collection</p>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><small>আজকের Collection</small><strong id="collectionTotal">৳ 0</strong></div>
+    <div class="stat"><small>সঞ্চয়</small><strong id="collectionSavings">৳ 0</strong></div>
+    <div class="stat"><small>DPS</small><strong id="collectionDps">৳ 0</strong></div>
+    <div class="stat"><small>Loan</small><strong id="collectionLoan">৳ 0</strong></div>
+  </div>
+
+  <div class="module-card">
+    <div class="toolbar">
+      <input type="date" id="collectionDate">
+      <button class="primary" onclick="loadCollections()">রিপোর্ট দেখুন</button>
+      <button class="secondary" onclick="window.print()">🖨 Print</button>
+    </div>
+    <div id="collectionReport" class="empty">তারিখ নির্বাচন করুন।</div>
+  </div>
+
+</section>
+
+
+<!-- ================= CASH ================= -->
+<section id="cash" class="section">
+
+  <div class="page-title">
+    <div>
+      <h1>🏦 Cash & Bank</h1>
+      <p>Cash Book, Bank Balance ও Daily Closing</p>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><small>Opening Cash</small><strong id="openingCash">৳ 0</strong></div>
+    <div class="stat"><small>Cash In</small><strong id="cashIn">৳ 0</strong></div>
+    <div class="stat"><small>Cash Out</small><strong id="cashOut">৳ 0</strong></div>
+    <div class="stat"><small>Closing Cash</small><strong id="closingCash">৳ 0</strong></div>
+  </div>
+
+  <div class="module-card">
+    <div class="toolbar">
+      <button class="success" onclick="openGenericModal('Cash In')">＋ Cash In</button>
+      <button class="danger" onclick="openGenericModal('Cash Out')">− Cash Out</button>
+      <button class="primary" onclick="openGenericModal('Bank Transaction')">🏦 Bank</button>
+    </div>
+
+    <div class="empty">
+      Cash Ledger database table সংযুক্ত করার পর এখানে পূর্ণ Cash Book দেখা যাবে।
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ================= INCOME EXPENSE ================= -->
+<section id="incomeExpense" class="section">
+
+  <div class="page-title">
+    <div>
+      <h1>💸 আয় - ব্যয়</h1>
+      <p>সমিতির Income ও Expense</p>
+    </div>
+  </div>
+
+  <div class="grid-2">
+
+    <div class="module-card">
+      <div class="card-header">
+        <h2>📈 আয়</h2>
+        <button class="success" onclick="openGenericModal('Income')">＋ আয়</button>
+      </div>
+      <div class="money">
+        <span>মোট আয়</span>
+        <strong id="totalIncome">৳ 0</strong>
+      </div>
+    </div>
+
+    <div class="module-card">
+      <div class="card-header">
+        <h2>📉 ব্যয়</h2>
+        <button class="danger" onclick="openGenericModal('Expense')">＋ ব্যয়</button>
+      </div>
+      <div class="money red">
+        <span>মোট ব্যয়</span>
+        <strong id="totalExpense">৳ 0</strong>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ================= EMPLOYEES ================= -->
+<section id="employees" class="section">
+
+  <div class="page-title">
+    <div>
+      <h1>👨‍💼 কর্মকর্তা / কর্মচারী</h1>
+      <p>Employee ও Staff Management</p>
+    </div>
+
+    <button class="primary" onclick="openGenericModal('Employee')">
+      ＋ কর্মচারী
+    </button>
+  </div>
+
+  <div class="module-card">
+    <div class="table-wrap">
+      <table>
+        <thead>
+        <tr>
+          <th>Employee ID</th>
+          <th>নাম</th>
+          <th>পদ</th>
+          <th>মোবাইল</th>
+          <th>Joining Date</th>
+          <th>Status</th>
+        </tr>
+        </thead>
+        <tbody id="employeeList"></tbody>
+      </table>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ================= COMMITTEE ================= -->
+<section id="committee" class="section">
+
+  <div class="page-title">
+    <div>
+      <h1>👔 পরিচালনা কমিটি</h1>
+      <p>সভাপতি, সম্পাদক, কোষাধ্যক্ষ ও সদস্য</p>
+    </div>
+
+    <button class="primary" onclick="openGenericModal('Committee Member')">
+      ＋ সদস্য যোগ
+    </button>
+  </div>
+
+  <div class="module-card">
+    <div class="empty">
+      পরিচালনা কমিটির তথ্য এখানে সংরক্ষণ করা হবে।
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ================= MEETINGS ================= -->
+<section id="meetings" class="section">
+
+  <div class="page-title">
+    <div>
+      <h1>📋 সভা ও সিদ্ধান্ত</h1>
+      <p>General Meeting / Committee Meeting / Resolution</p>
+    </div>
+
+    <button class="primary" onclick="openGenericModal('Meeting')">
+      ＋ নতুন সভা
+    </button>
+  </div>
+
+  <div class="module-card">
+    <div class="empty">
+      সভার তারিখ, উপস্থিতি, আলোচ্য বিষয় ও Resolution এখানে থাকবে।
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ================= APPROVAL ================= -->
+<section id="approval" class="section">
+
+  <div class="page-title">
+    <div>
+      <h1>✅ অনুমোদন</h1>
+      <p>Pending Member, Account, Loan ও Transaction Approval</p>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><small>Pending Members</small><strong id="approvalMembers">0</strong></div>
+    <div class="stat"><small>Pending Accounts</small><strong id="approvalAccounts">0</strong></div>
+    <div class="stat"><small>Pending Loans</small><strong id="approvalLoans">0</strong></div>
+    <div class="stat"><small>Pending Transactions</small><strong id="approvalTransactions">0</strong></div>
+  </div>
+
+  <div class="module-card">
+    <div class="empty">
+      Approval queue database-এর সঙ্গে যুক্ত হলে এখানে সব Pending কাজ দেখা যাবে।
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ================= REPORTS ================= -->
+<section id="reports" class="section">
+
+  <div class="page-title">
+    <div>
+      <h1>📊 রিপোর্ট</h1>
+      <p>সমিতির দৈনিক, মাসিক ও সদস্যভিত্তিক রিপোর্ট</p>
+    </div>
+
+    <button class="secondary" onclick="window.print()">🖨 Print</button>
+  </div>
+
+  <div class="grid-3">
+
+    <div class="module-card">
+      <h2>📅 Daily Report</h2>
+      <p>আজকের জমা, উত্তোলন, আদায়, খরচ ও Cash</p>
+      <button class="primary" onclick="generateReport('daily')">Open</button>
+    </div>
+
+    <div class="module-card">
+      <h2>📆 Monthly Report</h2>
+      <p>মাসিক Income, Expense, Savings ও Loan</p>
+      <button class="primary" onclick="generateReport('monthly')">Open</button>
+    </div>
+
+    <div class="module-card">
+      <h2>👤 Member Statement</h2>
+      <p>একজন সদস্যের সম্পূর্ণ হিসাব</p>
+      <button class="primary" onclick="openGenericModal('Member Statement')">Open</button>
+    </div>
+
+    <div class="module-card">
+      <h2>📑 Share Report</h2>
+      <button class="primary" onclick="openSection('shares')">Open</button>
+    </div>
+
+    <div class="module-card">
+      <h2>💰 Savings Report</h2>
+      <button class="primary" onclick="openSection('savings')">Open</button>
+    </div>
+
+    <div class="module-card">
+      <h2>💳 Loan Report</h2>
+      <button class="primary" onclick="openSection('loans')">Open</button>
+    </div>
+
+  </div>
+
+  <div id="reportOutput" class="module-card">
+    <div class="empty">রিপোর্ট নির্বাচন করুন।</div>
+  </div>
+
+</section>
+
+
+<!-- ================= RECEIPTS ================= -->
+<section id="receipts" class="section">
+
+  <div class="page-title">
+    <div>
+      <h1>🧾 রসিদ ও সনদ</h1>
+      <p>Deposit, Withdrawal, Share, DPS, FDR ও Loan Receipt</p>
+    </div>
+  </div>
+
+  <div class="grid-3">
+
+    <div class="module-card">
+      <h2>💰 Deposit Receipt</h2>
+      <button class="primary" onclick="openGenericModal('Deposit Receipt')">Open</button>
+    </div>
+
+    <div class="module-card">
+      <h2>📑 Share Certificate</h2>
+      <button class="primary" onclick="openGenericModal('Share Certificate')">Open</button>
+    </div>
+
+    <div class="module-card">
+      <h2>📜 FDR Certificate</h2>
+      <button class="primary" onclick="openGenericModal('FDR Certificate')">Open</button>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ================= AUDIT ================= -->
+<section id="audit" class="section">
+
+  <div class="page-title">
+    <div>
+      <h1>📝 Audit Log</h1>
+      <p>কে কখন কী পরিবর্তন করেছে</p>
+    </div>
+  </div>
+
+  <div class="module-card">
+    <div class="table-wrap">
+      <table>
+        <thead>
+        <tr>
+          <th>Date/Time</th>
+          <th>User</th>
+          <th>Action</th>
+          <th>Module</th>
+          <th>Reference</th>
+        </tr>
+        </thead>
+        <tbody id="auditList"></tbody>
+      </table>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ================= SETTINGS ================= -->
+<section id="settings" class="section">
+
+  <div class="page-title">
+    <div>
+      <h1>⚙️ সমিতির Settings</h1>
+      <p>সমিতির নাম, ঠিকানা, Logo ও হিসাবের configuration</p>
+    </div>
+  </div>
+
+  <div class="module-card">
+
+    <div class="form-grid">
+
+      <div class="form-group">
+        <label>সমিতির নাম</label>
+        <input id="settingName" value="সমবায় সমিতি">
+      </div>
+
+      <div class="form-group">
+        <label>নিবন্ধন নম্বর</label>
+        <input id="settingReg">
+      </div>
+
+      <div class="form-group">
+        <label>মোবাইল</label>
+        <input id="settingMobile">
+      </div>
+
+      <div class="form-group">
+        <label>ই-মেইল</label>
+        <input id="settingEmail">
+      </div>
+
+      <div class="form-group full">
+        <label>ঠিকানা</label>
+        <textarea id="settingAddress"></textarea>
+      </div>
+
+    </div>
+
+    <button class="primary" onclick="saveSettings()">💾 Settings Save</button>
+
+  </div>
+
+</section>
+
+</main>
+</div>
+
+
+<!-- ================= MEMBER MODAL ================= -->
+<div class="modal" id="memberModal">
+
+  <div class="modal-box">
+
+    <div class="modal-header">
+      <h2>👥 নতুন সদস্য</h2>
+      <button class="close" onclick="closeModal('memberModal')">✕</button>
+    </div>
+
+    <div class="form-grid">
+
+      <div class="form-group">
+        <label>Member ID</label>
+        <input id="memberId" readonly>
+      </div>
+
+      <div class="form-group">
+        <label>সদস্যের নাম *</label>
+        <input id="memberName" required>
+      </div>
+
+      <div class="form-group">
+        <label>পিতার/স্বামীর নাম</label>
+        <input id="fatherName">
+      </div>
+
+      <div class="form-group">
+        <label>মাতার নাম</label>
+        <input id="motherName">
+      </div>
+
+      <div class="form-group">
+        <label>জন্মতারিখ</label>
+        <input id="dob" type="date">
+      </div>
+
+      <div class="form-group">
+        <label>লিঙ্গ</label>
+        <select id="gender">
+          <option value="">নির্বাচন</option>
+          <option value="male">পুরুষ</option>
+          <option value="female">মহিলা</option>
+          <option value="other">অন্যান্য</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>মোবাইল</label>
+        <input id="mobile">
+      </div>
+
+      <div class="form-group">
+        <label>NID</label>
+        <input id="nid">
+      </div>
+
+      <div class="form-group">
+        <label>পেশা</label>
+        <input id="occupation">
+      </div>
+
+      <div class="form-group">
+        <label>যোগদানের তারিখ</label>
+        <input id="joinDate" type="date">
+      </div>
+
+      <div class="form-group">
+        <label>গ্রাম/মহল্লা</label>
+        <input id="village">
+      </div>
+
+      <div class="form-group">
+        <label>ডাকঘর</label>
+        <input id="postOffice">
+      </div>
+
+      <div class="form-group">
+        <label>ইউনিয়ন/পৌরসভা</label>
+        <input id="unionName">
+      </div>
+
+      <div class="form-group">
+        <label>ওয়ার্ড</label>
+        <input id="ward">
+      </div>
+
+      <div class="form-group">
+        <label>উপজেলা</label>
+        <input id="upazila">
+      </div>
+
+      <div class="form-group">
+        <label>জেলা</label>
+        <input id="district">
+      </div>
+
+      <div class="form-group">
+        <label>বিভাগ</label>
+        <input id="division">
+      </div>
+
+      <div class="form-group full">
+        <label>বিস্তারিত ঠিকানা</label>
+        <textarea id="address"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Nominee-এর নাম</label>
+        <input id="nomineeName">
+      </div>
+
+      <div class="form-group">
+        <label>Nominee-এর সম্পর্ক</label>
+        <input id="nomineeRelation">
+      </div>
+
+      <div class="form-group">
+        <label>Nominee Mobile</label>
+        <input id="nomineeMobile">
+      </div>
+
+      <div class="form-group">
+        <label>Nominee NID</label>
+        <input id="nomineeNid">
+      </div>
+
+      <div class="form-group full">
+        <label>Nominee Address</label>
+        <textarea id="nomineeAddress"></textarea>
+      </div>
+
+    </div>
+
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:18px">
+      <button class="secondary" onclick="closeModal('memberModal')">Cancel</button>
+      <button class="primary" onclick="saveMember()">💾 সদস্য সংরক্ষণ</button>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ================= TRANSACTION MODAL ================= -->
+<div class="modal" id="transactionModal">
+
+  <div class="modal-box">
+
+    <div class="modal-header">
+      <h2 id="transactionTitle">💰 Transaction</h2>
+      <button class="close" onclick="closeModal('transactionModal')">✕</button>
+    </div>
+
+    <input type="hidden" id="transactionType">
+
+    <div class="form-grid">
+
+      <div class="form-group">
+        <label>Member ID</label>
+        <input id="transactionMember">
+      </div>
+
+      <div class="form-group">
+        <label>Account Number</label>
+        <input id="transactionAccount">
+      </div>
+
+      <div class="form-group">
+        <label>Amount</label>
+        <input id="transactionAmount" type="number" min="1" step="0.01">
+      </div>
+
+      <div class="form-group">
+        <label>Payment Method</label>
+        <select id="paymentMethod">
+          <option value="cash">Cash</option>
+          <option value="bank">Bank</option>
+        </select>
+      </div>
+
+      <div class="form-group full">
+        <label>Note</label>
+        <textarea id="transactionNote"></textarea>
+      </div>
+
+    </div>
+
+    <div style="text-align:right">
+      <button class="secondary" onclick="closeModal('transactionModal')">Cancel</button>
+      <button class="primary" onclick="saveTransaction()">💾 Save</button>
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ================= GENERIC MODAL ================= -->
+<div class="modal" id="genericModal">
+
+  <div class="modal-box">
+
+    <div class="modal-header">
+      <h2 id="genericTitle">Module</h2>
+      <button class="close" onclick="closeModal('genericModal')">✕</button>
+    </div>
+
+    <div id="genericBody"></div>
+
+  </div>
+
+</div>
+
+
+<!-- ================= MEMBER VIEW ================= -->
+<div class="modal" id="memberViewModal">
+
+  <div class="modal-box">
+
+    <div class="modal-header">
+      <h2>👤 সদস্যের বিস্তারিত তথ্য</h2>
+      <button class="close" onclick="closeModal('memberViewModal')">✕</button>
+    </div>
+
+    <div id="memberDetails"></div>
+
+  </div>
+
+</div>
+
+
 <script>
-"use strict";
-
-/*
-===========================================================
- ORIGINAL APPLICATION
-===========================================================
- তোমার বর্তমান GitHub index.html
-===========================================================
-*/
-
-const ORIGINAL_URL =
-"https://raw.githubusercontent.com/tariqul1970/samity-management/refs/heads/main/index.html";
-
-
-/*
-===========================================================
- SHOW LOADER
-===========================================================
-*/
-
-function loaderText(text){
-  const el=document.getElementById("loaderText");
-  if(el) el.textContent=text;
-}
-
-function loaderError(text){
-  const el=document.getElementById("loaderError");
-  if(el) el.textContent=text;
-}
-
-
-/*
-===========================================================
- FIX MEMBER MODULE
-===========================================================
-*/
-
-const FIXED_MEMBER_CODE = `
 
 /* =========================================================
-   MEMBER SAVE / EDIT / DELETE - FIXED
+   SUPABASE
+========================================================= */
+
+const SUPABASE_URL =
+"https://tcdilhooslygsvdcqkte.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_JelXduaAwElDbU0JABTFgg_yLXzPyNx";
+
+const db = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+let currentUser = null;
+let currentProfile = null;
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+const $ = id => document.getElementById(id);
+
+function money(n){
+  return "৳ " + Number(n || 0).toLocaleString("en-US",{
+    minimumFractionDigits:2,
+    maximumFractionDigits:2
+  });
+}
+
+function esc(v){
+  return String(v ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+
+function today(){
+  return new Date().toISOString().slice(0,10);
+}
+
+function openSection(id){
+
+  document.querySelectorAll(".section")
+    .forEach(x=>x.classList.remove("active"));
+
+  const el=$(id);
+
+  if(el) el.classList.add("active");
+
+  document.querySelectorAll(".menu-btn")
+    .forEach(x=>x.classList.remove("active"));
+
+  document.querySelectorAll(".menu-btn")
+    .forEach(x=>{
+      if((x.getAttribute("onclick")||"").includes("'" + id + "'"))
+        x.classList.add("active");
+    });
+
+  if(id==="members") loadMembers();
+  if(id==="dashboard") loadDashboard();
+  if(id==="shares") loadShares();
+  if(id==="savings") loadSavings();
+  if(id==="loans") loadLoans();
+}
+
+function closeModal(id){
+  const el=$(id);
+  if(el) el.style.display="none";
+}
+
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+$("loginForm").addEventListener("submit",async e=>{
+
+  e.preventDefault();
+
+  const email=$("loginEmail").value.trim();
+  const password=$("loginPassword").value;
+
+  $("loginMessage").textContent="⏳ Login হচ্ছে...";
+
+  const {data,error}=await db.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if(error){
+    $("loginMessage").textContent="❌ "+error.message;
+    return;
+  }
+
+  currentUser=data.user;
+
+  await showApp();
+
+});
+
+
+async function showApp(){
+
+  $("loginPage").style.display="none";
+  $("app").style.display="block";
+
+  const {data}=await db
+    .from("user_profiles")
+    .select("*")
+    .eq("id",currentUser.id)
+    .maybeSingle();
+
+  currentProfile=data;
+
+  $("userName").textContent =
+    data?.full_name || currentUser.email || "User";
+
+  $("userRole").textContent =
+    (data?.role || "USER").toUpperCase();
+
+  $("todayText").textContent =
+    new Date().toLocaleDateString(
+      "bn-BD",
+      {
+        weekday:"long",
+        year:"numeric",
+        month:"long",
+        day:"numeric"
+      }
+    );
+
+  await loadDashboard();
+  await loadMembers();
+}
+
+
+async function logout(){
+
+  await db.auth.signOut();
+
+  currentUser=null;
+  currentProfile=null;
+
+  $("app").style.display="none";
+  $("loginPage").style.display="flex";
+}
+
+
+/* =========================================================
+   MEMBER ID
+========================================================= */
+
+async function nextMemberId(){
+
+  const {data}=await db
+    .from("members")
+    .select("member_id")
+    .order("member_id",{ascending:false})
+    .limit(1);
+
+  let n=1;
+
+  if(data?.length){
+
+    const last=parseInt(
+      String(data[0].member_id||"")
+      .replace(/\D/g,""),
+      10
+    );
+
+    if(!isNaN(last)) n=last+1;
+  }
+
+  return String(n).padStart(6,"0");
+}
+
+
+/* =========================================================
+   MEMBER MODAL
 ========================================================= */
 
 async function openMemberModal(){
 
-  const role = String(
-    currentProfile?.role || ""
-  ).toLowerCase();
+  $("memberModal").style.display="block";
 
-  if(role !== "manager"){
+  $("memberId").value=await nextMemberId();
 
-    alert(
-      "⛔ অনুমতি নেই।\\\\n\\\\n"+
-      "নতুন সদস্য যোগ করার কাজ শুধুমাত্র Manager করতে পারবেন।"
-    );
-
-    return;
-  }
-
-  editingMemberId = null;
-
-  const modal = $("memberModal");
-
-  if(!modal) return;
-
-  modal.style.display="block";
-
-  const memberId =
-    await nextMemberId();
-
-  $("memberId").value =
-    memberId;
-
-  $("joinDate").value =
-    today();
-
-  const title =
-    modal.querySelector(
-      ".modal-header h2"
-    );
-
-  if(title){
-    title.textContent =
-      "👥 নতুন সদস্য";
-  }
+  $("joinDate").value=today();
 
 }
 
-
-/* =========================================================
-   EDIT MEMBER
-========================================================= */
-
-async function editMember(id){
-
-  const role = String(
-    currentProfile?.role || ""
-  ).toLowerCase();
-
-  if(role !== "manager"){
-
-    alert(
-      "⛔ শুধুমাত্র Manager সদস্য Edit করতে পারবেন।"
-    );
-
-    return;
-  }
-
-
-  const {data,error} =
-    await db
-      .from("members")
-      .select("*")
-      .eq("id",id)
-      .single();
-
-
-  if(error){
-
-    alert(
-      "❌ সদস্যের তথ্য পাওয়া যায়নি:\\\\n\\\\n"+
-      error.message
-    );
-
-    return;
-  }
-
-
-  editingMemberId=id;
-
-
-  $("memberId").value =
-    data.member_id ||
-    data.member_no ||
-    data.member_code ||
-    "";
-
-  $("memberName").value =
-    data.full_name || "";
-
-  $("fatherName").value =
-    data.father_name ||
-    data.father_husband_name ||
-    "";
-
-  $("motherName").value =
-    data.mother_name || "";
-
-  $("dob").value =
-    data.date_of_birth ||
-    data.dob ||
-    "";
-
-  $("gender").value =
-    data.gender || "";
-
-  $("mobile").value =
-    data.mobile || "";
-
-  $("nid").value =
-    data.nid_no ||
-    data.nid ||
-    "";
-
-  $("occupation").value =
-    data.occupation || "";
-
-  $("village").value =
-    data.village || "";
-
-  $("postOffice").value =
-    data.post_office || "";
-
-  $("unionName").value =
-    data.union_name || "";
-
-  $("ward").value =
-    data.ward_no || "";
-
-  $("upazila").value =
-    data.upazila || "";
-
-  $("district").value =
-    data.district || "";
-
-  $("division").value =
-    data.division || "";
-
-  $("address").value =
-    data.address || "";
-
-  $("nomineeName").value =
-    data.nominee_name || "";
-
-  $("nomineeRelation").value =
-    data.nominee_relation || "";
-
-  $("nomineeMobile").value =
-    data.nominee_mobile || "";
-
-  $("nomineeNid").value =
-    data.nominee_nid || "";
-
-  $("nomineeAddress").value =
-    data.nominee_address || "";
-
-  $("joinDate").value =
-    data.joining_date ||
-    data.join_date ||
-    today();
-
-
-  const modal =
-    $("memberModal");
-
-  if(modal){
-
-    modal.style.display =
-      "block";
-
-    const title =
-      modal.querySelector(
-        ".modal-header h2"
-      );
-
-    if(title){
-      title.textContent =
-        "✏️ সদস্য Edit";
-    }
-
-  }
-
-}
-
-
-/* =========================================================
-   SAVE MEMBER
-========================================================= */
 
 async function saveMember(){
 
-  const role = String(
-    currentProfile?.role || ""
-  ).toLowerCase();
-
-  if(role !== "manager"){
-
-    alert(
-      "⛔ শুধুমাত্র Manager সদস্য Save/Edit করতে পারবেন।"
-    );
-
-    return;
-  }
-
-
-  const name =
-    $("memberName").value.trim();
-
+  const name=$("memberName").value.trim();
 
   if(!name){
-
-    alert(
-      "❌ সদস্যের নাম দিন।"
-    );
-
+    alert("সদস্যের নাম দিন।");
     return;
   }
-
-
-  /*
-  =========================================================
-  EDIT EXISTING
-  =========================================================
-  */
-
-  if(editingMemberId){
-
-    const payload={
-
-      full_name:name,
-
-      father_name:
-        $("fatherName").value.trim(),
-
-      father_husband_name:
-        $("fatherName").value.trim(),
-
-      mother_name:
-        $("motherName").value.trim(),
-
-      date_of_birth:
-        $("dob").value || null,
-
-      dob:
-        $("dob").value || null,
-
-      gender:
-        $("gender").value || null,
-
-      mobile:
-        $("mobile").value.trim(),
-
-      nid_no:
-        $("nid").value.trim(),
-
-      nid:
-        $("nid").value.trim(),
-
-      occupation:
-        $("occupation").value.trim(),
-
-      village:
-        $("village").value.trim(),
-
-      post_office:
-        $("postOffice").value.trim(),
-
-      union_name:
-        $("unionName").value.trim(),
-
-      ward_no:
-        $("ward").value.trim(),
-
-      upazila:
-        $("upazila").value.trim(),
-
-      district:
-        $("district").value.trim(),
-
-      division:
-        $("division").value.trim(),
-
-      address:
-        $("address").value.trim(),
-
-      nominee_name:
-        $("nomineeName").value.trim(),
-
-      nominee_relation:
-        $("nomineeRelation").value.trim(),
-
-      nominee_mobile:
-        $("nomineeMobile").value.trim(),
-
-      nominee_nid:
-        $("nomineeNid").value.trim(),
-
-      nominee_address:
-        $("nomineeAddress").value.trim(),
-
-      joining_date:
-        $("joinDate").value || today(),
-
-      join_date:
-        $("joinDate").value || today(),
-
-      updated_at:
-        new Date().toISOString()
-
-    };
-
-
-    const {error} =
-      await db
-        .from("members")
-        .update(payload)
-        .eq("id",editingMemberId);
-
-
-    if(error){
-
-      alert(
-        "❌ সদস্য Edit করা যায়নি:\\\\n\\\\n"+
-        error.message
-      );
-
-      console.error(error);
-
-      return;
-    }
-
-
-    alert(
-      "✅ সদস্যের তথ্য সফলভাবে আপডেট হয়েছে।"
-    );
-
-
-    editingMemberId=null;
-
-
-    closeModal(
-      "memberModal"
-    );
-
-
-    await loadMembers();
-    await loadDashboard();
-
-
-    return;
-
-  }
-
-
-  /*
-  =========================================================
-  NEW MEMBER
-  =========================================================
-  */
-
-  const memberId =
-    $("memberId").value.trim() ||
-    await nextMemberId();
-
 
   const payload={
 
-    member_id:
-      memberId,
+    member_id:$("memberId").value,
 
-    member_no:
-      memberId,
+    full_name:name,
 
-    full_name:
-      name,
+    father_name:$("fatherName").value.trim(),
 
-    father_name:
-      $("fatherName").value.trim(),
+    mother_name:$("motherName").value.trim(),
 
-    father_husband_name:
-      $("fatherName").value.trim(),
+    date_of_birth:$("dob").value||null,
 
-    mother_name:
-      $("motherName").value.trim(),
+    gender:$("gender").value,
 
-    date_of_birth:
-      $("dob").value || null,
+    mobile:$("mobile").value.trim(),
 
-    dob:
-      $("dob").value || null,
+    nid:$("nid").value.trim(),
 
-    gender:
-      $("gender").value || null,
+    occupation:$("occupation").value.trim(),
 
-    mobile:
-      $("mobile").value.trim(),
+    village:$("village").value.trim(),
 
-    nid_no:
-      $("nid").value.trim(),
+    post_office:$("postOffice").value.trim(),
 
-    nid:
-      $("nid").value.trim(),
+    union_name:$("unionName").value.trim(),
 
-    occupation:
-      $("occupation").value.trim(),
+    ward_no:$("ward").value.trim(),
 
-    village:
-      $("village").value.trim(),
+    upazila:$("upazila").value.trim(),
 
-    post_office:
-      $("postOffice").value.trim(),
+    district:$("district").value.trim(),
 
-    union_name:
-      $("unionName").value.trim(),
+    division:$("division").value.trim(),
 
-    ward_no:
-      $("ward").value.trim(),
+    address:$("address").value.trim(),
 
-    upazila:
-      $("upazila").value.trim(),
+    nominee_name:$("nomineeName").value.trim(),
 
-    district:
-      $("district").value.trim(),
+    nominee_relation:$("nomineeRelation").value.trim(),
 
-    division:
-      $("division").value.trim(),
+    nominee_mobile:$("nomineeMobile").value.trim(),
 
-    address:
-      $("address").value.trim(),
+    nominee_nid:$("nomineeNid").value.trim(),
 
-    nominee_name:
-      $("nomineeName").value.trim(),
+    nominee_address:$("nomineeAddress").value.trim(),
 
-    nominee_relation:
-      $("nomineeRelation").value.trim(),
+    join_date:$("joinDate").value||today(),
 
-    nominee_mobile:
-      $("nomineeMobile").value.trim(),
-
-    nominee_nid:
-      $("nomineeNid").value.trim(),
-
-    nominee_address:
-      $("nomineeAddress").value.trim(),
-
-    joining_date:
-      $("joinDate").value || today(),
-
-    join_date:
-      $("joinDate").value || today(),
-
-    status:
-      "active",
-
-    is_active:
-      true,
-
-    approval_status:
-      "approved",
-
-    created_by:
-      currentUser?.id || null
+    status:"active"
 
   };
 
-
-  const {error} =
-    await db
-      .from("members")
-      .insert([payload]);
-
+  const {error}=await db
+    .from("members")
+    .insert([payload]);
 
   if(error){
 
-    alert(
-      "❌ নতুন সদস্য Save হয়নি:\\\\n\\\\n"+
-      error.message
-    );
-
-    console.error(error);
+    alert("❌ Member Save Error:\n"+error.message);
 
     return;
   }
 
+  alert("✅ নতুন সদস্য সংরক্ষণ হয়েছে।");
 
-  alert(
-    "✅ নতুন সদস্য সফলভাবে সংরক্ষণ হয়েছে।"
-  );
-
-
-  closeModal(
-    "memberModal"
-  );
-
-
-  await loadMembers();
-  await loadDashboard();
-
-}
-
-
-/* =========================================================
-   DELETE MEMBER
-========================================================= */
-
-async function deleteMember(id){
-
-  const role = String(
-    currentProfile?.role || ""
-  ).toLowerCase();
-
-
-  if(role !== "manager"){
-
-    alert(
-      "⛔ শুধুমাত্র Manager সদস্য Delete করতে পারবেন।"
-    );
-
-    return;
-  }
-
-
-  const {
-    data:member,
-    error:memberError
-  } =
-    await db
-      .from("members")
-      .select(
-        "id,member_id,member_no,full_name"
-      )
-      .eq("id",id)
-      .single();
-
-
-  if(memberError){
-
-    alert(
-      "❌ সদস্যের তথ্য পাওয়া যায়নি:\\\\n\\\\n"+
-      memberError.message
-    );
-
-    return;
-  }
-
-
-  const memberNo =
-    member.member_id ||
-    member.member_no ||
-    "";
-
-
-  const ok =
-    confirm(
-
-      "⚠️ সদস্য Delete\\\\n\\\\n"+
-      "Member ID: "+
-      memberNo+
-      "\\\\nনাম: "+
-      (member.full_name || "")+
-      "\\\\n\\\\n"+
-      "এই সদস্যের হিসাব/লেনদেন থাকলে নিরাপত্তার জন্য Delete হবে না।"+
-      "\\\\n\\\\n"+
-      "আপনি কি নিশ্চিত?"
-
-    );
-
-
-  if(!ok) return;
-
-
-  const {
-    data,
-    error
-  } =
-    await db.rpc(
-      "delete_member_if_no_transaction",
-      {
-        p_member_id:id
-      }
-    );
-
-
-  if(error){
-
-    alert(
-      "❌ সদস্য Delete করা যায়নি:\\\\n\\\\n"+
-      error.message
-    );
-
-    console.error(error);
-
-    return;
-  }
-
-
-  alert(
-    "✅ সদস্য সফলভাবে Delete হয়েছে।"
-  );
-
+  closeModal("memberModal");
 
   await loadMembers();
   await loadDashboard();
@@ -734,214 +1763,89 @@ async function deleteMember(id){
 
 async function loadMembers(){
 
-  const tbody =
-    $("memberList");
+  const tbody=$("memberList");
 
-  if(!tbody) return;
+  if(!tbody)return;
 
+  tbody.innerHTML=
+    `<tr><td colspan="7">⏳ Loading...</td></tr>`;
 
-  tbody.innerHTML =
-    '<tr><td colspan="7">⏳ Loading...</td></tr>';
+  let q=$("memberSearch")?.value.trim()||"";
 
-
-  const q =
-    $("memberSearch")?.value.trim() || "";
-
-
-  let query =
-    db
-      .from("members")
-      .select("*")
-      .order(
-        "created_at",
-        {ascending:false}
-      )
-      .limit(500);
-
+  let query=db
+    .from("members")
+    .select("*")
+    .order("created_at",{ascending:false})
+    .limit(500);
 
   if(q){
 
-    query =
-      query.or(
-        "member_id.ilike.%"+q+
-        "%,member_no.ilike.%"+q+
-        "%,full_name.ilike.%"+q+
-        "%,mobile.ilike.%"+q+
-        "%,nid.ilike.%"+q+
-        "%,nid_no.ilike.%"+q+
-        "%"
-      );
+    query=query.or(
+      `member_id.ilike.%${q}%,full_name.ilike.%${q}%,mobile.ilike.%${q}%,nid.ilike.%${q}%`
+    );
 
   }
 
-
-  const {
-    data,
-    error
-  } =
-    await query;
-
+  const {data,error}=await query;
 
   if(error){
 
-    tbody.innerHTML =
-      '<tr><td colspan="7">❌ '+
-      esc(error.message)+
-      '</td></tr>';
+    tbody.innerHTML=
+      `<tr><td colspan="7">❌ ${esc(error.message)}</td></tr>`;
 
     return;
   }
 
+  $("statMembers").textContent=data?.length||0;
 
-  const list =
-    data || [];
+  $("statActiveMembers").textContent =
+    data?.filter(x=>x.status==="active").length||0;
 
+  if(!data?.length){
 
-  if($("statMembers"))
-    $("statMembers").textContent =
-      list.length;
-
-
-  if($("statActiveMembers"))
-    $("statActiveMembers").textContent =
-      list.filter(
-        x =>
-          String(x.status || "")
-            .toLowerCase() ===
-          "active"
-      ).length;
-
-
-  if(!list.length){
-
-    tbody.innerHTML =
-      '<tr><td colspan="7">'+
-      '<div class="empty">'+
-      'কোনো সদস্য পাওয়া যায়নি।'+
-      '</div>'+
-      '</td></tr>';
+    tbody.innerHTML=
+      `<tr><td colspan="7"><div class="empty">কোনো সদস্য পাওয়া যায়নি।</div></td></tr>`;
 
     return;
   }
 
+  tbody.innerHTML=data.map(m=>`
 
-  tbody.innerHTML =
-    list.map(
-      m => {
+    <tr>
 
-        const memberId =
-          m.member_id ||
-          m.member_no ||
-          m.member_code ||
-          "";
+      <td><b>${esc(m.member_id)}</b></td>
 
+      <td>${esc(m.full_name)}</td>
 
-        const nid =
-          m.nid ||
-          m.nid_no ||
-          "";
+      <td>${esc(m.mobile)}</td>
 
+      <td>${esc(m.nid)}</td>
 
-        const joinDate =
-          m.join_date ||
-          m.joining_date ||
-          "";
+      <td>${esc(m.join_date)}</td>
 
+      <td>
+        <span class="badge ${m.status==="active"?"green":"red"}">
+          ${esc(m.status)}
+        </span>
+      </td>
 
-        const status =
-          m.status ||
-          "active";
+      <td>
 
+        <button class="secondary"
+          onclick="viewMember('${m.id}')">
+          👁
+        </button>
 
-        const managerButtons =
-          String(
-            currentProfile?.role || ""
-          ).toLowerCase() ===
-          "manager"
+        <button class="danger"
+          onclick="deactivateMember('${m.id}')">
+          ✕
+        </button>
 
-          ? `
+      </td>
 
-            <button
-              class="primary"
-              onclick="editMember('${m.id}')">
-              ✏️
-            </button>
+    </tr>
 
-            <button
-              class="danger"
-              onclick="deleteMember('${m.id}')">
-              🗑️
-            </button>
-
-          `
-
-          : "";
-
-
-        return `
-
-          <tr>
-
-            <td>
-              <b>${esc(memberId)}</b>
-            </td>
-
-            <td>
-              ${esc(m.full_name)}
-            </td>
-
-            <td>
-              ${esc(m.mobile)}
-            </td>
-
-            <td>
-              ${esc(nid)}
-            </td>
-
-            <td>
-              ${esc(joinDate)}
-            </td>
-
-            <td>
-
-              <span
-                class="badge ${
-                  String(status)
-                    .toLowerCase()==="active"
-                    ?"green"
-                    :"red"
-                }">
-
-                ${esc(status)}
-
-              </span>
-
-            </td>
-
-            <td>
-
-              <button
-                class="secondary"
-                onclick="viewMember('${m.id}')">
-                👁
-              </button>
-
-              <button
-                class="secondary"
-                onclick="printMemberById('${m.id}')">
-                🖨️
-              </button>
-
-              ${managerButtons}
-
-            </td>
-
-          </tr>
-
-        `;
-
-      }
-    ).join("");
+  `).join("");
 
 }
 
@@ -952,788 +1856,2178 @@ async function loadMembers(){
 
 async function viewMember(id){
 
-  const {
-    data,
-    error
-  } =
-    await db
-      .from("members")
-      .select("*")
-      .eq("id",id)
-      .single();
-
+  const {data,error}=await db
+    .from("members")
+    .select("*")
+    .eq("id",id)
+    .single();
 
   if(error){
-
-    alert(
-      "❌ "+error.message
-    );
-
+    alert(error.message);
     return;
   }
 
-
-  const memberId =
-    data.member_id ||
-    data.member_no ||
-    data.member_code ||
-    "";
-
-
-  const nid =
-    data.nid ||
-    data.nid_no ||
-    "";
-
-
-  const father =
-    data.father_name ||
-    data.father_husband_name ||
-    "";
-
-
-  const dob =
-    data.date_of_birth ||
-    data.dob ||
-    "";
-
-
-  const joinDate =
-    data.join_date ||
-    data.joining_date ||
-    "";
-
-
-  $("memberDetails").innerHTML = `
+  $("memberDetails").innerHTML=`
 
     <div class="form-grid">
 
-      <div>
-        <b>Member ID</b>
-        <br>
-        ${esc(memberId)}
-      </div>
-
-      <div>
-        <b>নাম</b>
-        <br>
-        ${esc(data.full_name)}
-      </div>
-
-      <div>
-        <b>পিতা/স্বামী</b>
-        <br>
-        ${esc(father)}
-      </div>
-
-      <div>
-        <b>মাতা</b>
-        <br>
-        ${esc(data.mother_name)}
-      </div>
-
-      <div>
-        <b>জন্মতারিখ</b>
-        <br>
-        ${esc(dob)}
-      </div>
-
-      <div>
-        <b>লিঙ্গ</b>
-        <br>
-        ${esc(data.gender)}
-      </div>
-
-      <div>
-        <b>NID</b>
-        <br>
-        ${esc(nid)}
-      </div>
-
-      <div>
-        <b>মোবাইল</b>
-        <br>
-        ${esc(data.mobile)}
-      </div>
-
-      <div>
-        <b>পেশা</b>
-        <br>
-        ${esc(data.occupation)}
-      </div>
-
-      <div>
-        <b>যোগদানের তারিখ</b>
-        <br>
-        ${esc(joinDate)}
-      </div>
-
-      <div>
-        <b>গ্রাম</b>
-        <br>
-        ${esc(data.village)}
-      </div>
-
-      <div>
-        <b>ডাকঘর</b>
-        <br>
-        ${esc(data.post_office)}
-      </div>
-
-      <div>
-        <b>ইউনিয়ন</b>
-        <br>
-        ${esc(data.union_name)}
-      </div>
-
-      <div>
-        <b>ওয়ার্ড</b>
-        <br>
-        ${esc(data.ward_no)}
-      </div>
-
-      <div>
-        <b>উপজেলা</b>
-        <br>
-        ${esc(data.upazila)}
-      </div>
-
-      <div>
-        <b>জেলা</b>
-        <br>
-        ${esc(data.district)}
-      </div>
-
-      <div>
-        <b>বিভাগ</b>
-        <br>
-        ${esc(data.division)}
-      </div>
-
-      <div>
-        <b>Nominee</b>
-        <br>
-        ${esc(data.nominee_name)}
-      </div>
-
-      <div>
-        <b>Nominee Relation</b>
-        <br>
-        ${esc(data.nominee_relation)}
-      </div>
-
-      <div>
-        <b>Nominee Mobile</b>
-        <br>
-        ${esc(data.nominee_mobile)}
-      </div>
-
-      <div>
-        <b>Nominee NID</b>
-        <br>
-        ${esc(data.nominee_nid)}
-      </div>
+      <div><b>Member ID</b><br>${esc(data.member_id)}</div>
+      <div><b>নাম</b><br>${esc(data.full_name)}</div>
+      <div><b>পিতা/স্বামী</b><br>${esc(data.father_name)}</div>
+      <div><b>মাতা</b><br>${esc(data.mother_name)}</div>
+      <div><b>জন্মতারিখ</b><br>${esc(data.date_of_birth)}</div>
+      <div><b>NID</b><br>${esc(data.nid)}</div>
+      <div><b>মোবাইল</b><br>${esc(data.mobile)}</div>
+      <div><b>পেশা</b><br>${esc(data.occupation)}</div>
+      <div><b>গ্রাম</b><br>${esc(data.village)}</div>
+      <div><b>ডাকঘর</b><br>${esc(data.post_office)}</div>
+      <div><b>উপজেলা</b><br>${esc(data.upazila)}</div>
+      <div><b>জেলা</b><br>${esc(data.district)}</div>
+      <div><b>Nominee</b><br>${esc(data.nominee_name)}</div>
+      <div><b>Nominee Relation</b><br>${esc(data.nominee_relation)}</div>
 
       <div class="full">
-        <b>Nominee Address</b>
-        <br>
-        ${esc(data.nominee_address)}
-      </div>
-
-      <div class="full">
-        <b>ঠিকানা</b>
-        <br>
-        ${esc(data.address)}
+        <b>ঠিকানা</b><br>${esc(data.address)}
       </div>
 
     </div>
 
   `;
 
+  $("memberViewModal").style.display="block";
+}
 
-  $("memberViewModal")
-    .style.display="block";
+
+async function deactivateMember(id){
+
+  if(!confirm("সদস্যকে Inactive করতে চান?"))return;
+
+  const {error}=await db
+    .from("members")
+    .update({status:"inactive"})
+    .eq("id",id);
+
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  await loadMembers();
+  await loadDashboard();
 
 }
 
 
 /* =========================================================
-   PRINT MEMBER
+   DASHBOARD
 ========================================================= */
 
-async function printMemberById(id){
+async function loadDashboard(){
 
-  const {
-    data,
-    error
-  } =
-    await db
-      .from("members")
-      .select("*")
-      .eq("id",id)
-      .single();
+  const {data:members}=await db
+    .from("members")
+    .select("id,status");
+
+  $("statMembers").textContent=members?.length||0;
+
+  $("statActiveMembers").textContent =
+    members?.filter(x=>x.status==="active").length||0;
+
+
+  /* Existing accounts */
+
+  const {data:accounts}=await db
+    .from("accounts")
+    .select("*");
+
+  let savings=0;
+  let dps=0;
+  let fdr=0;
+  let loan=0;
+
+  (accounts||[]).forEach(a=>{
+
+    const amount=Number(a.balance||0);
+
+    const type=String(
+      a.account_type||""
+    ).toLowerCase();
+
+    if(type.includes("saving"))
+      savings+=amount;
+
+    else if(type.includes("dps"))
+      dps+=amount;
+
+    else if(type.includes("fdr"))
+      fdr+=amount;
+
+    else if(type.includes("loan"))
+      loan+=amount;
+
+  });
+
+
+  $("statSavings").textContent=money(savings);
+  $("statDps").textContent=money(dps);
+  $("statFdr").textContent=money(fdr);
+  $("statLoan").textContent=money(loan);
+
+  $("savingsTotal").textContent=money(savings);
+  $("dpsTotal").textContent=money(dps);
+  $("fdrTotal").textContent=money(fdr);
+  $("loanTotal").textContent=money(loan);
+
+}
+
+
+/* =========================================================
+   TRANSACTION
+========================================================= */
+
+function openTransactionModal(type){
+
+  $("transactionType").value=type;
+
+  $("transactionTitle").textContent =
+    type==="deposit"
+      ?"💰 সঞ্চয় জমা"
+      :"💸 সঞ্চয় উত্তোলন";
+
+  $("transactionMember").value="";
+  $("transactionAccount").value="";
+  $("transactionAmount").value="";
+  $("transactionNote").value="";
+
+  $("transactionModal").style.display="block";
+
+}
+
+
+async function saveTransaction(){
+
+  const type=$("transactionType").value;
+
+  const memberCode=
+    $("transactionMember").value.trim();
+
+  const accountNumber=
+    $("transactionAccount").value.trim();
+
+  const amount=
+    Number($("transactionAmount").value||0);
+
+  if(!memberCode||!amount){
+
+    alert("Member ID এবং Amount দিন।");
+
+    return;
+  }
+
+
+  /*
+    NOTE:
+    এখানে transaction table আপনার Supabase-এ
+    থাকতে হবে। নিচের structure ব্যবহার করা হয়েছে।
+  */
+
+  const payload={
+
+    transaction_type:type,
+
+    member_id:memberCode,
+
+    account_number:accountNumber,
+
+    amount,
+
+    payment_method:$("paymentMethod").value,
+
+    note:$("transactionNote").value.trim(),
+
+    created_by:currentUser?.id||null
+
+  };
+
+
+  const {error}=await db
+    .from("samity_transactions")
+    .insert([payload]);
 
 
   if(error){
 
     alert(
-      "❌ Print-এর জন্য সদস্য পাওয়া যায়নি:\\n\\n"+
-      error.message
+      "Transaction save হয়নি।\n\n"+
+      error.message+
+      "\n\nSupabase-এ samity_transactions table তৈরি আছে কিনা দেখুন।"
     );
 
     return;
   }
 
 
-  const memberId =
-    data.member_id ||
-    data.member_no ||
-    data.member_code ||
-    "";
+  alert("✅ Transaction সংরক্ষণ হয়েছে।");
 
+  closeModal("transactionModal");
 
-  const nid =
-    data.nid ||
-    data.nid_no ||
-    "";
-
-
-  const father =
-    data.father_name ||
-    data.father_husband_name ||
-    "";
-
-
-  const dob =
-    data.date_of_birth ||
-    data.dob ||
-    "";
-
-
-  const joinDate =
-    data.join_date ||
-    data.joining_date ||
-    "";
-
-
-  const printWindow =
-    window.open(
-      "",
-      "_blank",
-      "width=900,height=700"
-    );
-
-
-  if(!printWindow){
-
-    alert(
-      "⚠️ Browser Print window বন্ধ করেছে। Popup Allow করুন।"
-    );
-
-    return;
-  }
-
-
-  printWindow.document.write(`
-
-<!DOCTYPE html>
-
-<html lang="bn">
-
-<head>
-
-<meta charset="UTF-8">
-
-<title>সদস্য তথ্য - ${esc(memberId)}</title>
-
-<style>
-
-body{
-  font-family:Arial,
-  "Noto Sans Bengali",
-  sans-serif;
-  padding:30px;
-  color:#172033;
-}
-
-h1{
-  text-align:center;
-  color:#075985;
-  margin-bottom:5px;
-}
-
-h2{
-  text-align:center;
-  font-size:14px;
-  margin-top:0;
-  color:#64748b;
-}
-
-table{
-  width:100%;
-  border-collapse:collapse;
-  margin-top:25px;
-}
-
-td{
-  border:1px solid #cbd5e1;
-  padding:10px;
-  font-size:13px;
-}
-
-td:first-child{
-  width:28%;
-  background:#f1f5f9;
-  font-weight:bold;
-}
-
-.footer{
-  margin-top:45px;
-  display:flex;
-  justify-content:space-between;
-}
-
-.signature{
-  text-align:center;
-  width:200px;
-  border-top:1px solid #334155;
-  padding-top:7px;
-}
-
-@media print{
-  body{
-    padding:10px;
-  }
-}
-
-</style>
-
-</head>
-
-<body>
-
-<h1>সমবায় সমিতি</h1>
-
-<h2>সদস্য তথ্য</h2>
-
-<table>
-
-<tr>
-<td>Member ID</td>
-<td>${esc(memberId)}</td>
-</tr>
-
-<tr>
-<td>সদস্যের নাম</td>
-<td>${esc(data.full_name)}</td>
-</tr>
-
-<tr>
-<td>পিতা/স্বামী</td>
-<td>${esc(father)}</td>
-</tr>
-
-<tr>
-<td>মাতা</td>
-<td>${esc(data.mother_name)}</td>
-</tr>
-
-<tr>
-<td>জন্মতারিখ</td>
-<td>${esc(dob)}</td>
-</tr>
-
-<tr>
-<td>লিঙ্গ</td>
-<td>${esc(data.gender)}</td>
-</tr>
-
-<tr>
-<td>NID</td>
-<td>${esc(nid)}</td>
-</tr>
-
-<tr>
-<td>মোবাইল</td>
-<td>${esc(data.mobile)}</td>
-</tr>
-
-<tr>
-<td>পেশা</td>
-<td>${esc(data.occupation)}</td>
-</tr>
-
-<tr>
-<td>গ্রাম</td>
-<td>${esc(data.village)}</td>
-</tr>
-
-<tr>
-<td>ডাকঘর</td>
-<td>${esc(data.post_office)}</td>
-</tr>
-
-<tr>
-<td>ইউনিয়ন</td>
-<td>${esc(data.union_name)}</td>
-</tr>
-
-<tr>
-<td>ওয়ার্ড</td>
-<td>${esc(data.ward_no)}</td>
-</tr>
-
-<tr>
-<td>উপজেলা</td>
-<td>${esc(data.upazila)}</td>
-</tr>
-
-<tr>
-<td>জেলা</td>
-<td>${esc(data.district)}</td>
-</tr>
-
-<tr>
-<td>বিভাগ</td>
-<td>${esc(data.division)}</td>
-</tr>
-
-<tr>
-<td>যোগদানের তারিখ</td>
-<td>${esc(joinDate)}</td>
-</tr>
-
-<tr>
-<td>Nominee</td>
-<td>${esc(data.nominee_name)}</td>
-</tr>
-
-<tr>
-<td>Nominee Relation</td>
-<td>${esc(data.nominee_relation)}</td>
-</tr>
-
-<tr>
-<td>Nominee Mobile</td>
-<td>${esc(data.nominee_mobile)}</td>
-</tr>
-
-<tr>
-<td>Nominee NID</td>
-<td>${esc(data.nominee_nid)}</td>
-</tr>
-
-<tr>
-<td>Nominee Address</td>
-<td>${esc(data.nominee_address)}</td>
-</tr>
-
-<tr>
-<td>ঠিকানা</td>
-<td>${esc(data.address)}</td>
-</tr>
-
-</table>
-
-
-<div class="footer">
-
-<div class="signature">
-সদস্যের স্বাক্ষর
-</div>
-
-<div class="signature">
-Manager
-</div>
-
-</div>
-
-
-<script>
-
-window.onload=function(){
-
-  setTimeout(
-    function(){
-      window.print();
-    },
-    300
-  );
-
-};
-
-<\/script>
-
-</body>
-
-</html>
-
-  `);
-
-
-  printWindow.document.close();
+  await loadDashboard();
 
 }
 
 
 /* =========================================================
-   ROLE CHECK
+   SHARES
 ========================================================= */
+
+function openShareModal(){
+
+  openGenericModal("Share Purchase");
+
+}
+
+
+async function loadShares(){
+
+  const tbody=$("shareList");
+
+  if(!tbody)return;
+
+  const {data,error}=await db
+    .from("share_transactions")
+    .select("*")
+    .order("created_at",{ascending:false})
+    .limit(200);
+
+  if(error){
+
+    tbody.innerHTML=
+      `<tr><td colspan="6"><div class="empty">Share table এখনো তৈরি হয়নি।</div></td></tr>`;
+
+    return;
+  }
+
+  if(!data?.length){
+
+    tbody.innerHTML=
+      `<tr><td colspan="6"><div class="empty">কোনো Share transaction নেই।</div></td></tr>`;
+
+    return;
+  }
+
+  tbody.innerHTML=data.map(x=>`
+
+    <tr>
+      <td>${esc(x.transaction_date||x.created_at||"")}</td>
+      <td>${esc(x.member_id)}</td>
+      <td>${esc(x.transaction_type)}</td>
+      <td>${esc(x.share_quantity)}</td>
+      <td>${money(x.amount)}</td>
+      <td><span class="badge green">Active</span></td>
+    </tr>
+
+  `).join("");
+
+}
+
+
+/* =========================================================
+   SAVINGS
+========================================================= */
+
+async function loadSavings(){
+
+  const tbody=$("savingsList");
+
+  if(!tbody)return;
+
+  const {data,error}=await db
+    .from("samity_transactions")
+    .select("*")
+    .eq("account_type","savings")
+    .order("created_at",{ascending:false})
+    .limit(200);
+
+  if(error){
+
+    tbody.innerHTML=
+      `<tr><td colspan="7"><div class="empty">Savings transaction table এখনো সংযুক্ত হয়নি।</div></td></tr>`;
+
+    return;
+  }
+
+  tbody.innerHTML=(data||[]).map(x=>`
+
+    <tr>
+      <td>${esc(x.created_at)}</td>
+      <td>${esc(x.member_id)}</td>
+      <td>${esc(x.account_number)}</td>
+      <td>${esc(x.transaction_type)}</td>
+      <td class="${x.transaction_type==="deposit"?"amount-in":"amount-out"}">
+        ${money(x.amount)}
+      </td>
+      <td>—</td>
+      <td><span class="badge green">Recorded</span></td>
+    </tr>
+
+  `).join("")||`
+    <tr><td colspan="7"><div class="empty">কোনো Savings transaction নেই।</div></td></tr>
+  `;
+
+}
+
+
+/* =========================================================
+   LOANS
+========================================================= */
+
+async function loadLoans(){
+
+  const tbody=$("loanList");
+
+  if(!tbody)return;
+
+  const {data,error}=await db
+    .from("loan_accounts")
+    .select("*")
+    .order("created_at",{ascending:false})
+    .limit(200);
+
+  if(error){
+
+    tbody.innerHTML=
+      `<tr><td colspan="7"><div class="empty">loan_accounts table এখনো তৈরি হয়নি।</div></td></tr>`;
+
+    return;
+  }
+
+  tbody.innerHTML=(data||[]).map(x=>`
+
+    <tr>
+      <td>${esc(x.loan_number)}</td>
+      <td>${esc(x.member_id)}</td>
+      <td>${money(x.loan_amount)}</td>
+      <td>${money(x.paid_amount)}</td>
+      <td>${money(
+        Number(x.loan_amount||0)-
+        Number(x.paid_amount||0)
+      )}</td>
+      <td>${esc(x.next_due_date)}</td>
+      <td><span class="badge ${
+        x.status==="active"?"green":"yellow"
+      }">${esc(x.status)}</span></td>
+    </tr>
+
+  `).join("")||`
+    <tr><td colspan="7"><div class="empty">কোনো Loan নেই।</div></td></tr>
+  `;
+
+}
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+async function searchMember(){
+
+  const q=$("globalSearch").value.trim();
+
+  if(!q)return;
+
+  openSection("members");
+
+  $("memberSearch").value=q;
+
+  await loadMembers();
+
+}
+
+
+/* =========================================================
+   GENERIC MODULE
+========================================================= */
+
+function openGenericModal(title){
+
+  $("genericTitle").textContent=title;
+
+  $("genericBody").innerHTML=`
+
+    <div class="notice blue">
+      <strong>${esc(title)}</strong>
+      এই Module-এর interface প্রস্তুত আছে।
+      Database table যুক্ত করার পর এখানে পূর্ণ CRUD কার্যক্রম চলবে।
+    </div>
+
+    <div class="form-grid">
+
+      <div class="form-group">
+        <label>Member ID</label>
+        <input id="genericMember">
+      </div>
+
+      <div class="form-group">
+        <label>Amount</label>
+        <input id="genericAmount" type="number">
+      </div>
+
+      <div class="form-group">
+        <label>Date</label>
+        <input id="genericDate" type="date" value="${today()}">
+      </div>
+
+      <div class="form-group">
+        <label>Status</label>
+        <select id="genericStatus">
+          <option value="pending">Pending</option>
+          <option value="approved">Approved</option>
+          <option value="active">Active</option>
+        </select>
+      </div>
+
+      <div class="form-group full">
+        <label>Note</label>
+        <textarea id="genericNote"></textarea>
+      </div>
+
+    </div>
+
+    <div style="text-align:right;margin-top:15px">
+      <button class="secondary" onclick="closeModal('genericModal')">
+        Cancel
+      </button>
+
+      <button class="primary" onclick="saveGeneric('${esc(title)}')">
+        💾 Save
+      </button>
+    </div>
+
+  `;
+
+  $("genericModal").style.display="block";
+
+}
+
+
+async function saveGeneric(title){
+
+  alert(
+    title+
+    " form প্রস্তুত হয়েছে।\n\n"+
+    "এই Module-এর নির্দিষ্ট Supabase table তৈরি করে তারপর production transaction চালু করতে হবে।"
+  );
+
+}
+
+
+/* =========================================================
+   COLLECTION
+========================================================= */
+
+async function loadCollections(){
+
+  const date=$("collectionDate").value||today();
+
+  $("collectionReport").innerHTML=`
+    <div class="notice blue">
+      <strong>📅 ${esc(date)}</strong>
+      Collection report database-এর transaction table যুক্ত হওয়ার পর
+      automatically তৈরি হবে।
+    </div>
+  `;
+
+}
+
+
+/* =========================================================
+   REPORT
+========================================================= */
+
+function generateReport(type){
+
+  $("reportOutput").innerHTML=`
+
+    <div class="notice green">
+
+      <strong>
+        📊 ${type==="daily"?"Daily":"Monthly"} Report
+      </strong>
+
+      রিপোর্ট structure প্রস্তুত আছে।
+      Transaction Ledger যুক্ত হলে
+      এখানে বাস্তব হিসাব দেখানো হবে।
+
+    </div>
+
+  `;
+
+}
+
+
+/* =========================================================
+   SETTINGS
+========================================================= */
+
+function saveSettings(){
+
+  const settings={
+
+    name:$("settingName").value,
+
+    reg:$("settingReg").value,
+
+    mobile:$("settingMobile").value,
+
+    email:$("settingEmail").value,
+
+    address:$("settingAddress").value
+
+  };
+
+  localStorage.setItem(
+    "samity_settings",
+    JSON.stringify(settings)
+  );
+
+  alert("✅ Settings সংরক্ষণ হয়েছে।");
+
+}
+
+
+/* =========================================================
+   INITIAL SESSION
+========================================================= */
+
+(async function(){
+
+  const {data}=await db.auth.getSession();
+
+  if(data?.session){
+
+    currentUser=data.session.user;
+
+    await showApp();
+
+  }
+
+})();
+
+
+db.auth.onAuthStateChange(
+  async(event,session)=>{
+
+    if(session && !currentUser){
+
+      currentUser=session.user;
+
+      await showApp();
+
+    }
+
+  }
+);
+
+
+/* MODAL OUTSIDE CLICK */
+
+window.addEventListener("click",e=>{
+
+  document
+    .querySelectorAll(".modal")
+    .forEach(m=>{
+
+      if(e.target===m)
+        m.style.display="none";
+
+    });
+
+});
+
+</script>
+ <script>
+/* =========================================================
+   SAMITY MANAGEMENT - MANAGER / COMMITTEE CONTROL
+   + COMPLETE PRINT SYSTEM
+   + MEMBER PRINT
+   + ALL MEMBER PRINT
+   + SEARCH PRINT
+   + REPORT PRINT
+   ========================================================= */
+
+(function(){
+
+"use strict";
+
+/* =========================================================
+   ROLE
+========================================================= */
+
+/* =========================================================
+   ROLE CONTROL
+   OWNER = VIEW ONLY
+   MANAGER = FULL CONTROL
+   COMMITTEE = VIEW ONLY
+========================================================= */
+
+/* =========================================================
+   FIXED ROLE CONTROL
+   MANAGER = FULL CONTROL
+   OWNER = VIEW + PRINT ONLY
+   COMMITTEE = VIEW + PRINT ONLY
+========================================================= */
+
+/* =========================================================
+   FIXED ROLE CONTROL
+   MANAGER = FULL CONTROL
+   OWNER = VIEW + PRINT ONLY
+   COMMITTEE = VIEW + PRINT ONLY
+========================================================= */
+
+function roleName(){
+
+    return String(
+        typeof currentProfile !== "undefined" &&
+        currentProfile
+            ? currentProfile.role
+            : ""
+    )
+    .trim()
+    .toLowerCase();
+
+}
+
 
 function isManager(){
 
-  return String(
-    currentProfile?.role || ""
-  ).toLowerCase()==="manager";
+    const role = roleName();
+
+    return [
+        "manager",
+        "ম্যানেজার",
+        "admin",
+        "administrator"
+    ].includes(role);
+
+}
+
+
+function isOwner(){
+
+    const role = roleName();
+
+    return [
+        "owner",
+        "ওনার",
+        "মালিক",
+        "সভাপতি"
+    ].includes(role);
+
+}
+
+
+function isCommittee(){
+
+    const role = roleName();
+
+    return [
+        "committee",
+        "management_committee",
+        "committee_member",
+        "পরিচালনা কমিটি",
+        "কমিটি",
+        "owner",
+        "ওনার",
+        "মালিক",
+        "সভাপতি"
+    ].includes(role);
+
+}
+
+
+function managerOnly(){
+
+    /* Manager সব কাজ করতে পারবে */
+
+    if(isManager()){
+
+        return true;
+
+    }
+
+
+    /* Owner / Committee শুধু দেখতে ও Print করতে পারবে */
+
+    alert(
+        "⛔ অনুমতি নেই!\n\n"+
+        "Owner / পরিচালনা কমিটি শুধু তথ্য দেখতে এবং Print করতে পারবে।\n"+
+        "Member, Account, Balance, Transaction ও অন্যান্য পরিবর্তনের কাজ শুধুমাত্র Manager করতে পারবেন।"
+    );
+
+    return false;
 
 }
 
 
 /* =========================================================
-   KEEP ORIGINAL FUNCTIONS AVAILABLE
+   PRINT CSS
 ========================================================= */
 
-window.openMemberModal =
-  openMemberModal;
+const printStyle=document.createElement("style");
 
-window.saveMember =
-  saveMember;
+printStyle.textContent=`
 
-window.editMember =
-  editMember;
+#printArea{
 
-window.deleteMember =
-  deleteMember;
+    background:#fff;
+    color:#111;
+    padding:25px;
+    font-family:
+      Arial,
+      "Noto Sans Bengali",
+      sans-serif;
 
-window.viewMember =
-  viewMember;
+}
 
-window.printMemberById =
-  printMemberById;
+#printArea .print-header{
+
+    text-align:center;
+    border-bottom:2px solid #075985;
+    padding-bottom:14px;
+    margin-bottom:18px;
+
+}
+
+#printArea .print-logo{
+
+    width:70px;
+    height:70px;
+    margin:auto;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#075985;
+    color:#fff;
+    font-size:38px;
+
+}
+
+#printArea h1{
+
+    color:#075985;
+    margin:8px 0 3px;
+    font-size:23px;
+
+}
+
+#printArea h2{
+
+    text-align:center;
+    color:#17364b;
+    font-size:18px;
+    margin:12px 0 18px;
+
+}
+
+#printArea .print-meta{
+
+    color:#64748b;
+    font-size:11px;
+    line-height:1.7;
+
+}
+
+#printArea table{
+
+    width:100%;
+    border-collapse:collapse;
+    margin-top:10px;
+
+}
+
+#printArea th,
+#printArea td{
+
+    border:1px solid #cbd5e1;
+    padding:7px 8px;
+    font-size:10px;
+    text-align:left;
+
+}
+
+#printArea th{
+
+    background:#eef5f9;
+    color:#17364b;
+    font-weight:bold;
+
+}
+
+#printArea .member-info{
+
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    border:1px solid #cbd5e1;
+    margin-top:10px;
+
+}
+
+#printArea .info-item{
+
+    padding:9px;
+    border-bottom:1px solid #e2e8f0;
+    border-right:1px solid #e2e8f0;
+    font-size:11px;
+
+}
+
+#printArea .info-item b{
+
+    display:block;
+    color:#475569;
+    margin-bottom:3px;
+
+}
+
+#printArea .print-footer{
+
+    margin-top:25px;
+    padding-top:10px;
+    border-top:1px solid #cbd5e1;
+    display:flex;
+    justify-content:space-between;
+    font-size:9px;
+    color:#64748b;
+
+}
+
+.print-button{
+
+    border:0;
+    background:#075985;
+    color:#fff;
+    padding:8px 11px;
+    border-radius:7px;
+    cursor:pointer;
+    font-weight:bold;
+    margin-left:5px;
+
+}
+
+.committee-hidden{
+
+    display:none !important;
+
+}
+
+@media print{
+
+    body *{
+
+        visibility:hidden !important;
+
+    }
+
+    #printArea,
+    #printArea *{
+
+        visibility:visible !important;
+
+    }
+
+    #printArea{
+
+        position:absolute;
+        left:0;
+        top:0;
+        width:100%;
+
+    }
+
+    @page{
+
+        size:A4;
+        margin:12mm;
+
+    }
+
+}
 
 `;
 
-
-/*
-===========================================================
- PATCH ORIGINAL SOURCE
-===========================================================
-*/
-
-function patchOriginalSource(source){
-
-  let fixed=source;
+document.head.appendChild(printStyle);
 
 
-  /*
-  ---------------------------------------------------------
-  1. Replace broken MEMBER save/edit section
-  ---------------------------------------------------------
-  */
+/* =========================================================
+   SAFE HTML
+========================================================= */
 
-  const memberStart =
-    fixed.indexOf(
-      "async function saveMember(){"
-    );
+function safe(v){
 
+    if(typeof window.esc==="function"){
 
-  const loadMarker =
-    "/* =========================================================\n" +
-    "   LOAD MEMBERS\n" +
-    "========================================================= */";
+        return window.esc(v);
 
+    }
 
-  const memberEnd =
-    fixed.indexOf(
-      loadMarker,
-      memberStart
-    );
-
-
-  if(
-    memberStart !== -1 &&
-    memberEnd !== -1
-  ){
-
-    const before =
-      fixed.substring(
-        0,
-        memberStart
-      );
-
-
-    const after =
-      fixed.substring(
-        memberEnd
-      );
-
-
-    fixed =
-      before +
-      FIXED_MEMBER_CODE +
-      "\n\n" +
-      after;
-
-  }
-
-
-  /*
-  ---------------------------------------------------------
-  2. FIX loadMembers missing closing brace
-  ---------------------------------------------------------
-  */
-
-  const brokenLoadEnd =
-    /(\`\)\.join\(""\);\s*)(\/\* =========================================================\s*MEMBER VIEW)/;
-
-
-  fixed =
-    fixed.replace(
-      brokenLoadEnd,
-      '$1}\n\n$2'
-    );
-
-
-  /*
-  ---------------------------------------------------------
-  3. Prevent old duplicate member functions later
-  ---------------------------------------------------------
-  */
-
-  /*
-  Existing deleteMember later in the original file
-  will be replaced by the fixed one because the original
-  function declaration is still present.
-
-  Remove the old duplicate function.
-  */
-
-  const oldDelete =
-    /async function deleteMember\(id\)\{[\s\S]*?\n\}\s*\n\s*\/\* =========================================================\s*DASHBOARD/;
-
-
-  fixed =
-    fixed.replace(
-      oldDelete,
-      "\n/* =========================================================\n   DASHBOARD\n========================================================= */"
-    );
-
-
-  return fixed;
+    return String(v ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
 
 }
 
 
-/*
-===========================================================
- LOAD ORIGINAL
-===========================================================
-*/
+/* =========================================================
+   SAMITY SETTINGS
+========================================================= */
 
-async function startApplication(){
+function getSettings(){
 
-  try{
+    try{
 
-    loaderText(
-      "মূল সিস্টেম লোড হচ্ছে..."
-    );
+        return JSON.parse(
+            localStorage.getItem("samity_settings") || "{}"
+        );
 
+    }catch(e){
 
-    const response =
-      await fetch(
-        ORIGINAL_URL,
-        {
-          cache:"no-store"
-        }
-      );
-
-
-    if(!response.ok){
-
-      throw new Error(
-        "GitHub থেকে index.html লোড করা যায়নি। HTTP "+
-        response.status
-      );
+        return {};
 
     }
 
-
-    let source =
-      await response.text();
+}
 
 
-    loaderText(
-      "Member Management ঠিক করা হচ্ছে..."
-    );
+/* =========================================================
+   PRINT AREA
+========================================================= */
+
+function createPrintArea(title,body){
+
+    const old=document.getElementById("printArea");
+
+    if(old) old.remove();
+
+    const s=getSettings();
+
+    const samityName=
+        s.name ||
+        "সমবায় সমিতি";
+
+    const address=
+        s.address ||
+        "";
+
+    const mobile=
+        s.mobile ||
+        "";
+
+    const reg=
+        s.reg ||
+        "";
+
+    const now=
+        new Date().toLocaleString(
+            "bn-BD"
+        );
+
+    const div=document.createElement("div");
+
+    div.id="printArea";
+
+    div.innerHTML=`
+
+        <div class="print-header">
+
+            <div class="print-logo">
+                🏛️
+            </div>
+
+            <h1>
+                ${safe(samityName)}
+            </h1>
+
+            ${
+                reg
+                ? `<div class="print-meta">
+                     নিবন্ধন নং: ${safe(reg)}
+                   </div>`
+                : ""
+            }
+
+            ${
+                address
+                ? `<div class="print-meta">
+                     ${safe(address)}
+                   </div>`
+                : ""
+            }
+
+            ${
+                mobile
+                ? `<div class="print-meta">
+                     মোবাইল: ${safe(mobile)}
+                   </div>`
+                : ""
+            }
+
+        </div>
+
+        <h2>
+            ${safe(title)}
+        </h2>
+
+        ${body}
+
+        <div class="print-footer">
+
+            <span>
+                Print Date:
+                ${safe(now)}
+            </span>
+
+            <span>
+                সমবায় সমিতি ব্যবস্থাপনা
+            </span>
+
+        </div>
+
+    `;
+
+    document.body.appendChild(div);
+
+    setTimeout(function(){
+
+        window.print();
+
+    },100);
+
+}
 
 
-    source =
-      patchOriginalSource(
-        source
-      );
+/* =========================================================
+   REMOVE PRINT AREA
+========================================================= */
+
+window.addEventListener(
+    "afterprint",
+    function(){
+
+        const el=
+            document.getElementById(
+                "printArea"
+            );
+
+        if(el) el.remove();
+
+    }
+);
 
 
-    /*
-    -------------------------------------------------------
-    Check that broken function is gone
-    -------------------------------------------------------
-    */
+/* =========================================================
+   MEMBER PRINT
+========================================================= */
+
+let printMemberData=null;
+
+
+/* ---------------------------------------------------------
+   VIEW MEMBER OVERRIDE
+--------------------------------------------------------- */
+
+const originalViewMember=
+    window.viewMember;
+
+window.viewMember=async function(id){
+
+    if(typeof originalViewMember==="function"){
+
+        await originalViewMember(id);
+
+    }
+
+    try{
+
+        const result=
+            await window.db
+                .from("members")
+                .select("*")
+                .eq("id",id)
+                .single();
+
+        if(result.data){
+
+            printMemberData=result.data;
+
+            addMemberPrintButton();
+
+        }
+
+    }catch(e){
+
+        console.error(e);
+
+    }
+
+};
+
+
+/* =========================================================
+   MEMBER MODAL PRINT BUTTON
+========================================================= */
+
+function addMemberPrintButton(){
+
+    const modal=
+        document.getElementById(
+            "memberViewModal"
+        );
+
+    if(!modal) return;
+
+    const header=
+        modal.querySelector(
+            ".modal-header"
+        );
+
+    if(!header) return;
 
     if(
-      source.includes(
-        '"manager_update_member"'
-      )
-    ){
+        header.querySelector(
+            "#memberPrintButton"
+        )
+    ) return;
 
-      /*
-      This is not fatal because the original string may
-      appear elsewhere. Continue.
-      */
+    const button=
+        document.createElement("button");
+
+    button.id=
+        "memberPrintButton";
+
+    button.className=
+        "print-button";
+
+    button.innerHTML=
+        "🖨️ Print";
+
+    button.onclick=
+        function(){
+
+            printCurrentMember();
+
+        };
+
+    const close=
+        header.querySelector(
+            ".close"
+        );
+
+    if(close){
+
+        header.insertBefore(
+            button,
+            close
+        );
+
+    }else{
+
+        header.appendChild(
+            button
+        );
 
     }
 
+}
 
-    loaderText(
-      "Application চালু হচ্ছে..."
+
+/* =========================================================
+   PRINT ONE MEMBER
+========================================================= */
+
+window.printCurrentMember=function(){
+
+    if(!printMemberData){
+
+        alert(
+            "সদস্যের তথ্য পাওয়া যায়নি।"
+        );
+
+        return;
+
+    }
+
+    const m=printMemberData;
+
+    const fields=[
+
+        ["Member ID",m.member_id],
+        ["নাম",m.full_name],
+        ["পিতা/স্বামী",m.father_name],
+        ["মাতা",m.mother_name],
+        ["জন্মতারিখ",m.date_of_birth],
+        ["লিঙ্গ",m.gender],
+        ["মোবাইল",m.mobile],
+        ["NID",m.nid],
+        ["পেশা",m.occupation],
+        ["গ্রাম",m.village],
+        ["ডাকঘর",m.post_office],
+        ["ইউনিয়ন/পৌরসভা",m.union_name],
+        ["ওয়ার্ড",m.ward_no],
+        ["উপজেলা",m.upazila],
+        ["জেলা",m.district],
+        ["বিভাগ",m.division],
+        ["যোগদানের তারিখ",m.join_date],
+        ["Status",m.status],
+        ["Nominee",m.nominee_name],
+        ["Nominee Relation",m.nominee_relation],
+        ["Nominee Mobile",m.nominee_mobile],
+        ["Nominee NID",m.nominee_nid],
+        ["ঠিকানা",m.address],
+        ["Nominee Address",m.nominee_address]
+
+    ];
+
+    const html=
+        `<div class="member-info">`+
+        fields.map(function(x){
+
+            return `
+                <div class="info-item">
+                    <b>${safe(x[0])}</b>
+                    ${safe(x[1])}
+                </div>
+            `;
+
+        }).join("")+
+        `</div>`;
+
+    createPrintArea(
+        "সদস্যের সম্পূর্ণ তথ্য",
+        html
     );
 
-
-    /*
-    -------------------------------------------------------
-    Replace this document with fixed original
-    -------------------------------------------------------
-    */
-
-    document.open();
-
-    document.write(
-      source
-    );
-
-    document.close();
+};
 
 
-  }catch(error){
+/* =========================================================
+   PRINT MEMBER BY ID
+========================================================= */
 
-    console.error(error);
+window.printMemberById=async function(id){
+
+    try{
+
+        const {data,error}=
+            await window.db
+                .from("members")
+                .select("*")
+                .eq("id",id)
+                .single();
+
+        if(error){
+
+            alert(error.message);
+
+            return;
+
+        }
+
+        printMemberData=data;
+
+        printCurrentMember();
+
+    }catch(e){
+
+        alert(e.message);
+
+    }
+
+};
 
 
-    loaderText(
-      "সিস্টেম চালু করা যায়নি"
-    );
+/* =========================================================
+   MEMBER LIST PRINT
+========================================================= */
+
+window.printAllMembers=async function(){
+
+    try{
+
+        const {data,error}=
+            await window.db
+                .from("members")
+                .select("*")
+                .order(
+                    "created_at",
+                    {ascending:false}
+                )
+                .limit(5000);
+
+        if(error){
+
+            alert(
+                "সদস্য তালিকা নেওয়া যায়নি:\n"+
+                error.message
+            );
+
+            return;
+
+        }
+
+        if(!data || !data.length){
+
+            alert(
+                "কোনো সদস্য পাওয়া যায়নি।"
+            );
+
+            return;
+
+        }
+
+        const rows=
+            data.map(function(m,i){
+
+                return `
+                    <tr>
+
+                        <td>${i+1}</td>
+
+                        <td>
+                            ${safe(m.member_id)}
+                        </td>
+
+                        <td>
+                            ${safe(m.full_name)}
+                        </td>
+
+                        <td>
+                            ${safe(m.mobile)}
+                        </td>
+
+                        <td>
+                            ${safe(m.nid)}
+                        </td>
+
+                        <td>
+                            ${safe(m.join_date)}
+                        </td>
+
+                        <td>
+                            ${safe(m.status)}
+                        </td>
+
+                    </tr>
+                `;
+
+            }).join("");
+
+        createPrintArea(
+            "সকল সদস্যের তালিকা",
+            `
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>ক্রমিক</th>
+                            <th>Member ID</th>
+                            <th>নাম</th>
+                            <th>মোবাইল</th>
+                            <th>NID</th>
+                            <th>যোগদানের তারিখ</th>
+                            <th>Status</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        ${rows}
+
+                    </tbody>
+
+                </table>
+
+            `
+        );
+
+    }catch(e){
+
+        alert(e.message);
+
+    }
+
+};
 
 
-    loaderError(
-      error.message+
-      "\n\nGitHub repository এবং Internet connection পরীক্ষা করুন।"
-    );
+/* =========================================================
+   SEARCH RESULT PRINT
+========================================================= */
 
-  }
+window.printMemberSearch=async function(){
+
+    const input=
+        document.getElementById(
+            "memberSearch"
+        );
+
+    const q=
+        input
+        ? input.value.trim()
+        : "";
+
+    if(!q){
+
+        return printAllMembers();
+
+    }
+
+    try{
+
+        const {data,error}=
+            await window.db
+                .from("members")
+                .select("*")
+                .or(
+                    "member_id.ilike.%"+
+                    q+
+                    "%,full_name.ilike.%"+
+                    q+
+                    "%,mobile.ilike.%"+
+                    q+
+                    "%,nid.ilike.%"+
+                    q+
+                    "%"
+                )
+                .order(
+                    "created_at",
+                    {ascending:false}
+                )
+                .limit(5000);
+
+        if(error){
+
+            alert(error.message);
+
+            return;
+
+        }
+
+        if(!data || !data.length){
+
+            alert(
+                "Search অনুযায়ী কোনো সদস্য পাওয়া যায়নি।"
+            );
+
+            return;
+
+        }
+
+        const rows=
+            data.map(function(m,i){
+
+                return `
+                    <tr>
+
+                        <td>${i+1}</td>
+                        <td>${safe(m.member_id)}</td>
+                        <td>${safe(m.full_name)}</td>
+                        <td>${safe(m.mobile)}</td>
+                        <td>${safe(m.nid)}</td>
+                        <td>${safe(m.join_date)}</td>
+                        <td>${safe(m.status)}</td>
+
+                    </tr>
+                `;
+
+            }).join("");
+
+        createPrintArea(
+            "Search করা সদস্যদের তালিকা",
+            `
+
+                <div class="print-meta">
+                    Search:
+                    <b>${safe(q)}</b>
+                </div>
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>ক্রমিক</th>
+                            <th>Member ID</th>
+                            <th>নাম</th>
+                            <th>মোবাইল</th>
+                            <th>NID</th>
+                            <th>যোগদানের তারিখ</th>
+                            <th>Status</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+                        ${rows}
+                    </tbody>
+
+                </table>
+
+            `
+        );
+
+    }catch(e){
+
+        alert(e.message);
+
+    }
+
+};
+
+
+/* =========================================================
+   ADD MEMBER PRINT BUTTONS
+========================================================= */
+
+function addMemberPrintControls(){
+
+    const section=
+        document.getElementById(
+            "members"
+        );
+
+    if(!section) return;
+
+    const toolbar=
+        section.querySelector(
+            ".toolbar"
+        );
+
+    if(
+        toolbar &&
+        !toolbar.querySelector(
+            "#allMembersPrintBtn"
+        )
+    ){
+
+        const b1=
+            document.createElement(
+                "button"
+            );
+
+        b1.id=
+            "allMembersPrintBtn";
+
+        b1.className=
+            "secondary";
+
+        b1.innerHTML=
+            "🖨️ সকল সদস্য Print";
+
+        b1.onclick=
+            window.printAllMembers;
+
+        toolbar.appendChild(b1);
+
+
+        const b2=
+            document.createElement(
+                "button"
+            );
+
+        b2.id=
+            "searchMembersPrintBtn";
+
+        b2.className=
+            "secondary";
+
+        b2.innerHTML=
+            "🖨️ Search Result Print";
+
+        b2.onclick=
+            window.printMemberSearch;
+
+        toolbar.appendChild(b2);
+
+    }
 
 }
 
-startApplication();
 
+/* =========================================================
+   ADD PRINT BUTTON TO MEMBER ROWS
+========================================================= */
+
+function addRowPrintButtons(){
+
+    const list=
+        document.getElementById(
+            "memberList"
+        );
+
+    if(!list) return;
+
+    list.querySelectorAll(
+        "tr"
+    ).forEach(function(row){
+
+        if(
+            row.querySelector(
+                ".member-row-print"
+            )
+        ) return;
+
+        const buttons=
+            row.querySelectorAll(
+                "button"
+            );
+
+        if(!buttons.length) return;
+
+        const viewButton=
+            buttons[0];
+
+        const onclick=
+            viewButton.getAttribute(
+                "onclick"
+            ) || "";
+
+        const match=
+            onclick.match(
+                /viewMember\(['"]([^'"]+)['"]\)/
+            );
+
+        if(!match) return;
+
+        const id=match[1];
+
+        const printButton=
+            document.createElement(
+                "button"
+            );
+
+        printButton.className=
+            "secondary member-row-print";
+
+        printButton.innerHTML=
+            "🖨️";
+
+        printButton.title=
+            "এই সদস্য Print";
+
+        printButton.onclick=
+            function(){
+
+                printMemberById(id);
+
+            };
+
+        viewButton.parentNode.appendChild(
+            printButton
+        );
+
+    });
+
+}
+
+
+/* =========================================================
+   MANAGER / COMMITTEE UI
+========================================================= */
+
+function applyRoleUI(){
+
+    if(!window.currentProfile)
+        return;
+
+    document.body.classList.remove(
+        "manager-mode",
+        "committee-mode"
+    );
+
+    if(isManager()){
+
+        document.body.classList.add(
+            "manager-mode"
+        );
+
+    }
+
+    if(isCommittee()){
+
+        document.body.classList.add(
+            "committee-mode"
+        );
+
+        hideCommitteeActions();
+
+    }
+
+}
+
+
+/* ---------------------------------------------------------
+   Hide write buttons for Committee
+--------------------------------------------------------- */
+
+function hideCommitteeActions(){
+
+    if(!isCommittee())
+        return;
+
+    const blockedFunctions=[
+
+        "openMemberModal",
+        "saveMember",
+        "deactivateMember",
+
+        "openTransactionModal",
+        "saveTransaction",
+
+        "openShareModal",
+
+        "saveGeneric",
+
+        "saveSettings",
+
+        "saveEmployee",
+
+        "deleteEmployee",
+
+        "saveCommittee",
+
+        "deleteCommittee",
+
+        "saveMeeting",
+
+        "deleteMeeting",
+
+        "saveApproval",
+
+        "approve",
+
+        "reject",
+
+        "saveLoan",
+
+        "deleteLoan",
+
+        "saveDps",
+
+        "deleteDps",
+
+        "saveFdr",
+
+        "deleteFdr",
+
+        "saveAccount",
+
+        "deleteAccount",
+
+        "saveCash",
+
+        "saveIncome",
+
+        "saveExpense"
+
+    ];
+
+    document
+        .querySelectorAll(
+            "button"
+        )
+        .forEach(function(btn){
+
+            const click=
+                btn.getAttribute(
+                    "onclick"
+                ) || "";
+
+            const blocked=
+                blockedFunctions.some(
+                    function(fn){
+
+                        return click.includes(
+                            fn+"("
+                        );
+
+                    }
+                );
+
+            if(blocked){
+
+                btn.classList.add(
+                    "committee-hidden"
+                );
+
+            }
+
+        });
+
+}
+
+
+/* =========================================================
+   PROTECT MANAGER-ONLY FUNCTIONS
+========================================================= */
+
+function protectFunction(
+    name
+){
+
+    const original=
+        window[name];
+
+    if(
+        typeof original !==
+        "function"
+    ) return;
+
+    if(
+        original.__roleProtected
+    ) return;
+
+    const protectedFunction=
+        function(){
+
+            if(!managerOnly())
+                return;
+
+            return original.apply(
+                this,
+                arguments
+            );
+
+        };
+
+    protectedFunction.__roleProtected=true;
+
+    window[name]=
+        protectedFunction;
+
+}
+
+
+/* Manager-only actions */
+
+[
+    "openMemberModal",
+    "saveMember",
+    "deactivateMember",
+
+    "openTransactionModal",
+    "saveTransaction",
+
+    "openShareModal",
+
+    "saveGeneric",
+
+    "saveSettings",
+
+    "saveEmployee",
+    "deleteEmployee",
+
+    "saveCommittee",
+    "deleteCommittee",
+
+    "saveMeeting",
+    "deleteMeeting",
+
+    "saveApproval",
+    "approve",
+    "reject",
+
+    "saveLoan",
+    "deleteLoan",
+
+    "saveDps",
+    "deleteDps",
+
+    "saveFdr",
+    "deleteFdr",
+
+    "saveAccount",
+    "deleteAccount",
+
+    "saveCash",
+    "saveIncome",
+    "saveExpense"
+
+].forEach(
+    protectFunction
+);
+
+
+/* =========================================================
+   REPORT PRINT
+========================================================= */
+
+window.printCurrentReport=function(){
+
+    const report=
+        document.getElementById(
+            "reportOutput"
+        );
+
+    if(!report){
+
+        alert(
+            "Report পাওয়া যায়নি।"
+        );
+
+        return;
+
+    }
+
+    createPrintArea(
+        "হিসাব / রিপোর্ট",
+        report.innerHTML
+    );
+
+};
+
+
+/* =========================================================
+   PRINT CURRENT SECTION
+========================================================= */
+
+window.printCurrentSection=function(){
+
+    const active=
+        document.querySelector(
+            ".section.active"
+        );
+
+    if(!active){
+
+        alert(
+            "কোনো Section খোলা নেই।"
+        );
+
+        return;
+
+    }
+
+    const clone=
+        active.cloneNode(true);
+
+    clone.querySelectorAll(
+        "button,input,select,textarea"
+    ).forEach(
+        function(el){
+            el.remove();
+        }
+    );
+
+    const title=
+        active.querySelector(
+            ".page-title h1"
+        );
+
+    createPrintArea(
+        title
+        ? title.textContent
+        : "রিপোর্ট",
+        clone.innerHTML
+    );
+
+};
+
+
+/* =========================================================
+   REPORT BUTTON
+========================================================= */
+
+function addReportPrintButton(){
+
+    const reports=
+        document.getElementById(
+            "reports"
+        );
+
+    if(!reports) return;
+
+    const title=
+        reports.querySelector(
+            ".page-title"
+        );
+
+    if(
+        title &&
+        !document.getElementById(
+            "reportPrintButton"
+        )
+    ){
+
+        const button=
+            document.createElement(
+                "button"
+            );
+
+        button.id=
+            "reportPrintButton";
+
+        button.className=
+            "secondary";
+
+        button.innerHTML=
+            "🖨️ রিপোর্ট Print";
+
+        button.onclick=
+            window.printCurrentReport;
+
+        title.appendChild(
+            button
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   GLOBAL PRINT BUTTON
+========================================================= */
+
+function addGlobalPrintButton(){
+
+    const topbar=
+        document.querySelector(
+            ".topbar"
+        );
+
+    if(
+        !topbar ||
+        document.getElementById(
+            "globalPrintButton"
+        )
+    ) return;
+
+    const button=
+        document.createElement(
+            "button"
+        );
+
+    button.id=
+        "globalPrintButton";
+
+    button.className=
+        "secondary";
+
+    button.innerHTML=
+        "🖨️";
+
+    button.title=
+        "বর্তমান পৃষ্ঠা Print";
+
+    button.onclick=
+        window.printCurrentSection;
+
+    const user=
+        topbar.querySelector(
+            ".user"
+        );
+
+    if(user)
+        user.insertBefore(
+            button,
+            user.firstChild
+        );
+
+}
+
+
+/* =========================================================
+   WATCH DOM
+========================================================= */
+
+function refreshControls(){
+
+    addMemberPrintControls();
+
+    addRowPrintButtons();
+
+    addReportPrintButton();
+
+    addGlobalPrintButton();
+
+    applyRoleUI();
+
+}
+
+
+/* =========================================================
+   OBSERVER
+========================================================= */
+
+const observer=
+    new MutationObserver(
+        function(){
+
+            refreshControls();
+
+        }
+    );
+
+observer.observe(
+    document.body,
+    {
+        childList:true,
+        subtree:true
+    }
+);
+
+
+/* =========================================================
+   INITIAL
+========================================================= */
+
+setTimeout(
+    refreshControls,
+    500
+);
+
+setTimeout(
+    refreshControls,
+    1500
+);
+
+setTimeout(
+    refreshControls,
+    3000
+);
+
+
+/* =========================================================
+   ROLE CHANGE / LOGIN REFRESH
+========================================================= */
+
+setInterval(
+    function(){
+
+        if(
+            window.currentProfile
+        ){
+
+            applyRoleUI();
+
+        }
+
+    },
+    2000
+);
+
+
+})();
 </script>
 
 </body>

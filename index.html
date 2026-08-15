@@ -1664,13 +1664,21 @@ async function nextMemberId(){
    MEMBER MODAL
 ========================================================= */
 
+let editingMemberId = null;
+
 async function openMemberModal(){
+
+  editingMemberId = null;
 
   $("memberModal").style.display="block";
 
   $("memberId").value=await nextMemberId();
 
   $("joinDate").value=today();
+
+  $("memberModal")
+    .querySelector(".modal-header h2")
+    .textContent="👥 নতুন সদস্য";
 
 }
 
@@ -1686,6 +1694,154 @@ async function saveMember(){
 
   const payload={
 
+    full_name:name,
+
+    father_name:$("fatherName").value.trim(),
+
+    mother_name:$("motherName").value.trim(),
+
+    date_of_birth:$("dob").value || null,
+
+    gender:$("gender").value,
+
+    mobile:$("mobile").value.trim(),
+
+    nid_no:$("nid").value.trim(),
+
+    occupation:$("occupation").value.trim(),
+
+    village:$("village").value.trim(),
+
+    post_office:$("postOffice").value.trim(),
+
+    union_name:$("unionName").value.trim(),
+
+    ward_no:$("ward").value.trim(),
+
+    upazila:$("upazila").value.trim(),
+
+    district:$("district").value.trim(),
+
+    division:$("division").value.trim(),
+
+    address:$("address").value.trim(),
+
+    nominee_name:$("nomineeName").value.trim(),
+
+    nominee_relation:$("nomineeRelation").value.trim(),
+
+    nominee_mobile:$("nomineeMobile").value.trim(),
+
+    nominee_nid:$("nomineeNid").value.trim(),
+
+    nominee_address:$("nomineeAddress").value.trim(),
+
+    joining_date:$("joinDate").value || today(),
+
+    email:null
+
+  };
+
+
+  /* =========================
+     EDIT EXISTING MEMBER
+     ========================= */
+
+  if(editingMemberId){
+
+    const {data,error}=await db.rpc(
+      "manager_update_member",
+      {
+        p_member_id:editingMemberId,
+        p_data:payload
+      }
+    );
+
+    if(error){
+
+      alert(
+        "❌ সদস্য Edit করা যায়নি:\n\n"+
+        error.message
+      );
+
+      return;
+    }
+
+    alert("✅ সদস্যের তথ্য সফলভাবে আপডেট হয়েছে।");
+
+    editingMemberId=null;
+
+    closeModal("memberModal");
+
+    await loadMembers();
+    await loadDashboard();
+
+    return;
+  }
+ async function editMember(id){
+
+  const role = String(currentProfile?.role || "").toLowerCase();
+
+  if(role !== "manager"){
+    alert("⛔ শুধুমাত্র Manager সদস্য Edit করতে পারবেন।");
+    return;
+  }
+
+  const { data, error } = await db
+    .from("members")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if(error){
+    alert("❌ সদস্যের তথ্য পাওয়া যায়নি:\n" + error.message);
+    return;
+  }
+
+  editingMemberId = id;
+
+  $("memberId").value = data.member_id || "";
+  $("memberName").value = data.full_name || "";
+  $("fatherName").value =
+    data.father_name || data.father_husband_name || "";
+  $("motherName").value = data.mother_name || "";
+  $("dob").value = data.date_of_birth || data.dob || "";
+  $("gender").value = data.gender || "";
+  $("mobile").value = data.mobile || "";
+  $("nid").value = data.nid_no || data.nid || "";
+  $("occupation").value = data.occupation || "";
+  $("joinDate").value =
+    data.joining_date || data.join_date || "";
+
+  $("village").value = data.village || "";
+  $("postOffice").value = data.post_office || "";
+  $("unionName").value = data.union_name || "";
+  $("ward").value = data.ward_no || "";
+  $("upazila").value = data.upazila || "";
+  $("district").value = data.district || "";
+  $("division").value = data.division || "";
+  $("address").value = data.address || "";
+
+  $("nomineeName").value = data.nominee_name || "";
+  $("nomineeRelation").value =
+    data.nominee_relation || "";
+  $("nomineeMobile").value =
+    data.nominee_mobile || "";
+  $("nomineeNid").value =
+    data.nominee_nid || "";
+  $("nomineeAddress").value =
+    data.nominee_address || "";
+
+  $("memberModal").style.display = "block";
+}
+
+
+  /* =========================
+     NEW MEMBER
+     ========================= */
+
+  const newPayload={
+
     member_id:$("memberId").value,
 
     full_name:name,
@@ -1694,7 +1850,7 @@ async function saveMember(){
 
     mother_name:$("motherName").value.trim(),
 
-    date_of_birth:$("dob").value||null,
+    date_of_birth:$("dob").value || null,
 
     gender:$("gender").value,
 
@@ -1730,22 +1886,28 @@ async function saveMember(){
 
     nominee_address:$("nomineeAddress").value.trim(),
 
-    join_date:$("joinDate").value||today(),
+    join_date:$("joinDate").value || today(),
 
     status:"active"
 
   };
 
+
   const {error}=await db
     .from("members")
-    .insert([payload]);
+    .insert([newPayload]);
+
 
   if(error){
 
-    alert("❌ Member Save Error:\n"+error.message);
+    alert(
+      "❌ Member Save Error:\n"+
+      error.message
+    );
 
     return;
   }
+
 
   alert("✅ নতুন সদস্য সংরক্ষণ হয়েছে।");
 
@@ -1830,24 +1992,32 @@ async function loadMembers(){
       </td>
 
       <td>
+  <button class="secondary"
+    onclick="viewMember('${m.id}')">
+    👁
+  </button>
 
-        <button class="secondary"
-          onclick="viewMember('${m.id}')">
-          👁
-        </button>
+  <button class="secondary"
+    onclick="printMemberById('${m.id}')">
+    🖨️
+  </button>
 
-        <button class="danger"
-          onclick="deactivateMember('${m.id}')">
-          ✕
-        </button>
+  ${
+    String(currentProfile?.role || "").toLowerCase() === "manager"
+    ? `
+      <button class="primary"
+        onclick="editMember('${m.id}')">
+        ✏️
+      </button>
 
-      </td>
-
-    </tr>
-
-  `).join("");
-
-}
+      <button class="danger"
+        onclick="deleteMember('${m.id}')">
+        🗑️
+      </button>
+    `
+    : ""
+  }
+</td>
 
 
 /* =========================================================
@@ -1915,6 +2085,63 @@ async function deactivateMember(id){
   await loadMembers();
   await loadDashboard();
 
+}
+
+   async function deleteMember(id){
+
+  const role = String(
+    currentProfile?.role || ""
+  ).toLowerCase();
+
+  if(role !== "manager"){
+    alert("⛔ শুধুমাত্র Manager সদস্য Delete করতে পারবেন।");
+    return;
+  }
+
+  const { data: member, error: memberError } = await db
+    .from("members")
+    .select("member_id, full_name")
+    .eq("id", id)
+    .single();
+
+  if(memberError){
+    alert(
+      "❌ সদস্যের তথ্য পাওয়া যায়নি:\n\n" +
+      memberError.message
+    );
+    return;
+  }
+
+  const ok = confirm(
+    "⚠️ সদস্য Delete\n\n" +
+    "Member ID: " + (member.member_id || "") +
+    "\nনাম: " + (member.full_name || "") +
+    "\n\n" +
+    "এই সদস্যের কোনো হিসাব/লেনদেন থাকলে Delete হবে না।\n\n" +
+    "আপনি কি নিশ্চিত?"
+  );
+
+  if(!ok) return;
+
+  const { data, error } = await db.rpc(
+    "delete_member_if_no_transaction",
+    {
+      p_member_id: id
+    }
+  );
+
+  if(error){
+    alert(
+      "❌ সদস্য Delete করা যায়নি:\n\n" +
+      error.message
+    );
+    return;
+  }
+
+  alert("✅ সদস্য সফলভাবে Delete হয়েছে।");
+
+  await loadMembers();
+  await loadDashboard();
 }
 
 

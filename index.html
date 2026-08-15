@@ -1682,7 +1682,6 @@ async function openMemberModal(){
 
 }
 
-
 async function saveMember(){
 
   const name=$("memberName").value.trim();
@@ -1692,70 +1691,64 @@ async function saveMember(){
     return;
   }
 
+  const memberId=$("memberId").value.trim();
+
+  if(!memberId){
+    alert("Member ID পাওয়া যায়নি।");
+    return;
+  }
+
   const payload={
+    member_id:memberId,
+    member_no:memberId,
 
     full_name:name,
-
     father_name:$("fatherName").value.trim(),
-
     mother_name:$("motherName").value.trim(),
 
     date_of_birth:$("dob").value || null,
+    dob:$("dob").value || null,
 
-    gender:$("gender").value,
-
+    gender:$("gender").value || null,
     mobile:$("mobile").value.trim(),
 
     nid_no:$("nid").value.trim(),
+    nid:$("nid").value.trim(),
 
     occupation:$("occupation").value.trim(),
-
     village:$("village").value.trim(),
-
     post_office:$("postOffice").value.trim(),
-
     union_name:$("unionName").value.trim(),
-
     ward_no:$("ward").value.trim(),
-
     upazila:$("upazila").value.trim(),
-
     district:$("district").value.trim(),
-
     division:$("division").value.trim(),
 
     address:$("address").value.trim(),
 
     nominee_name:$("nomineeName").value.trim(),
-
     nominee_relation:$("nomineeRelation").value.trim(),
-
     nominee_mobile:$("nomineeMobile").value.trim(),
-
     nominee_nid:$("nomineeNid").value.trim(),
-
     nominee_address:$("nomineeAddress").value.trim(),
 
     joining_date:$("joinDate").value || today(),
+    join_date:$("joinDate").value || today(),
 
     email:null
-
   };
 
 
   /* =========================
      EDIT EXISTING MEMBER
-     ========================= */
+  ========================= */
 
   if(editingMemberId){
 
-    const {data,error}=await db.rpc(
-      "manager_update_member",
-      {
-        p_member_id:editingMemberId,
-        p_data:payload
-      }
-    );
+    const {error}=await db
+      .from("members")
+      .update(payload)
+      .eq("id",editingMemberId);
 
     if(error){
 
@@ -1778,130 +1771,24 @@ async function saveMember(){
 
     return;
   }
- async function editMember(id){
-
-  const role = String(currentProfile?.role || "").toLowerCase();
-
-  if(role !== "manager"){
-    alert("⛔ শুধুমাত্র Manager সদস্য Edit করতে পারবেন।");
-    return;
-  }
-
-  const { data, error } = await db
-    .from("members")
-    .select("*")
-    .eq("id", id)
-    .single();
-
-  if(error){
-    alert("❌ সদস্যের তথ্য পাওয়া যায়নি:\n" + error.message);
-    return;
-  }
-
-  editingMemberId = id;
-
-  $("memberId").value = data.member_id || "";
-  $("memberName").value = data.full_name || "";
-  $("fatherName").value =
-    data.father_name || data.father_husband_name || "";
-  $("motherName").value = data.mother_name || "";
-  $("dob").value = data.date_of_birth || data.dob || "";
-  $("gender").value = data.gender || "";
-  $("mobile").value = data.mobile || "";
-  $("nid").value = data.nid_no || data.nid || "";
-  $("occupation").value = data.occupation || "";
-  $("joinDate").value =
-    data.joining_date || data.join_date || "";
-
-  $("village").value = data.village || "";
-  $("postOffice").value = data.post_office || "";
-  $("unionName").value = data.union_name || "";
-  $("ward").value = data.ward_no || "";
-  $("upazila").value = data.upazila || "";
-  $("district").value = data.district || "";
-  $("division").value = data.division || "";
-  $("address").value = data.address || "";
-
-  $("nomineeName").value = data.nominee_name || "";
-  $("nomineeRelation").value =
-    data.nominee_relation || "";
-  $("nomineeMobile").value =
-    data.nominee_mobile || "";
-  $("nomineeNid").value =
-    data.nominee_nid || "";
-  $("nomineeAddress").value =
-    data.nominee_address || "";
-
-  $("memberModal").style.display = "block";
-}
 
 
   /* =========================
      NEW MEMBER
-     ========================= */
-
-  const newPayload={
-
-    member_id:$("memberId").value,
-
-    full_name:name,
-
-    father_name:$("fatherName").value.trim(),
-
-    mother_name:$("motherName").value.trim(),
-
-    date_of_birth:$("dob").value || null,
-
-    gender:$("gender").value,
-
-    mobile:$("mobile").value.trim(),
-
-    nid:$("nid").value.trim(),
-
-    occupation:$("occupation").value.trim(),
-
-    village:$("village").value.trim(),
-
-    post_office:$("postOffice").value.trim(),
-
-    union_name:$("unionName").value.trim(),
-
-    ward_no:$("ward").value.trim(),
-
-    upazila:$("upazila").value.trim(),
-
-    district:$("district").value.trim(),
-
-    division:$("division").value.trim(),
-
-    address:$("address").value.trim(),
-
-    nominee_name:$("nomineeName").value.trim(),
-
-    nominee_relation:$("nomineeRelation").value.trim(),
-
-    nominee_mobile:$("nomineeMobile").value.trim(),
-
-    nominee_nid:$("nomineeNid").value.trim(),
-
-    nominee_address:$("nomineeAddress").value.trim(),
-
-    join_date:$("joinDate").value || today(),
-
-    status:"active"
-
-  };
-
+  ========================= */
 
   const {error}=await db
     .from("members")
-    .insert([newPayload]);
+    .insert([{
+      ...payload,
+      status:"active"
+    }]);
 
 
   if(error){
 
     alert(
-      "❌ Member Save Error:\n"+
+      "❌ নতুন সদস্য সংরক্ষণ হয়নি:\n\n"+
       error.message
     );
 
@@ -1918,6 +1805,130 @@ async function saveMember(){
 
 }
 
+
+/* =========================================================
+   EDIT MEMBER
+========================================================= */
+
+async function editMember(id){
+
+  const role=String(
+    currentProfile?.role || ""
+  ).toLowerCase();
+
+  if(role!=="manager"){
+
+    alert(
+      "⛔ শুধুমাত্র Manager সদস্য Edit করতে পারবেন।"
+    );
+
+    return;
+  }
+
+
+  const {data,error}=await db
+    .from("members")
+    .select("*")
+    .eq("id",id)
+    .single();
+
+
+  if(error){
+
+    alert(
+      "❌ সদস্যের তথ্য পাওয়া যায়নি:\n\n"+
+      error.message
+    );
+
+    return;
+  }
+
+
+  editingMemberId=id;
+
+  $("memberId").value=data.member_id || data.member_no || "";
+
+  $("memberName").value=data.full_name || "";
+
+  $("fatherName").value=
+    data.father_name ||
+    data.father_husband_name ||
+    "";
+
+  $("motherName").value=
+    data.mother_name || "";
+
+  $("dob").value=
+    data.date_of_birth ||
+    data.dob ||
+    "";
+
+  $("gender").value=
+    data.gender || "";
+
+  $("mobile").value=
+    data.mobile || "";
+
+  $("nid").value=
+    data.nid_no ||
+    data.nid ||
+    "";
+
+  $("occupation").value=
+    data.occupation || "";
+
+  $("joinDate").value=
+    data.joining_date ||
+    data.join_date ||
+    "";
+
+  $("village").value=
+    data.village || "";
+
+  $("postOffice").value=
+    data.post_office || "";
+
+  $("unionName").value=
+    data.union_name || "";
+
+  $("ward").value=
+    data.ward_no || "";
+
+  $("upazila").value=
+    data.upazila || "";
+
+  $("district").value=
+    data.district || "";
+
+  $("division").value=
+    data.division || "";
+
+  $("address").value=
+    data.address || "";
+
+  $("nomineeName").value=
+    data.nominee_name || "";
+
+  $("nomineeRelation").value=
+    data.nominee_relation || "";
+
+  $("nomineeMobile").value=
+    data.nominee_mobile || "";
+
+  $("nomineeNid").value=
+    data.nominee_nid || "";
+
+  $("nomineeAddress").value=
+    data.nominee_address || "";
+
+
+  $("memberModal")
+    .querySelector(".modal-header h2")
+    .textContent="✏️ সদস্য Edit";
+
+
+  $("memberModal").style.display="block";
+}
 
 /* =========================================================
    LOAD MEMBERS

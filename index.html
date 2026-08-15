@@ -1458,47 +1458,6 @@ td{color:#334155}
 
 </div>
 
-async function editMember(id){
-
-  const {data,error}=await db
-    .from("members")
-    .select("*")
-    .eq("id",id)
-    .single();
-
-  if(error){
-    alert(error.message);
-    return;
-  }
-
-  $("memberId").value=data.member_id||"";
-  $("memberName").value=data.full_name||"";
-  $("fatherName").value=data.father_name||"";
-  $("motherName").value=data.mother_name||"";
-  $("dob").value=data.date_of_birth||"";
-  $("gender").value=data.gender||"";
-  $("mobile").value=data.mobile||"";
-  $("nid").value=data.nid||"";
-  $("occupation").value=data.occupation||"";
-  $("village").value=data.village||"";
-  $("postOffice").value=data.post_office||"";
-  $("unionName").value=data.union_name||"";
-  $("ward").value=data.ward_no||"";
-  $("upazila").value=data.upazila||"";
-  $("district").value=data.district||"";
-  $("division").value=data.division||"";
-  $("address").value=data.address||"";
-  $("nomineeName").value=data.nominee_name||"";
-  $("nomineeRelation").value=data.nominee_relation||"";
-  $("nomineeMobile").value=data.nominee_mobile||"";
-  $("nomineeNid").value=data.nominee_nid||"";
-  $("nomineeAddress").value=data.nominee_address||"";
-  $("joinDate").value=data.join_date||"";
-
-  window.editingMemberId=id;
-
-  $("memberModal").style.display="block";
-}
  
 <!-- ================= MEMBER VIEW ================= -->
 <div class="modal" id="memberViewModal">
@@ -1927,7 +1886,12 @@ async function loadMembers(){
 </button>
           👁
         </button>
-
+${isManager()?`
+<button class="primary"
+  onclick="editMember('${m.id}')">
+  ✏️
+</button>
+`:``}
         <button class="danger"
           onclick="deactivateMember('${m.id}')">
           ✕

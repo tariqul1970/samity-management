@@ -1674,9 +1674,53 @@ async function openMemberModal(){
 
 }
 
+async function updateMember(){
 
+  const payload = {
+    full_name: $("memberName").value.trim(),
+    father_name: $("fatherName").value.trim(),
+    mother_name: $("motherName").value.trim(),
+    date_of_birth: $("dob").value || null,
+    gender: $("gender").value,
+    mobile: $("mobile").value.trim(),
+    nid: $("nid").value.trim(),
+    occupation: $("occupation").value.trim(),
+    village: $("village").value.trim(),
+    post_office: $("postOffice").value.trim(),
+    union_name: $("unionName").value.trim(),
+    ward_no: $("ward").value.trim(),
+    upazila: $("upazila").value.trim(),
+    district: $("district").value.trim(),
+    division: $("division").value.trim(),
+    address: $("address").value.trim(),
+    nominee_name: $("nomineeName").value.trim(),
+    nominee_relation: $("nomineeRelation").value.trim(),
+    nominee_mobile: $("nomineeMobile").value.trim(),
+    nominee_nid: $("nomineeNid").value.trim(),
+    nominee_address: $("nomineeAddress").value.trim(),
+    join_date: $("joinDate").value || null
+  };
+
+  const {error} = await db
+    .from("members")
+    .update(payload)
+    .eq("id", window.editingMemberId);
+
+  if(error){
+    alert("সদস্য আপডেট হয়নি:\n" + error.message);
+    return;
+  }
+
+  alert("✅ সদস্যের তথ্য সফলভাবে আপডেট হয়েছে।");
+
+  window.editingMemberId = null;
+
+  $("memberModal").style.display = "none";
+
+  await loadMembers();
+}
 async function saveMember(){
-
+if(window.editingMemberId) return updateMember();
   const name=$("memberName").value.trim();
 
   if(!name){

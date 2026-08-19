@@ -1802,22 +1802,21 @@ if(window.editingMemberId) return updateMember();
 
 
 /* =========================================================
-   MEMBERS - LOAD / SEARCH
+   LOAD MEMBERS
 ========================================================= */
 
 async function loadMembers(){
 
-  const tbody = $("memberList");
+  const tbody=$("memberList");
 
-  if(!tbody) return;
+  if(!tbody)return;
 
-  tbody.innerHTML =
+  tbody.innerHTML=
     `<tr><td colspan="7">⏳ Loading...</td></tr>`;
 
-  const q =
-    $("memberSearch")?.value.trim() || "";
+  let q=$("memberSearch")?.value.trim()||"";
 
-  let query = db
+  let query=db
     .from("members")
     .select("*")
     .order("created_at",{ascending:false})
@@ -1825,588 +1824,136 @@ async function loadMembers(){
 
   if(q){
 
-    query = query.or(
-      `member_id.ilike.%${q}%,` +
-      `member_no.ilike.%${q}%,` +
-      `full_name.ilike.%${q}%,` +
-      `mobile.ilike.%${q}%,` +
-      `nid.ilike.%${q}%,` +
-      `nid_no.ilike.%${q}%`
+    query=query.or(
+      `member_id.ilike.%${q}%,full_name.ilike.%${q}%,mobile.ilike.%${q}%,nid.ilike.%${q}%`
     );
 
   }
 
-  const {data,error} = await query;
+  const {data,error}=await query;
 
   if(error){
 
-    tbody.innerHTML =
-      `<tr>
-        <td colspan="7">
-          ❌ ${esc(error.message)}
-        </td>
-      </tr>`;
+    tbody.innerHTML=
+      `<tr><td colspan="7">❌ ${esc(error.message)}</td></tr>`;
 
     return;
   }
 
-  const members = data || [];
-
-  $("statMembers").textContent =
-    members.length;
+  $("statMembers").textContent=data?.length||0;
 
   $("statActiveMembers").textContent =
-    members.filter(
-      x =>
-        x.status === "active" &&
-        x.is_active !== false
-    ).length;
+    data?.filter(x=>x.status==="active").length||0;
 
-  if(!members.length){
+  if(!data?.length){
 
-    tbody.innerHTML =
-      `<tr>
-        <td colspan="7">
-          <div class="empty">
-            কোনো সদস্য পাওয়া যায়নি।
-          </div>
-        </td>
-      </tr>`;
+    tbody.innerHTML=
+      `<tr><td colspan="7"><div class="empty">কোনো সদস্য পাওয়া যায়নি।</div></td></tr>`;
 
     return;
   }
 
-  tbody.innerHTML = members.map(m => {
+  tbody.innerHTML=data.map(m=>`
 
-    const memberId =
-      m.member_id ||
-      m.member_no ||
-      "";
+    <tr>
 
-    const name =
-      m.full_name || "";
+      <td><b>${esc(m.member_id)}</b></td>
 
-    const mobile =
-      m.mobile || "";
+      <td>${esc(m.full_name)}</td>
 
-    const nid =
-      m.nid ||
-      m.nid_no ||
-      "";
+      <td>${esc(m.mobile)}</td>
 
-    const joinDate =
-      m.join_date ||
-      m.joining_date ||
-      "";
+      <td>${esc(m.nid)}</td>
 
-    const active =
-      m.status === "active" &&
-      m.is_active !== false;
+      <td>${esc(m.join_date)}</td>
 
-    return `
-      <tr>
-
-        <td>
-          <b>${esc(memberId)}</b>
-        </td>
-
-        <td>
-          ${esc(name)}
-        </td>
-
-        <td>
-          ${esc(mobile)}
-        </td>
-
-        <td>
-          ${esc(nid)}
-        </td>
-
-        <td>
-          ${esc(joinDate)}
-        </td>
-
-        <td>
-          <span class="badge ${
-            active ? "green" : "red"
-          }">
-            ${
-              active
-                ? "Active"
-                : "Inactive"
-            }
-          </span>
-        </td>
-
-        <td>
-
-          <button
-            class="secondary"
-            onclick="viewMember('${m.id}')">
-            👁 View
-          </button>
-
-          ${
-            isManager()
-            ? `
-              <button
-                class="primary"
-                onclick="editMember('${m.id}')">
-                ✏️ Edit
-              </button>
-            `
-            : ""
-          }
-
-          ${
-            active
-            ? `
-              <button
-                class="danger"
-                onclick="deactivateMember('${m.id}')">
-                🗑️ Inactive
-              </button>
-            `
-            : `
-              ${
-                isManager()
-                ? `
-                  <button
-                    class="success"
-                    onclick="restoreMember('${m.id}')">
-                    ♻️ Restore
-                  </button>
-                `
-                : ""
-              }
-            `
-          }
-
-        </td>
-
-      </tr>
-    `;
-
-  }).join("");
-
-}
-
-
-/* =========================================================
-   MEMBER EDIT
-========================================================= */
-
-async function editMember(id){
-
-  if(!isManager()){
-
-    alert(
-      "শুধু Manager সদস্য Edit করতে পারবেন।"
-    );
-
-    return;
-  }
-
-  const {data,error} = await db
-    .from("members")
-    .select("*")
-    .eq("id",id)
-    .single();
-
-  if(error){
-
-    alert(
-      "সদস্যের তথ্য পাওয়া যায়নি:\n" +
-      error.message
-    );
-
-    return;
-  }
-
-  window.editingMemberId = id;
-
-  $("memberId").value =
-    data.member_id ||
-    data.member_no ||
-    "";
-
-  $("memberName").value =
-    data.full_name || "";
-
-  $("fatherName").value =
-    data.father_name ||
-    data.father_husband_name ||
-    "";
-
-  $("motherName").value =
-    data.mother_name || "";
-
-  $("dob").value =
-    data.date_of_birth ||
-    data.dob ||
-    "";
-
-  $("gender").value =
-    data.gender || "";
-
-  $("mobile").value =
-    data.mobile || "";
-
-  $("nid").value =
-    data.nid ||
-    data.nid_no ||
-    "";
-
-  $("occupation").value =
-    data.occupation || "";
-
-  $("village").value =
-    data.village || "";
-
-  $("postOffice").value =
-    data.post_office || "";
-
-  $("unionName").value =
-    data.union_name || "";
-
-  $("ward").value =
-    data.ward_no || "";
-
-  $("upazila").value =
-    data.upazila || "";
-
-  $("district").value =
-    data.district || "";
-
-  $("division").value =
-    data.division || "";
-
-  $("address").value =
-    data.address || "";
-
-  $("nomineeName").value =
-    data.nominee_name || "";
-
-  $("nomineeRelation").value =
-    data.nominee_relation || "";
-
-  $("nomineeMobile").value =
-    data.nominee_mobile || "";
-
-  $("nomineeNid").value =
-    data.nominee_nid || "";
-
-  $("nomineeAddress").value =
-    data.nominee_address || "";
-
-  $("joinDate").value =
-    data.join_date ||
-    data.joining_date ||
-    today();
-
-  $("memberModal").style.display =
-    "block";
-}
-
-
-/* =========================================================
-   MEMBER VIEW
-========================================================= */
-
-async function viewMember(id){
-
-  const {data,error} = await db
-    .from("members")
-    .select("*")
-    .eq("id",id)
-    .single();
-
-  if(error){
-
-    alert(
-      "সদস্যের তথ্য পাওয়া যায়নি:\n" +
-      error.message
-    );
-
-    return;
-  }
-
-  const memberId =
-    data.member_id ||
-    data.member_no ||
-    "";
-
-  const father =
-    data.father_name ||
-    data.father_husband_name ||
-    "";
-
-  const nid =
-    data.nid ||
-    data.nid_no ||
-    "";
-
-  const dob =
-    data.date_of_birth ||
-    data.dob ||
-    "";
-
-  const joinDate =
-    data.join_date ||
-    data.joining_date ||
-    "";
-
-  const active =
-    data.status === "active" &&
-    data.is_active !== false;
-
-  $("memberDetails").innerHTML = `
-
-    <div class="form-grid">
-
-      <div>
-        <b>Member ID</b><br>
-        ${esc(memberId)}
-      </div>
-
-      <div>
-        <b>নাম</b><br>
-        ${esc(data.full_name)}
-      </div>
-
-      <div>
-        <b>পিতা/স্বামী</b><br>
-        ${esc(father)}
-      </div>
-
-      <div>
-        <b>মাতা</b><br>
-        ${esc(data.mother_name)}
-      </div>
-
-      <div>
-        <b>জন্মতারিখ</b><br>
-        ${esc(dob)}
-      </div>
-
-      <div>
-        <b>লিঙ্গ</b><br>
-        ${esc(data.gender)}
-      </div>
-
-      <div>
-        <b>NID</b><br>
-        ${esc(nid)}
-      </div>
-
-      <div>
-        <b>মোবাইল</b><br>
-        ${esc(data.mobile)}
-      </div>
-
-      <div>
-        <b>পেশা</b><br>
-        ${esc(data.occupation)}
-      </div>
-
-      <div>
-        <b>গ্রাম</b><br>
-        ${esc(data.village)}
-      </div>
-
-      <div>
-        <b>ডাকঘর</b><br>
-        ${esc(data.post_office)}
-      </div>
-
-      <div>
-        <b>ইউনিয়ন</b><br>
-        ${esc(data.union_name)}
-      </div>
-
-      <div>
-        <b>ওয়ার্ড</b><br>
-        ${esc(data.ward_no)}
-      </div>
-
-      <div>
-        <b>উপজেলা</b><br>
-        ${esc(data.upazila)}
-      </div>
-
-      <div>
-        <b>জেলা</b><br>
-        ${esc(data.district)}
-      </div>
-
-      <div>
-        <b>যোগদানের তারিখ</b><br>
-        ${esc(joinDate)}
-      </div>
-
-      <div>
-        <b>Status</b><br>
-
-        <span class="badge ${
-          active ? "green" : "red"
-        }">
-
-          ${
-            active
-              ? "Active"
-              : "Inactive"
-          }
-
+      <td>
+        <span class="badge ${m.status==="active"?"green":"red"}">
+          ${esc(m.status)}
         </span>
+      </td>
 
-      </div>
+      <td>
 
-      <div>
-        <b>Nominee</b><br>
-        ${esc(data.nominee_name)}
-      </div>
+        <button class="secondary"
+          onclick="viewMember('${m.id}')">
+          
+          <button class="primary"
+  onclick="editMember('${m.id}')">
+  
+  ✏️
 
-      <div>
-        <b>Nominee Relation</b><br>
-        ${esc(data.nominee_relation)}
-      </div>
+</button>
+          👁
+        </button>
+${isManager()?`
+<button class="primary"
+  onclick="editMember('${m.id}')">
+  ✏️
+</button>
+`:``}
+        <button class="danger"
+          onclick="deactivateMember('${m.id}')">
+          ✕
+        </button>
 
-      <div>
-        <b>Nominee Mobile</b><br>
-        ${esc(data.nominee_mobile)}
-      </div>
+      </td>
 
-      <div>
-        <b>Nominee NID</b><br>
-        ${esc(data.nominee_nid)}
-      </div>
+    </tr>
 
-      <div class="full">
-        <b>ঠিকানা</b><br>
-        ${esc(data.address)}
-      </div>
+  `).join("");
 
-      <div class="full">
-        <b>Nominee Address</b><br>
-        ${esc(data.nominee_address)}
-      </div>
-
-    </div>
-
-  `;
-
-  $("memberViewModal").style.display =
-    "block";
 }
 
 
 /* =========================================================
-   MEMBER DEACTIVATE
-   Data DELETE হবে না
-========================================================= */
-
-async function deactivateMember(id){
+   MEMBER VIEW 
+   async function editMember(id){
 
   if(!isManager()){
-
-    alert(
-      "শুধু Manager সদস্য Inactive করতে পারবেন।"
-    );
-
+    alert("শুধু Manager Edit করতে পারবেন।");
     return;
   }
 
-  if(
-    !confirm(
-      "এই সদস্যকে Inactive করতে চান?\n\n" +
-      "সদস্যের Account, Savings, Loan ও " +
-      "অন্যান্য হিসাব মুছে যাবে না।"
-    )
-  ){
-    return;
-  }
-
-  const {error} = await db
+  const {data,error}=await db
     .from("members")
-    .update({
-      status: "inactive",
-      is_active: false,
-      deleted_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    })
-    .eq("id",id);
+    .select("*")
+    .eq("id",id)
+    .single();
 
   if(error){
-
-    alert(
-      "সদস্য Inactive করা যায়নি:\n" +
-      error.message
-    );
-
+    alert(error.message);
     return;
   }
 
-  alert(
-    "✅ সদস্য Inactive হয়েছে।\n" +
-    "তার হিসাব ও Account অক্ষত আছে।"
-  );
+  window.editingMemberId=id;
 
-  await loadMembers();
-  await loadDashboard();
+  $("memberId").value=data.member_id||"";
+  $("memberName").value=data.full_name||"";
+  $("fatherName").value=data.father_name||"";
+  $("motherName").value=data.mother_name||"";
+  $("dob").value=data.date_of_birth||"";
+  $("gender").value=data.gender||"";
+  $("mobile").value=data.mobile||"";
+  $("nid").value=data.nid||"";
+  $("occupation").value=data.occupation||"";
+  $("village").value=data.village||"";
+  $("postOffice").value=data.post_office||"";
+  $("unionName").value=data.union_name||"";
+  $("ward").value=data.ward_no||"";
+  $("upazila").value=data.upazila||"";
+  $("district").value=data.district||"";
+  $("division").value=data.division||"";
+  $("address").value=data.address||"";
+  $("nomineeName").value=data.nominee_name||"";
+  $("nomineeRelation").value=data.nominee_relation||"";
+  $("nomineeMobile").value=data.nominee_mobile||"";
+  $("nomineeNid").value=data.nominee_nid||"";
+  $("nomineeAddress").value=data.nominee_address||"";
+  $("joinDate").value=data.join_date||"";
+
+  $("memberModal").style.display="block";
 }
-
-
-/* =========================================================
-   MEMBER RESTORE
-========================================================= */
-
-async function restoreMember(id){
-
-  if(!isManager()){
-
-    alert(
-      "শুধু Manager সদস্য Restore করতে পারবেন।"
-    );
-
-    return;
-  }
-
-  if(
-    !confirm(
-      "এই সদস্যকে আবার Active করতে চান?"
-    )
-  ){
-    return;
-  }
-
-  const {error} = await db
-    .from("members")
-    .update({
-      status: "active",
-      is_active: true,
-      deleted_at: null,
-      updated_at: new Date().toISOString()
-    })
-    .eq("id",id);
-
-  if(error){
-
-    alert(
-      "সদস্য Restore করা যায়নি:\n" +
-      error.message
-    );
-
-    return;
-  }
-
-  alert(
-    "✅ সদস্য আবার Active হয়েছে।"
-  );
-
-  await loadMembers();
-  await loadDashboard();
-}
-
 ========================================================= */
 
 async function viewMember(id){

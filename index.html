@@ -1807,190 +1807,256 @@ if(window.editingMemberId) return updateMember();
 
 async function loadMembers(){
 
-  const tbody = $("memberList");
+    const list = document.getElementById("memberList");
 
-  if(!tbody) return;
+    if(!list) return;
 
-  tbody.innerHTML =
-    `<tr><td colspan="7">⏳ Loading...</td></tr>`;
-
-  const q =
-    $("memberSearch")?.value.trim() || "";
-
-  let query = db
-    .from("members")
-    .select("*")
-    .order("created_at",{ascending:false})
-    .limit(500);
-
-  if(q){
-
-    query = query.or(
-      `member_id.ilike.%${q}%,` +
-      `member_no.ilike.%${q}%,` +
-      `full_name.ilike.%${q}%,` +
-      `mobile.ilike.%${q}%,` +
-      `nid.ilike.%${q}%,` +
-      `nid_no.ilike.%${q}%`
-    );
-
-  }
-
-  const {data,error} = await query;
-
-  if(error){
-
-    tbody.innerHTML =
-      `<tr>
-        <td colspan="7">
-          ❌ ${esc(error.message)}
-        </td>
-      </tr>`;
-
-    return;
-  }
-
-  const members = data || [];
-
-  $("statMembers").textContent =
-    members.length;
-
-  $("statActiveMembers").textContent =
-    members.filter(
-      x =>
-        x.status === "active" &&
-        x.is_active !== false
-    ).length;
-
-  if(!members.length){
-
-    tbody.innerHTML =
-      `<tr>
-        <td colspan="7">
-          <div class="empty">
-            কোনো সদস্য পাওয়া যায়নি।
-          </div>
-        </td>
-      </tr>`;
-
-    return;
-  }
-
-  tbody.innerHTML = members.map(m => {
-
-    const memberId =
-      m.member_id ||
-      m.member_no ||
-      "";
-
-    const name =
-      m.full_name || "";
-
-    const mobile =
-      m.mobile || "";
-
-    const nid =
-      m.nid ||
-      m.nid_no ||
-      "";
-
-    const joinDate =
-      m.join_date ||
-      m.joining_date ||
-      "";
-
-    const active =
-      m.status === "active" &&
-      m.is_active !== false;
-
-    return `
-      <tr>
-
-        <td>
-          <b>${esc(memberId)}</b>
-        </td>
-
-        <td>
-          ${esc(name)}
-        </td>
-
-        <td>
-          ${esc(mobile)}
-        </td>
-
-        <td>
-          ${esc(nid)}
-        </td>
-
-        <td>
-          ${esc(joinDate)}
-        </td>
-
-        <td>
-          <span class="badge ${
-            active ? "green" : "red"
-          }">
-            ${
-              active
-                ? "Active"
-                : "Inactive"
-            }
-          </span>
-        </td>
-
-        <td>
-
-          <button
-            class="secondary"
-            onclick="viewMember('${m.id}')">
-            👁 View
-          </button>
-
-          ${
-            isManager()
-            ? `
-              <button
-                class="primary"
-                onclick="editMember('${m.id}')">
-                ✏️ Edit
-              </button>
-            `
-            : ""
-          }
-
-          ${
-            active
-            ? `
-              <button
-                class="danger"
-                onclick="deactivateMember('${m.id}')">
-                🗑️ Inactive
-              </button>
-            `
-            : `
-              ${
-                isManager()
-                ? `
-                  <button
-                    class="success"
-                    onclick="restoreMember('${m.id}')">
-                    ♻️ Restore
-                  </button>
-                `
-                : ""
-              }
-            `
-          }
-
-        </td>
-
-      </tr>
+    list.innerHTML = `
+        <tr>
+            <td colspan="7" style="text-align:center;padding:25px">
+                ⏳ সদস্যের তথ্য লোড হচ্ছে...
+            </td>
+        </tr>
     `;
 
-  }).join("");
+    try{
+
+        if(!window.db){
+
+            list.innerHTML = `
+                <tr>
+                    <td colspan="7" style="text-align:center;color:#dc2626">
+                        ❌ Supabase connection পাওয়া যায়নি।
+                    </td>
+                </tr>
+            `;
+
+            return;
+        }
+
+        const searchInput =
+            document.getElementById("memberSearch");
+
+        const q =
+            searchInput
+                ? searchInput.value.trim()
+                : "";
+
+        let query =
+            window.db
+                .from("members")
+                .select("*");
+
+        /* Search */
+        if(q){
+
+            const escaped =
+                q.replace(/[%_,]/g,"");
+
+            query = query.or(
+                "member_id.ilike.%" + escaped + "%," +
+                "full_name.ilike.%" + escaped + "%," +
+                "mobile.ilike.%" + escaped + "%," +
+                "nid.ilike.%" + escaped + "%"
+            );
+
+        }
+
+        /*
+         * created_at না থাকলেও যাতে পুরো Members
+         * page নষ্ট না হয়, আগে সাধারণ select করা হচ্ছে।
+         */
+        let result =
+            await query;
+
+        let data = result.data;
+        let error = result.error;
+
+        /* created_at error হলে আবার без order */
+        if(error){
+
+            console.error(
+                "Members query error:",
+                error
+            );
+
+            list.innerHTML = `
+                <tr>
+                    <td colspan="7"
+                        style="text-align:center;color:#dc2626;padding:20px">
+                        ❌ সদস্যের তথ্য আনা যায়নি।
+                        <br>
+                        <small>${safe(error.message)}</small>
+                    </td>
+                </tr>
+            `;
+
+            return;
+        }
+
+        if(!data || data.length === 0){
+
+            list.innerHTML = `
+                <tr>
+                    <td colspan="7"
+                        style="text-align:center;padding:25px;color:#64748b">
+                        কোনো সদস্য পাওয়া যায়নি।
+                    </td>
+                </tr>
+            `;
+
+            return;
+        }
+
+        /* Member ID অনুযায়ী সাজানো */
+        data.sort(function(a,b){
+
+            return String(a.member_id || "")
+                .localeCompare(
+                    String(b.member_id || ""),
+                    undefined,
+                    {
+                        numeric:true
+                    }
+                );
+
+        });
+
+        list.innerHTML =
+            data.map(function(m){
+
+                const id =
+                    String(m.id || "");
+
+                const memberId =
+                    m.member_id || "";
+
+                const name =
+                    m.full_name || "";
+
+                const mobile =
+                    m.mobile || "";
+
+                const nid =
+                    m.nid || "";
+
+                const joinDate =
+                    m.join_date || "";
+
+                const status =
+                    String(
+                        m.status || "active"
+                    ).toLowerCase();
+
+                const statusText =
+                    status === "active"
+                        ? "Active"
+                        : "Inactive";
+
+                const statusClass =
+                    status === "active"
+                        ? "green"
+                        : "red";
+
+                return `
+                    <tr>
+
+                        <td>
+                            <b>${safe(memberId)}</b>
+                        </td>
+
+                        <td>
+                            ${safe(name)}
+                        </td>
+
+                        <td>
+                            ${safe(mobile)}
+                        </td>
+
+                        <td>
+                            ${safe(nid)}
+                        </td>
+
+                        <td>
+                            ${safe(joinDate)}
+                        </td>
+
+                        <td>
+                            <span class="badge ${statusClass}">
+                                ${statusText}
+                            </span>
+                        </td>
+
+                        <td>
+
+                            <button
+                                class="secondary"
+                                onclick="viewMember('${safe(id)}')">
+                                👁️
+                            </button>
+
+                            ${
+                                typeof isManager === "function"
+                                && isManager()
+                                ?
+                                `
+                                <button
+                                    class="secondary"
+                                    onclick="editMember('${safe(id)}')">
+                                    ✏️
+                                </button>
+
+                                ${
+                                    status === "active"
+                                    ?
+                                    `
+                                    <button
+                                        class="danger"
+                                        onclick="deleteMember('${safe(id)}')">
+                                        🗑️
+                                    </button>
+                                    `
+                                    :
+                                    ""
+                                }
+                                `
+                                :
+                                ""
+                            }
+
+                        </td>
+
+                    </tr>
+                `;
+
+            }).join("");
+
+        /* Print button থাকলে আবার যোগ করা */
+        if(typeof addRowPrintButtons === "function"){
+            addRowPrintButtons();
+        }
+
+    }catch(error){
+
+        console.error(
+            "loadMembers error:",
+            error
+        );
+
+        list.innerHTML = `
+            <tr>
+                <td colspan="7"
+                    style="text-align:center;color:#dc2626;padding:20px">
+                    ❌ Unexpected error:
+                    <br>
+                    <small>${safe(error.message)}</small>
+                </td>
+            </tr>
+        `;
+
+    }
 
 }
-
 
 /* =========================================================
    MEMBER EDIT

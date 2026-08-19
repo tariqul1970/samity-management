@@ -1560,78 +1560,37 @@ function closeModal(id){
    LOGIN
 ========================================================= */
 
-$("loginForm").addEventListener("submit",async e=>{
-
+document.getElementById("loginForm").onsubmit = async function(e) {
   e.preventDefault();
 
-  const email=$("loginEmail").value.trim();
-  const password=$("loginPassword").value;
+  const email = document.getElementById("loginEmail").value.trim();
+  const password = document.getElementById("loginPassword").value;
+  const msg = document.getElementById("loginMessage");
 
-  $("loginMessage").textContent="⏳ Login হচ্ছে...";
+  msg.textContent = "⏳ Login হচ্ছে...";
 
-  const {data,error}=await db.auth.signInWithPassword({
-    email,
-    password
-  });
+  try {
+    const { data, error } = await db.auth.signInWithPassword({
+      email: email,
+      password: password
+    });
 
-  if(error){
-    $("loginMessage").textContent="❌ "+error.message;
-    return;
+    if (error) {
+      msg.textContent = "❌ " + error.message;
+      return;
+    }
+
+    currentUser = data.user;
+
+    msg.textContent = "✅ Login সফল...";
+
+    await showApp();
+
+  } catch (err) {
+    console.error(err);
+    msg.textContent = "❌ " + (err.message || err);
   }
-
-  currentUser=data.user;
-
-  await showApp();
-
-});
-
-
-async function showApp(){
-
-  $("loginPage").style.display="none";
-  $("app").style.display="block";
-
-  const {data}=await db
-    .from("user_profiles")
-    .select("*")
-    .eq("id",currentUser.id)
-    .maybeSingle();
-
-  currentProfile=data;
-
-  $("userName").textContent =
-    data?.full_name || currentUser.email || "User";
-
-  $("userRole").textContent =
-    (data?.role || "USER").toUpperCase();
-
-  $("todayText").textContent =
-    new Date().toLocaleDateString(
-      "bn-BD",
-      {
-        weekday:"long",
-        year:"numeric",
-        month:"long",
-        day:"numeric"
-      }
-    );
-
-  await loadDashboard();
-  await loadMembers();
-}
-
-
-async function logout(){
-
-  await db.auth.signOut();
-
-  currentUser=null;
-  currentProfile=null;
-
-  $("app").style.display="none";
-  $("loginPage").style.display="flex";
-}
-
+};
 
 /* =========================================================
    MEMBER ID

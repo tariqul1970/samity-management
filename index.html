@@ -561,7 +561,10 @@ td{color:#334155}
   <div class="module-card">
 
     <div class="toolbar">
-      <input id="memberSearch" placeholder="নাম / Member ID / মোবাইল / NID">
+      <input
+  id="memberSearch"
+  placeholder="নাম / Member ID / মোবাইল / NID"
+  onkeydown="if(event.key==='Enter') loadMembers()">
       <button class="primary" onclick="loadMembers()">🔍 Search</button>
     </div>
 

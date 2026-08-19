@@ -166,23 +166,40 @@ td{color:#334155}
     <h1>সমবায় সমিতি</h1>
     <p>Co-operative Society Management System</p>
 
-    <form id="loginForm">
-      <div class="form-group">
-        <label>ই-মেইল</label>
-        <input id="loginEmail" type="email" required placeholder="আপনার Email">
-      </div>
+   <form id="loginForm" onsubmit="return false;">
+  <div class="form-group">
+    <label>ই-মেইল</label>
+    <input
+      id="loginEmail"
+      type="email"
+      required
+      placeholder="আপনার Email"
+      autocomplete="username">
+  </div>
 
-      <div class="form-group">
-        <label>পাসওয়ার্ড</label>
-        <input id="loginPassword" type="password" required placeholder="Password">
-      </div>
+  <div class="form-group">
+    <label>পাসওয়ার্ড</label>
+    <input
+      id="loginPassword"
+      type="password"
+      required
+      placeholder="Password"
+      autocomplete="current-password">
+  </div>
 
-      <button class="primary" style="width:100%;margin-top:8px">
-        🔐 Login
-      </button>
+  <button
+    type="button"
+    class="primary"
+    style="width:100%;margin-top:8px"
+    onclick="login()">
+    🔐 Login
+  </button>
 
-      <div id="loginMessage" style="font-size:11px;margin-top:12px;text-align:center"></div>
-    </form>
+  <div
+    id="loginMessage"
+    style="font-size:11px;margin-top:12px;text-align:center">
+  </div>
+</form>
   </div>
 </div>
 

@@ -563,9 +563,14 @@ td{color:#334155}
     <div class="toolbar">
       <input
   id="memberSearch"
-  <input id="memberSearch" placeholder="নাম / Member ID / মোবাইল / NID">
-      <button class="primary" onclick="loadMembers()">🔍 Search</button>
-    </div>
+  <div class="toolbar">
+  <input
+    id="memberSearch"
+    placeholder="নাম / Member ID / মোবাইল / NID"
+    onkeydown="if(event.key==='Enter') loadMembers()">
+  <button class="primary" onclick="loadMembers()">🔍 Search</button>
+</div>
+     
 
     <div class="table-wrap">
       <table>
@@ -2138,7 +2143,7 @@ async function editMember(id){
 
 /* =========================================================
    MEMBER VIEW
-========================================================= */
+
 
 async function viewMember(id){
 

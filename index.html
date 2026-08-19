@@ -166,23 +166,23 @@ td{color:#334155}
     <h1>সমবায় সমিতি</h1>
     <p>Co-operative Society Management System</p>
 
-  <form id="loginForm">
-  <div class="form-group">
-    <label>ই-মেইল</label>
-    <input id="loginEmail" type="email" required placeholder="আপনার Email">
-  </div>
+    <form id="loginForm">
+      <div class="form-group">
+        <label>ই-মেইল</label>
+        <input id="loginEmail" type="email" required placeholder="আপনার Email">
+      </div>
 
-  <div class="form-group">
-    <label>পাসওয়ার্ড</label>
-    <input id="loginPassword" type="password" required placeholder="Password">
-  </div>
+      <div class="form-group">
+        <label>পাসওয়ার্ড</label>
+        <input id="loginPassword" type="password" required placeholder="Password">
+      </div>
 
-  <button class="primary" style="width:100%;margin-top:8px">
-    🔐 Login
-  </button>
+      <button class="primary" style="width:100%;margin-top:8px">
+        🔐 Login
+      </button>
 
-  <div id="loginMessage" style="font-size:11px;margin-top:12px;text-align:center"></div>
-</form>
+      <div id="loginMessage" style="font-size:11px;margin-top:12px;text-align:center"></div>
+    </form>
   </div>
 </div>
 
@@ -561,16 +561,9 @@ td{color:#334155}
   <div class="module-card">
 
     <div class="toolbar">
-      <input
-  id="memberSearch"
-  <div class="toolbar">
-  <input
-    id="memberSearch"
-    placeholder="নাম / Member ID / মোবাইল / NID"
-    onkeydown="if(event.key==='Enter') loadMembers()">
-  <button class="primary" onclick="loadMembers()">🔍 Search</button>
-</div>
-     
+      <input id="memberSearch" placeholder="নাম / Member ID / মোবাইল / NID">
+      <button class="primary" onclick="loadMembers()">🔍 Search</button>
+    </div>
 
     <div class="table-wrap">
       <table>
@@ -1565,37 +1558,78 @@ function closeModal(id){
    LOGIN
 ========================================================= */
 
-document.getElementById("loginForm").onsubmit = async function(e) {
+$("loginForm").addEventListener("submit",async e=>{
+
   e.preventDefault();
 
-  const email = document.getElementById("loginEmail").value.trim();
-  const password = document.getElementById("loginPassword").value;
-  const msg = document.getElementById("loginMessage");
+  const email=$("loginEmail").value.trim();
+  const password=$("loginPassword").value;
 
-  msg.textContent = "⏳ Login হচ্ছে...";
+  $("loginMessage").textContent="⏳ Login হচ্ছে...";
 
-  try {
-    const { data, error } = await db.auth.signInWithPassword({
-      email: email,
-      password: password
-    });
+  const {data,error}=await db.auth.signInWithPassword({
+    email,
+    password
+  });
 
-    if (error) {
-      msg.textContent = "❌ " + error.message;
-      return;
-    }
-
-    currentUser = data.user;
-
-    msg.textContent = "✅ Login সফল...";
-
-    await showApp();
-
-  } catch (err) {
-    console.error(err);
-    msg.textContent = "❌ " + (err.message || err);
+  if(error){
+    $("loginMessage").textContent="❌ "+error.message;
+    return;
   }
-};
+
+  currentUser=data.user;
+
+  await showApp();
+
+});
+
+
+async function showApp(){
+
+  $("loginPage").style.display="none";
+  $("app").style.display="block";
+
+  const {data}=await db
+    .from("user_profiles")
+    .select("*")
+    .eq("id",currentUser.id)
+    .maybeSingle();
+
+  currentProfile=data;
+
+  $("userName").textContent =
+    data?.full_name || currentUser.email || "User";
+
+  $("userRole").textContent =
+    (data?.role || "USER").toUpperCase();
+
+  $("todayText").textContent =
+    new Date().toLocaleDateString(
+      "bn-BD",
+      {
+        weekday:"long",
+        year:"numeric",
+        month:"long",
+        day:"numeric"
+      }
+    );
+
+  await loadDashboard();
+  await loadMembers();
+}
+
+
+async function logout(){
+
+  await db.auth.signOut();
+
+  currentUser=null;
+  currentProfile=null;
+
+  $("app").style.display="none";
+  $("loginPage").style.display="flex";
+}
+
 
 /* =========================================================
    MEMBER ID
@@ -2143,7 +2177,7 @@ async function editMember(id){
 
 /* =========================================================
    MEMBER VIEW
-
+========================================================= */
 
 async function viewMember(id){
 
